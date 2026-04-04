@@ -1,17 +1,52 @@
 {
-  "name": "@anthropic-ai/claude-code-source",
-  "version": "2.1.88",
-  "description": "Claude Code v2.1.88 — decompiled source for research",
+  "name": "@recode/cli",
+  "version": "3.0.1",
+  "description": "ReCode - 开源的多模型 AI 对话界面",
   "type": "module",
-  "private": true,
+  "main": "recode-temp/package/cli.js",
+  "bin": {
+    "recode": "./recode-temp/package/cli.js"
+  },
   "scripts": {
     "prepare-src": "node scripts/prepare-src.mjs",
     "build": "npm run prepare-src && node scripts/build.mjs",
     "check": "npm run prepare-src && tsc --noEmit",
-    "start": "node dist/cli.js"
+    "start": "node recode-temp/package/cli.js"
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "keywords": [
+    "ai",
+    "claude",
+    "chat",
+    "cli",
+    "recode"
+  ],
+  "author": "ReCode Team",
+  "license": "MIT",
+  "homepage": "https://github.com/mangiapanejohn-dev/-Re-Code",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "ignore": "^5.3.0",
+    "lodash-es": "^4.17.21",
+    "@anthropic-ai/sdk": "^0.40.0",
+    "@growthbook/growthbook": "^1.0.0",
+    "execa": "^9.0.0",
+    "zod": "^3.23.0",
+    "axios": "^1.7.0",
+    "emoji-regex": "^10.3.0",
+    "east-asian-width": "^0.1.1",
+    "strip-ansi": "^7.1.0",
+    "jsonc-parser": "^3.2.0",
+    "lru-cache": "^10.0.0",
+    "env-paths": "^2.2.1",
+    "@aws-sdk/client-bedrock": "^3.500.0",
+    "@aws-sdk/credential-provider-node": "^3.500.0",
+    "@smithy/node-http-handler": "^3.0.0",
+    "google-auth-library": "^9.0.0",
+    "https-proxy-agent": "^7.0.0",
+    "undici": "^6.0.0"
   },
   "devDependencies": {
     "esbuild": "^0.27.4",

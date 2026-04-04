@@ -1,0 +1,44 @@
+{
+  "name": "@recode/cli",
+  "version": "3.0.1",
+  "bin": {
+    "recode": "cli.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "type": "module",
+  "author": "ReCode Team <support@recode.dev>",
+  "license": "MIT",
+  "description": "ReCode - 开源的多模型 AI 对话界面",
+  "homepage": "https://github.com/mangiapanejohn-dev/-Re-Code",
+  "bugs": {
+    "url": "https://github.com/mangiapanejohn-dev/-Re-Code/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mangiapanejohn-dev/-Re-Code.git"
+  },
+  "keywords": [
+    "ai",
+    "claude",
+    "chat",
+    "cli",
+    "recode"
+  ],
+  "scripts": {
+    "start": "node cli.js"
+  },
+  "dependencies": {},
+  "optionalDependencies": {
+    "@img/sharp-darwin-arm64": "^0.34.2",
+    "@img/sharp-darwin-x64": "^0.34.2",
+    "@img/sharp-linux-arm": "^0.34.2",
+    "@img/sharp-linux-arm64": "^0.34.2",
+    "@img/sharp-linux-x64": "^0.34.2",
+    "@img/sharp-linuxmusl-arm64": "^0.34.2",
+    "@img/sharp-linuxmusl-x64": "^0.34.2",
+    "@img/sharp-win32-arm64": "^0.34.2",
+    "@img/sharp-win32-x64": "^0.34.2"
+  }
+}
