@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ReCode Installer for Termux
+# RE CODE Installer for Termux
 # Usage: curl -fsSL https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install-termux.sh | bash
 # Updated: 2026-04-04
 
@@ -20,17 +20,23 @@ NC='\033[0m'
 
 print_banner() {
     echo ""
-    echo -e "${ACCENT}████╗ ██████╗  ██████╗ ███╗   ██╗██╗   ██╗██╗  ██╗${NC}"
-    echo -e "${ACCENT}██╔══██╗██╔══██╗██╔═══██╗████╗  ██║██║   ██║╚██╗ ██╔╝${NC}"
-    echo -e "${ACCENT}██████║██║  ██║██║   ██║██╔██╗ ██║██║   ██║ ╚████╔╝ ${NC}"
-    echo -e "${ACCENT}██╔══██╗██║  ██║██║   ██║██║╚██╗██║██║   ██║ ██╔═██╗${NC}"
-    echo -e "${ACCENT}██║  ██║██████╔╝╚██████╔╝██║ ╚████║╚██████╔╝██╔╝ ██╗${NC}"
-    echo -e "${ACCENT}╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝${NC}"
+    echo -e "${ACCENT}╔════════════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${ACCENT}║                                                                            ║${NC}"
+    echo -e "${ACCENT}║  ██████╗     ███████╗      ██████╗      ██████╗     ██████╗     ███████╗   ║${NC}"
+    echo -e "${ACCENT}║  ██╔══██╗    ██╔════╝     ██╔════╝     ██╔═══██╗    ██╔══██╗    ██╔════╝   ║${NC}"
+    echo -e "${ACCENT}║  ██████╔╝    █████╗       ██║          ██║   ██║    ██║  ██║    █████╗     ║${NC}"
+    echo -e "${ACCENT}║  ██╔══██╗    ██╔══╝       ██║          ██║   ██║    ██║  ██║    ██╔══╝     ║${NC}"
+    echo -e "${ACCENT}║  ██║  ██║    ███████╗     ╚██████╗     ╚██████╔╝    ██████╔╝    ███████╗   ║${NC}"
+    echo -e "${ACCENT}║  ╚═╝  ╚═╝    ╚══════╝      ╚═════╝      ╚═════╝     ╚═════╝     ╚══════╝   ║${NC}"
+    echo -e "${ACCENT}║                                                                            ║${NC}"
+    echo -e "${ACCENT}║      [ R ]      [ E ]      [ C ]      [ O ]      [ D ]      [ E ]          ║${NC}"
+    echo -e "${ACCENT}║                                                                            ║${NC}"
+    echo -e "${ACCENT}║      Heyy ~ Bro ！👾   WANT VIBE CODING KNOW ???                               ║${NC}"
+    echo -e "${ACCENT}║                                                                            ║${NC}"
+    echo -e "${ACCENT}║  >_ RE_CODE PROTOCOL ENGAGED // NEURAL GRID ONLINE // v3.0.1                ║${NC}"
+    echo -e "${ACCENT}╚════════════════════════════════════════════════════════════════════════════╝${NC}"
     echo ""
-    echo -e "${BOLD}RE CODE Installer (Termux)${NC}"
     echo -e "${MUTED}Source: ${INSTALL_ROOT}${NC}"
-    echo ""
-    echo -e "${INFO}Setting up RE CODE on Termux...${NC}"
     echo ""
 }
 
@@ -77,7 +83,7 @@ check_requirements() {
 
 install_or_update_source() {
     if [[ -d "$INSTALL_ROOT/.git" ]]; then
-        ui_info "Updating existing ReCode checkout..."
+        ui_info "Updating existing RE CODE checkout..."
         cd "$INSTALL_ROOT"
         git remote set-url origin "$REPO_URL" >/dev/null 2>&1 || true
         if git fetch --depth 1 origin main >/dev/null 2>&1; then
@@ -92,7 +98,7 @@ install_or_update_source() {
         rm -rf "$INSTALL_ROOT"
     fi
 
-    ui_info "Cloning ReCode source..."
+    ui_info "Cloning RE CODE source..."
     git clone --depth 1 "$REPO_URL" "$INSTALL_ROOT"
     ui_success "Source cloned"
 }
@@ -106,7 +112,7 @@ run_install() {
 
 run_build() {
     cd "$INSTALL_ROOT"
-    ui_info "Building ReCode CLI..."
+    ui_info "Building RE CODE CLI..."
     npm run build
     ui_success "Build completed"
 }
@@ -134,7 +140,12 @@ WRAPPER
 
 print_success() {
     echo ""
-    ui_success "RE CODE installed successfully!"
+    echo -e "${ACCENT}╔════════════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${ACCENT}║                                                                            ║${NC}"
+    echo -e "${ACCENT}║                    RE CODE INSTALLED SUCCESSFULLY！👾                         ║${NC}"
+    echo -e "${ACCENT}║                                                                            ║${NC}"
+    echo -e "${ACCENT}║                      NEURAL GRID ONLINE // READY                              ║${NC}"
+    echo -e "${ACCENT}╚════════════════════════════════════════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${BOLD}Next steps${NC}"
     echo "  1) Verify: recode -v"

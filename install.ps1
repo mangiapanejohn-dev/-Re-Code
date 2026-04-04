@@ -1,4 +1,4 @@
-# ReCode Installer - Windows PowerShell
+# RE CODE Installer - Windows PowerShell
 # Usage: iwr -useb https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install.ps1 | iex
 # Updated: 2026-04-04
 
@@ -10,7 +10,7 @@ $INSTALL_ROOT = "$env:USERPROFILE\.recode"
 $SOURCE_DIR = "$INSTALL_ROOT\source"
 $BIN_DIR = "$env:USERPROFILE\AppData\Local\Programs\recode"
 
-# Colors (Purple/Pink theme)
+# Colors (Purple theme)
 $ACCENT = [ConsoleColor]::Magenta
 $INFO = [ConsoleColor]::Cyan
 $SUCCESS = [ConsoleColor]::Green
@@ -18,22 +18,27 @@ $WARN = [ConsoleColor]::Yellow
 $ERROR = [ConsoleColor]::Red
 $MUTED = [ConsoleColor]::DarkGray
 $WHITE = [ConsoleColor]::White
-$BOLD = ""
 
 function Write-Banner {
     Write-Host ""
-    Write-Host "████╗ ██████╗  ██████╗ ███╗   ██╗██╗   ██╗██╗  ██╗" -ForegroundColor $ACCENT
-    Write-Host "██╔══██╗██╔══██╗██╔═══██╗████╗  ██║██║   ██║╚██╗ ██╔╝" -ForegroundColor $ACCENT
-    Write-Host "██████║██║  ██║██║   ██║██╔██╗ ██║██║   ██║ ╚████╔╝ " -ForegroundColor $ACCENT
-    Write-Host "██╔══██╗██║  ██║██║   ██║██║╚██╗██║██║   ██║ ██╔═██╗" -ForegroundColor $ACCENT
-    Write-Host "██║  ██║██████╔╝╚██████╔╝██║ ╚████║╚██████╔╝██╔╝ ██╗" -ForegroundColor $ACCENT
-    Write-Host "╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝" -ForegroundColor $ACCENT
+    Write-Host "╔════════════════════════════════════════════════════════════════════════════╗" -ForegroundColor $ACCENT
+    Write-Host "║                                                                            ║" -ForegroundColor $ACCENT
+    Write-Host "║  ██████╗     ███████╗      ██████╗      ██████╗     ██████╗     ███████╗   ║" -ForegroundColor $ACCENT
+    Write-Host "║  ██╔══██╗    ██╔════╝     ██╔════╝     ██╔═══██╗    ██╔══██╗    ██╔════╝   ║" -ForegroundColor $ACCENT
+    Write-Host "║  ██████╔╝    █████╗       ██║          ██║   ██║    ██║  ██║    █████╗     ║" -ForegroundColor $ACCENT
+    Write-Host "║  ██╔══██╗    ██╔══╝       ██║          ██║   ██║    ██║  ██║    ██╔══╝     ║" -ForegroundColor $ACCENT
+    Write-Host "║  ██║  ██║    ███████╗     ╚██████╗     ╚██████╔╝    ██████╔╝    ███████╗   ║" -ForegroundColor $ACCENT
+    Write-Host "║  ╚═╝  ╚═╝    ╚══════╝      ╚═════╝      ╚═════╝     ╚═════╝     ╚══════╝   ║" -ForegroundColor $ACCENT
+    Write-Host "║                                                                            ║" -ForegroundColor $ACCENT
+    Write-Host "║      [ R ]      [ E ]      [ C ]      [ O ]      [ D ]      [ E ]          ║" -ForegroundColor $ACCENT
+    Write-Host "║                                                                            ║" -ForegroundColor $ACCENT
+    Write-Host "║      Heyy ~ Bro ！👾   WANT VIBE CODING KNOW ???                               ║" -ForegroundColor $ACCENT
+    Write-Host "║                                                                            ║" -ForegroundColor $ACCENT
+    Write-Host "║  >_ RE_CODE PROTOCOL ENGAGED // NEURAL GRID ONLINE // v3.0.1                ║" -ForegroundColor $ACCENT
+    Write-Host "╚════════════════════════════════════════════════════════════════════════════╝" -ForegroundColor $ACCENT
     Write-Host ""
-    Write-Host "  RE CODE Installer (Windows)" -ForegroundColor $WHITE
     Write-Host "  Source: $SOURCE_DIR" -ForegroundColor $MUTED
     Write-Host "  Binary: $BIN_DIR\recode.exe" -ForegroundColor $MUTED
-    Write-Host ""
-    Write-Host "  Setting up RE CODE..." -ForegroundColor $INFO
     Write-Host ""
 }
 
@@ -55,14 +60,14 @@ function Check-Requirements {
         Write-ErrorExit "Git is required. Install from https://git-scm.com"
     }
     if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
-        Write-ErrorExit "npm is required. Reinstall Node.js with npm included."
+        Write-ErrorExit "npm is required. Reinstall Node.js with npm."
     }
     Write-Success "Requirements checked (Node $nodeVersion)"
 }
 
 function Install-Source {
     if (Test-Path "$SOURCE_DIR\.git") {
-        Write-Info "Updating existing ReCode checkout..."
+        Write-Info "Updating existing RE CODE checkout..."
         Set-Location $SOURCE_DIR
         git remote set-url origin $REPO_URL 2>$null
         if (git fetch --depth 1 origin main 2>$null) {
@@ -78,7 +83,7 @@ function Install-Source {
         Remove-Item $SOURCE_DIR -Recurse -Force
     }
 
-    Write-Info "Cloning ReCode source..."
+    Write-Info "Cloning RE CODE source..."
     git clone --depth 1 $REPO_URL $SOURCE_DIR 2>$null
     Write-Success "Source cloned"
 }
@@ -92,7 +97,7 @@ function Install-Deps {
 
 function Run-Build {
     Set-Location $SOURCE_DIR
-    Write-Info "Building ReCode CLI..."
+    Write-Info "Building RE CODE CLI..."
     npm run build 2>$null
     Write-Success "Build completed"
 }
@@ -122,7 +127,12 @@ node "$cliPath" %*
 
 function Print-Success {
     Write-Host ""
-    Write-Success "RE CODE installed successfully!"
+    Write-Host "╔════════════════════════════════════════════════════════════════════════════╗" -ForegroundColor $ACCENT
+    Write-Host "║                                                                            ║" -ForegroundColor $ACCENT
+    Write-Host "║                    RE CODE INSTALLED SUCCESSFULLY！👾                         ║" -ForegroundColor $ACCENT
+    Write-Host "║                                                                            ║" -ForegroundColor $ACCENT
+    Write-Host "║                      NEURAL GRID ONLINE // READY                              ║" -ForegroundColor $ACCENT
+    Write-Host "╚════════════════════════════════════════════════════════════════════════════╝" -ForegroundColor $ACCENT
     Write-Host ""
     Write-Host "  Next steps:" -ForegroundColor $WHITE
     Write-Host "    1) Verify: recode -v" -ForegroundColor $MUTED

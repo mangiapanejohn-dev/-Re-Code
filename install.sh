@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ReCode Installer for macOS/Linux
+# RE CODE Installer for macOS/Linux
 # Usage: curl -fsSL https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install.sh | bash
-# Updated: 2026-04-04 (Resonix style + stability)
+# Updated: 2026-04-04
 
 REPO_URL="${RECODE_REPO_URL:-https://github.com/mangiapanejohn-dev/-Re-Code.git}"
 INSTALL_ROOT="${RECODE_INSTALL_ROOT:-$HOME/.recode}"
@@ -26,19 +26,25 @@ PM_CMD=()
 
 print_banner() {
     echo ""
-    echo -e "${ACCENT}████╗ ██████╗  ██████╗ ███╗   ██╗██╗   ██╗██╗  ██╗${NC}"
-    echo -e "${ACCENT}██╔══██╗██╔══██╗██╔═══██╗████╗  ██║██║   ██║╚██╗ ██╔╝${NC}"
-    echo -e "${ACCENT}██████║██║  ██║██║   ██║██╔██╗ ██║██║   ██║ ╚████╔╝ ${NC}"
-    echo -e "${ACCENT}██╔══██╗██║  ██║██║   ██║██║╚██╗██║██║   ██║ ██╔═██╗${NC}"
-    echo -e "${ACCENT}██║  ██║██████╔╝╚██████╔╝██║ ╚████║╚██████╔╝██╔╝ ██╗${NC}"
-    echo -e "${ACCENT}╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝${NC}"
+    echo -e "${ACCENT}╔════════════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${ACCENT}║                                                                            ║${NC}"
+    echo -e "${ACCENT}║  ██████╗     ███████╗      ██████╗      ██████╗     ██████╗     ███████╗   ║${NC}"
+    echo -e "${ACCENT}║  ██╔══██╗    ██╔════╝     ██╔════╝     ██╔═══██╗    ██╔══██╗    ██╔════╝   ║${NC}"
+    echo -e "${ACCENT}║  ██████╔╝    █████╗       ██║          ██║   ██║    ██║  ██║    █████╗     ║${NC}"
+    echo -e "${ACCENT}║  ██╔══██╗    ██╔══╝       ██║          ██║   ██║    ██║  ██║    ██╔══╝     ║${NC}"
+    echo -e "${ACCENT}║  ██║  ██║    ███████╗     ╚██████╗     ╚██████╔╝    ██████╔╝    ███████╗   ║${NC}"
+    echo -e "${ACCENT}║  ╚═╝  ╚═╝    ╚══════╝      ╚═════╝      ╚═════╝     ╚═════╝     ╚══════╝   ║${NC}"
+    echo -e "${ACCENT}║                                                                            ║${NC}"
+    echo -e "${ACCENT}║      [ R ]      [ E ]      [ C ]      [ O ]      [ D ]      [ E ]          ║${NC}"
+    echo -e "${ACCENT}║                                                                            ║${NC}"
+    echo -e "${ACCENT}║      Heyy ~ Bro ！👾   WANT VIBE CODING KNOW ???                               ║${NC}"
+    echo -e "${ACCENT}║                                                                            ║${NC}"
+    echo -e "${ACCENT}║  >_ RE_CODE PROTOCOL ENGAGED // NEURAL GRID ONLINE // v3.0.1                ║${NC}"
+    echo -e "${ACCENT}╚════════════════════════════════════════════════════════════════════════════╝${NC}"
     echo ""
-    echo -e "${BOLD}RE CODE Installer (macOS/Linux)${NC}"
     echo -e "${MUTED}Source: ${SOURCE_DIR}${NC}"
     echo -e "${MUTED}Binary: ${BIN_DIR}/recode${NC}"
     echo -e "${MUTED}State directory: ~/.recode${NC}"
-    echo ""
-    echo -e "${INFO}Setting up RE CODE...${NC}"
     echo ""
 }
 
@@ -147,7 +153,7 @@ install_or_update_source() {
             return
         fi
 
-        ui_info "Updating existing ReCode checkout..."
+        ui_info "Updating existing RE CODE checkout..."
         git -C "$SOURCE_DIR" remote set-url origin "$REPO_URL" >/dev/null 2>&1 || true
         if git -C "$SOURCE_DIR" fetch --depth 1 origin main >/dev/null 2>&1; then
             git -C "$SOURCE_DIR" checkout -q main >/dev/null 2>&1 || true
@@ -164,7 +170,7 @@ install_or_update_source() {
         ui_warn "Existing non-git path at ${SOURCE_DIR}; preserving and recloning."
     fi
 
-    ui_info "Cloning ReCode source..."
+    ui_info "Cloning RE CODE source..."
     clone_fresh
     ui_success "Source cloned"
 }
@@ -189,7 +195,7 @@ run_install() {
 
 run_build() {
     cd "$SOURCE_DIR"
-    ui_info "Building ReCode CLI..."
+    ui_info "Building RE CODE CLI..."
 
     if [[ "$PM_KIND" == "pnpm" ]]; then
         "${PM_CMD[@]}" build
@@ -258,7 +264,12 @@ ensure_path() {
 
 print_success() {
     echo ""
-    ui_success "RE CODE installed successfully!"
+    echo -e "${ACCENT}╔════════════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${ACCENT}║                                                                            ║${NC}"
+    echo -e "${ACCENT}║                    RE CODE INSTALLED SUCCESSFULLY！👾                         ║${NC}"
+    echo -e "${ACCENT}║                                                                            ║${NC}"
+    echo -e "${ACCENT}║                      NEURAL GRID ONLINE // READY                              ║${NC}"
+    echo -e "${ACCENT}╚════════════════════════════════════════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${BOLD}Next steps${NC}"
     echo "  1) Verify: recode -v"
