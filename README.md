@@ -1,12 +1,13 @@
-# ReCode
+# RE CODE 👾
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-3.0.1-blue.svg" alt="Version">
-  <img src="https://img.shields.io/badge/platform-Windows%20macOS%20Linux-Termux-green.svg" alt="Platforms">
-  <img src="https://img.shields.io/badge/license-MIT-orange.svg" alt="License">
+  <img src="https://img.shields.io/badge/version-3.0.1-purple.svg" alt="Version">
+  <img src="https://img.shields.io/badge/platform-Windows%20macOS%20Linux%20Termux-pink.svg" alt="Platforms">
+  <img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License">
+  <img src="https://img.shields.io/badge/npm-Not%20Published-purple.svg" alt="NPM">
 </p>
 
-**ReCode** — Open-source multi-model AI chat interface with custom model support.
+**RE CODE** — Open-source multi-model AI chat interface with custom model support.
 
 ---
 
