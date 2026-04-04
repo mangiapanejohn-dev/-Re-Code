@@ -965,7 +965,7 @@ async function run(): Promise<CommanderCommand> {
     }
     profileCheckpoint('preAction_after_settings_sync');
   });
-  program.name('claude').description(`RE CODE - starts an interactive session by default, use -p/--print for non-interactive output`).argument('[prompt]', 'Your prompt', String)
+  program.name('recode').description(`RE CODE - starts an interactive session by default, use -p/--print for non-interactive output`).argument('[prompt]', 'Your prompt', String)
   // Subcommands inherit helpOption via commander's copyInheritedSettings —
   // setting it once here covers mcp, plugin, auth, and all other subcommands.
   .helpOption('-h, --help', 'Display help for command').option('-d, --debug [filter]', 'Enable debug mode with optional category filtering (e.g., "api,hooks" or "!1p,!file")', (_value: string | true) => {
@@ -3413,7 +3413,7 @@ async function run(): Promise<CommanderCommand> {
         // Check if TUI mode is enabled - description is only optional in TUI mode
         const isRemoteTuiEnabled = getFeatureValue_CACHED_MAY_BE_STALE('tengu_remote_backend', false);
         if (!isRemoteTuiEnabled && !hasInitialPrompt) {
-          return await exitWithError(root, 'Error: --remote requires a description.\nUsage: claude --remote "your task description"', () => gracefulShutdown(1));
+          return await exitWithError(root, 'Error: --remote requires a description.\nUsage: recode --remote "your task description"', () => gracefulShutdown(1));
         }
         logEvent('tengu_remote_create_session', {
           has_initial_prompt: String(hasInitialPrompt) as AnalyticsMetadata_I_VERIFIED_THIS_IS_NOT_CODE_OR_FILEPATHS
@@ -4047,7 +4047,7 @@ async function run(): Promise<CommanderCommand> {
       // Argv rewriting in main() should have consumed `ssh <host>` before
       // commander runs. Reaching here means host was missing or the
       // rewrite predicate didn't match.
-      process.stderr.write('Usage: claude ssh <user@host | ssh-config-alias> [dir]\n\n' + "Runs RE CODE on a remote Linux host. You don't need to install\n" + 'anything on the remote or run `claude auth login` there — the binary is\n' + 'deployed over SSH and API auth tunnels back through your local machine.\n');
+      process.stderr.write('Usage: recode ssh <user@host | ssh-config-alias> [dir]\n\n' + "Runs RE CODE on a remote Linux host. You don't need to install\n" + 'anything on the remote or run `claude auth login` there — the binary is\n' + 'deployed over SSH and API auth tunnels back through your local machine.\n');
       process.exit(1);
     });
   }
@@ -4337,7 +4337,7 @@ async function run(): Promise<CommanderCommand> {
       // before commander runs. Reaching here means a root flag came first
       // (e.g. `--debug assistant`) and the position-0 predicate
       // didn't match. Print usage like the ssh stub does.
-      process.stderr.write('Usage: claude assistant [sessionId]\n\n' + 'Attach the REPL as a viewer client to a running bridge session.\n' + 'Omit sessionId to discover and pick from available sessions.\n');
+      process.stderr.write('Usage: recode assistant [sessionId]\n\n' + 'Attach the REPL as a viewer client to a running bridge session.\n' + 'Omit sessionId to discover and pick from available sessions.\n');
       process.exit(1);
     });
   }
