@@ -25,7 +25,7 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
-const VERSION = '2.1.88'
+const VERSION = '3.0.1'
 const BUILD = join(ROOT, 'build-src')
 const ENTRY = join(BUILD, 'entry.ts')
 
@@ -121,8 +121,8 @@ console.log(`✅ Phase 2: Transformed ${transformCount} files`)
 // ══════════════════════════════════════════════════════════════════════════════
 
 await writeFile(ENTRY, `#!/usr/bin/env node
-// Claude Code v${VERSION} — built from source
-// Copyright (c) Anthropic PBC. All rights reserved.
+// Re Code v${VERSION} — built from source
+// Copyright (c) Re Code Team. All rights reserved.
 import './src/entrypoints/cli.tsx'
 `, 'utf8')
 console.log('✅ Phase 3: Created entry wrapper')
@@ -154,7 +154,7 @@ for (let round = 1; round <= MAX_ROUNDS; round++) {
       '--target=node18',
       '--format=esm',
       `--outfile="${OUT_FILE}"`,
-      `--banner:js=$'#!/usr/bin/env node\\n// Claude Code v${VERSION} (built from source)\\n// Copyright (c) Anthropic PBC. All rights reserved.\\n'`,
+      `--banner:js=$'#!/usr/bin/env node\\n// Re Code v${VERSION} (built from source)\\n// Copyright (c) Re Code Team. All rights reserved.\\n'`,
       '--packages=external',
       '--external:bun:*',
       '--allow-overwrite',

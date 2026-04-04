@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * build.mjs — Build Claude Code from source using esbuild
+ * build.mjs — Build Re Code from source using esbuild
  *
  * Strategy:
  *   1. Copy src/ → build-src/ (working copy)
@@ -17,7 +17,7 @@ import { fileURLToPath } from 'node:url'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
 
-const VERSION = '2.1.88'
+const VERSION = '3.0.1'
 
 // ── Step 1: Clean & Create build directory ─────────────────────────────────
 

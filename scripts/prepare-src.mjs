@@ -16,7 +16,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
 const SRC = path.join(ROOT, 'src')
 
-const VERSION = '2.1.88'
+const VERSION = '3.0.1'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
