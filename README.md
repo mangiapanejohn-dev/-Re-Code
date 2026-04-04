@@ -140,7 +140,7 @@ Settings (settings.json)
 | macOS/Linux | `curl -sL https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install.sh \| bash` |
 | Windows | `irm https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install.ps1 \| iex` |
 | Termux | `curl -sL https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install-termux.sh \| bash` |
-| NPM | `npm install -g @recode/cli` |
+| NPM | `npm install -g github:mangiapanejohn-dev/-Re-Code` |
 
 ---
 
