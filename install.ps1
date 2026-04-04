@@ -22,12 +22,12 @@ $BOLD = ""
 
 function Write-Banner {
     Write-Host ""
-    Write-Host "██╗     ██╗   ██╗███╗   ███╗██╗██╗    ██╗   ██╗███████╗██╗      ██████╗  ██████╗  █████╗ ███╗   ███╗███████╗" -ForegroundColor $ACCENT
-    Write-Host "██║     ██║   ██║████╗ ████║██║██║    ██║   ██║██╔════╝██║     ██╔═══██╗██╔══██╗██╔══██╗████╗ ████║██╔════╝" -ForegroundColor $ACCENT
-    Write-Host "██║     ██║   ██║██╔████╔██║██║██║    ██║   ██║███████╗██║     ██║   ██║██████╔╝███████║██╔████╔██║█████╗  " -ForegroundColor $ACCENT
-    Write-Host "██║     ██║   ██║██║╚██╔╝██║██║██║    ██║   ██║██╔══╝ ██║     ██║   ██║██╔══██╗██╔══██║██║╚██╔╝██║██╔══╝ " -ForegroundColor $ACCENT
-    Write-Host "██████╗╚██████╔╝██║ ╚═╝ ██║██║██████╗╚██████╔╝██║     ███████╗╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗" -ForegroundColor $ACCENT
-    Write-Host "╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝╚═════╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝" -ForegroundColor $ACCENT
+    Write-Host "████╗ ██████╗  ██████╗ ███╗   ██╗██╗   ██╗██╗  ██╗" -ForegroundColor $ACCENT
+    Write-Host "██╔══██╗██╔══██╗██╔═══██╗████╗  ██║██║   ██║╚██╗ ██╔╝" -ForegroundColor $ACCENT
+    Write-Host "██████║██║  ██║██║   ██║██╔██╗ ██║██║   ██║ ╚████╔╝ " -ForegroundColor $ACCENT
+    Write-Host "██╔══██╗██║  ██║██║   ██║██║╚██╗██║██║   ██║ ██╔═██╗" -ForegroundColor $ACCENT
+    Write-Host "██║  ██║██████╔╝╚██████╔╝██║ ╚████║╚██████╔╝██╔╝ ██╗" -ForegroundColor $ACCENT
+    Write-Host "╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝" -ForegroundColor $ACCENT
     Write-Host ""
     Write-Host "  RE CODE Installer (Windows)" -ForegroundColor $WHITE
     Write-Host "  Source: $SOURCE_DIR" -ForegroundColor $MUTED
