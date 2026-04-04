@@ -7,7 +7,7 @@
   <img src="https://img.shields.io/badge/node-%3E%3D18.0.0-yellow.svg" alt="Node Version">
 </p>
 
-> **ReCode** — A powerful open-source multi-model AI chat interface with extensive customization capabilities.
+> **ReCode** — A powerful code agent—writing code is just the basics!
 
 ---
 
