@@ -1,7 +1,7 @@
 /**
  * Settings Sync Service
  *
- * Syncs user settings and memory files across Claude Code environments.
+ * Syncs user settings and memory files across RE CODE environments.
  *
  * - Interactive CLI: Uploads local settings to remote (incremental, only changed entries)
  * - CCR: Downloads remote settings to local before plugin installation
@@ -9,7 +9,7 @@
  * Backend API: anthropic/anthropic#218817
  */
 
-import { feature } from 'bun:bundle'
+import { feature } from '../../stubs/bun-bundle.js'
 import axios from 'axios'
 import { mkdir, readFile, stat, writeFile } from 'fs/promises'
 import pickBy from 'lodash-es/pickBy.js'

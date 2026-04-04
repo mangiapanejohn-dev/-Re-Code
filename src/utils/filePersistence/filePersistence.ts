@@ -7,7 +7,7 @@
  * - 1P/Cloud mode: Query Files API listDirectory for file IDs (rclone handles sync)
  */
 
-import { feature } from 'bun:bundle'
+import { feature } from '../../stubs/bun-bundle.js'
 import { join, relative } from 'path'
 import {
   type AnalyticsMetadata_I_VERIFIED_THIS_IS_NOT_CODE_OR_FILEPATHS,
@@ -273,7 +273,7 @@ export async function executeFilePersistence(
  * Requires: feature flag ON, valid environment kind, session access token,
  * and CLAUDE_CODE_REMOTE_SESSION_ID.
  * This ensures only public-api/sessions users trigger file persistence,
- * not normal Claude Code CLI users.
+ * not normal RE CODE CLI users.
  */
 export function isFilePersistenceEnabled(): boolean {
   if (feature('FILE_PERSISTENCE')) {

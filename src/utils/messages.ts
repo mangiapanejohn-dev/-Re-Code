@@ -1,4 +1,4 @@
-import { feature } from 'bun:bundle'
+import { feature } from '../stubs/bun-bundle.js'
 import type { BetaUsage as Usage } from '@anthropic-ai/sdk/resources/beta/messages/messages.mjs'
 import type {
   ContentBlock,
@@ -235,7 +235,7 @@ export function AUTO_REJECT_MESSAGE(toolName: string): string {
   return `Permission to use ${toolName} has been denied. ${DENIAL_WORKAROUND_GUIDANCE}`
 }
 export function DONT_ASK_REJECT_MESSAGE(toolName: string): string {
-  return `Permission to use ${toolName} has been denied because Claude Code is running in don't ask mode. ${DENIAL_WORKAROUND_GUIDANCE}`
+  return `Permission to use ${toolName} has been denied because RE CODE is running in don't ask mode. ${DENIAL_WORKAROUND_GUIDANCE}`
 }
 export const NO_RESPONSE_REQUESTED = 'No response requested.'
 

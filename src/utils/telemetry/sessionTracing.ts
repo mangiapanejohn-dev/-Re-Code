@@ -1,8 +1,8 @@
 /**
- * Session Tracing for Claude Code using OpenTelemetry (BETA)
+ * Session Tracing for RE CODE using OpenTelemetry (BETA)
  *
  * This module provides a high-level API for creating and managing spans
- * to trace Claude Code workflows. Each user interaction creates a root
+ * to trace RE CODE workflows. Each user interaction creates a root
  * interaction span, which contains operation spans (LLM requests, tool calls, etc.).
  *
  * Requirements:
@@ -10,7 +10,7 @@
  * - Configure OTEL_TRACES_EXPORTER (console, otlp, etc.)
  */
 
-import { feature } from 'bun:bundle'
+import { feature } from '../../stubs/bun-bundle.js'
 import { context as otelContext, type Span, trace } from '@opentelemetry/api'
 import { AsyncLocalStorage } from 'async_hooks'
 import { getFeatureValue_CACHED_MAY_BE_STALE } from '../../services/analytics/growthbook.js'

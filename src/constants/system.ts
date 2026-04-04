@@ -1,14 +1,14 @@
 // Critical system constants extracted to break circular dependencies
 
-import { feature } from 'bun:bundle'
+import { feature } from '../stubs/bun-bundle.js'
 import { getFeatureValue_CACHED_MAY_BE_STALE } from '../services/analytics/growthbook.js'
 import { logForDebugging } from '../utils/debug.js'
 import { isEnvDefinedFalsy } from '../utils/envUtils.js'
 import { getAPIProvider } from '../utils/model/providers.js'
 import { getWorkload } from '../utils/workloadContext.js'
 
-const DEFAULT_PREFIX = `You are Claude Code, Anthropic's official CLI for Claude.`
-const AGENT_SDK_CLAUDE_CODE_PRESET_PREFIX = `You are Claude Code, Anthropic's official CLI for Claude, running within the Claude Agent SDK.`
+const DEFAULT_PREFIX = `You are RE CODE, Anthropic's official CLI for Claude.`
+const AGENT_SDK_CLAUDE_CODE_PRESET_PREFIX = `You are RE CODE, Anthropic's official CLI for Claude, running within the Claude Agent SDK.`
 const AGENT_SDK_PREFIX = `You are a Claude agent, built on Anthropic's Claude Agent SDK.`
 
 const CLI_SYSPROMPT_PREFIX_VALUES = [
@@ -75,7 +75,7 @@ export function getAttributionHeader(fingerprint: string): string {
     return ''
   }
 
-  const version = `${MACRO.VERSION}.${fingerprint}`
+  const version = `${'3.0.1'}.${fingerprint}`
   const entrypoint = process.env.CLAUDE_CODE_ENTRYPOINT ?? 'unknown'
 
   // cch=00000 placeholder is overwritten by Bun's HTTP stack with attestation token

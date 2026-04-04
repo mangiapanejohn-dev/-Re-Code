@@ -1,4 +1,4 @@
-import { feature } from 'bun:bundle'
+import { feature } from '../../stubs/bun-bundle.js'
 import mergeWith from 'lodash-es/mergeWith.js'
 import { dirname, join, resolve } from 'path'
 import { z } from 'zod/v4'
@@ -850,7 +850,7 @@ export function getSettingsWithSources(): SettingsWithSources {
 /**
  * Get merged settings and validation errors from all sources
  * This function now uses session-level caching to avoid repeated file I/O.
- * Settings changes require Claude Code restart, so cache is valid for entire session.
+ * Settings changes require RE CODE restart, so cache is valid for entire session.
  * @returns Merged settings and all validation errors encountered
  */
 export function getSettingsWithErrors(): SettingsWithErrors {

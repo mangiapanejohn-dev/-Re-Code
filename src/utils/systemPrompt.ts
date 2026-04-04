@@ -1,4 +1,4 @@
-import { feature } from 'bun:bundle'
+import { feature } from '../stubs/bun-bundle.js'
 import {
   type AnalyticsMetadata_I_VERIFIED_THIS_IS_NOT_CODE_OR_FILEPATHS,
   logEvent,
@@ -34,7 +34,7 @@ function isProactiveActive_SAFE_TO_CALL_ANYWHERE(): boolean {
  *      instructions on top of the autonomous agent prompt, like teammates do)
  *    - Otherwise: agent prompt REPLACES default
  * 3. Custom system prompt (if specified via --system-prompt)
- * 4. Default system prompt (the standard Claude Code prompt)
+ * 4. Default system prompt (the standard RE CODE prompt)
  *
  * Plus appendSystemPrompt is always added at the end if specified (except when override is set).
  */

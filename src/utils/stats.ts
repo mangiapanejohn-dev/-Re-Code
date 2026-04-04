@@ -1,4 +1,4 @@
-import { feature } from 'bun:bundle'
+import { feature } from '../stubs/bun-bundle.js'
 import { open } from 'fs/promises'
 import { basename, dirname, join, sep } from 'path'
 import type { ModelUsage } from 'src/entrypoints/agentSdkTypes.js'
@@ -634,7 +634,7 @@ function cacheToStats(
 }
 
 /**
- * Aggregates stats from all Claude Code sessions across all projects.
+ * Aggregates stats from all RE CODE sessions across all projects.
  * Uses a disk cache to avoid reprocessing historical data.
  */
 export async function aggregateClaudeCodeStats(): Promise<ClaudeCodeStats> {

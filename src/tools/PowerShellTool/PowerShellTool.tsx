@@ -1,4 +1,4 @@
-import { feature } from 'bun:bundle';
+import { feature } from '../../stubs/bun-bundle.js';
 import type { ToolResultBlockParam } from '@anthropic-ai/sdk/resources/index.mjs';
 import { copyFile, stat as fsStat, truncate as fsTruncate, link } from 'fs/promises';
 import * as React from 'react';
@@ -561,7 +561,7 @@ export const PowerShellTool = buildTool({
 
       let stdout = stripEmptyLines(stdoutAccumulator.toString());
 
-      // Claude Code hints protocol: CLIs/SDKs gated on CLAUDECODE=1 emit a
+      // RE CODE hints protocol: CLIs/SDKs gated on CLAUDECODE=1 emit a
       // `<claude-code-hint />` tag to stderr (merged into stdout here). Scan,
       // record for useClaudeCodeHintRecommendation to surface, then strip
       // so the model never sees the tag — a zero-token side channel.

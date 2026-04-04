@@ -1,4 +1,4 @@
-import { feature } from 'bun:bundle'
+import { feature } from '../../stubs/bun-bundle.js'
 import { chmod, open, rename, stat, unlink } from 'fs/promises'
 import mapValues from 'lodash-es/mapValues.js'
 import memoize from 'lodash-es/memoize.js'
@@ -1060,13 +1060,13 @@ export function getMcpConfigByName(name: string): ScopedMcpServerConfig | null {
 }
 
 /**
- * Get Claude Code MCP configurations (excludes claude.ai servers from the
+ * Get RE CODE MCP configurations (excludes claude.ai servers from the
  * returned set — they're fetched separately and merged by callers).
  * This is fast: only local file reads; no awaited network calls on the
  * critical path. The optional extraDedupTargets promise (e.g. the in-flight
  * claude.ai connector fetch) is awaited only after loadAllPluginsCacheOnly() completes,
  * so the two overlap rather than serialize.
- * @returns Claude Code server configurations with appropriate scopes
+ * @returns RE CODE server configurations with appropriate scopes
  */
 export async function getClaudeCodeMcpConfigs(
   dynamicServers: Record<string, ScopedMcpServerConfig> = {},

@@ -1,4 +1,4 @@
-import { feature } from 'bun:bundle';
+import { feature } from '../../../stubs/bun-bundle.js';
 import type { UUID } from 'crypto';
 import figures from 'figures';
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
@@ -730,7 +730,7 @@ export function buildPlanApprovalOptions({
   });
   if (showUltraplan) {
     options.push({
-      label: 'No, refine with Ultraplan on Claude Code on the web',
+      label: 'No, refine with Ultraplan on RE CODE on the web',
       value: 'ultraplan'
     });
   }

@@ -1,11 +1,11 @@
-import { feature } from 'bun:bundle'
+import { feature } from '../stubs/bun-bundle.js'
 import { satisfies } from 'src/utils/semver.js'
 import { isRunningWithBun } from '../utils/bundledMode.js'
 import { getPlatform } from '../utils/platform.js'
 import type { KeybindingBlock } from './types.js'
 
 /**
- * Default keybindings that match current Claude Code behavior.
+ * Default keybindings that match current RE CODE behavior.
  * These are loaded first, then user keybindings.json overrides them.
  */
 

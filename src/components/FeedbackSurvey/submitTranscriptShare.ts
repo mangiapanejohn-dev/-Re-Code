@@ -59,7 +59,7 @@ export async function submitTranscriptShare(
 
     const data = {
       trigger,
-      version: MACRO.VERSION,
+      version: '3.0.1',
       platform: process.platform,
       transcript,
       subagentTranscripts:

@@ -1,4 +1,4 @@
-import { feature } from 'bun:bundle'
+import { feature } from '../stubs/bun-bundle.js'
 import { randomUUID } from 'crypto'
 import { hostname, tmpdir } from 'os'
 import { basename, join, resolve } from 'path'
@@ -2252,7 +2252,7 @@ export async function bridgeMain(args: string[]): Promise<void> {
     })
     // biome-ignore lint/suspicious/noConsole: intentional dialog output
     console.log(
-      `\nClaude Remote Control is launching in spawn mode which lets you create new sessions in this project from Claude Code on Web or your Mobile app. Learn more here: https://code.claude.com/docs/en/remote-control\n\n` +
+      `\nClaude Remote Control is launching in spawn mode which lets you create new sessions in this project from RE CODE on Web or your Mobile app. Learn more here: https://code.claude.com/docs/en/remote-control\n\n` +
         `Spawn mode for this project:\n` +
         `  [1] same-dir \u2014 sessions share the current directory (default)\n` +
         `  [2] worktree \u2014 each session gets an isolated git worktree\n\n` +
@@ -2346,7 +2346,7 @@ export async function bridgeMain(args: string[]): Promise<void> {
   const api = createBridgeApiClient({
     baseUrl,
     getAccessToken: getBridgeAccessToken,
-    runnerVersion: MACRO.VERSION,
+    runnerVersion: '3.0.1',
     onDebug: logForDebugging,
     onAuth401: handleOAuth401Error,
     getTrustedDeviceToken,
@@ -2896,7 +2896,7 @@ export async function runBridgeHeadless(
   const api = createBridgeApiClient({
     baseUrl,
     getAccessToken: opts.getAccessToken,
-    runnerVersion: MACRO.VERSION,
+    runnerVersion: '3.0.1',
     onDebug: log,
     onAuth401: opts.onAuth401,
     getTrustedDeviceToken,

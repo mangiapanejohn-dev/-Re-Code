@@ -1,5 +1,5 @@
 import { c as _c } from "react/compiler-runtime";
-import { feature } from 'bun:bundle';
+import { feature } from '../stubs/bun-bundle.js';
 import { plot as asciichart } from 'asciichart';
 import chalk from 'chalk';
 import figures from 'figures';
@@ -94,7 +94,7 @@ export function Stats(t0) {
   const allTimePromise = t1;
   let t2;
   if ($[1] === Symbol.for("react.memo_cache_sentinel")) {
-    t2 = <Box marginTop={1}><Spinner /><Text> Loading your Claude Code stats…</Text></Box>;
+    t2 = <Box marginTop={1}><Spinner /><Text> Loading your RE CODE stats…</Text></Box>;
     $[1] = t2;
   } else {
     t2 = $[1];
@@ -242,7 +242,7 @@ function StatsContent(t0) {
   if (allTimeResult.type === "empty") {
     let t7;
     if ($[15] === Symbol.for("react.memo_cache_sentinel")) {
-      t7 = <Box marginTop={1}><Text color="warning">No stats available yet. Start using Claude Code!</Text></Box>;
+      t7 = <Box marginTop={1}><Text color="warning">No stats available yet. Start using RE CODE!</Text></Box>;
       $[15] = t7;
     } else {
       t7 = $[15];

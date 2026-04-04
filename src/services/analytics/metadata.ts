@@ -39,7 +39,7 @@ import {
   getTeamName,
   isTeammate,
 } from '../../utils/teammate.js'
-import { feature } from 'bun:bundle'
+import { feature } from '../../stubs/bun-bundle.js'
 
 /**
  * Marker type for verifying analytics metadata doesn't contain sensitive data
@@ -564,7 +564,7 @@ function getAgentIdentification(): {
  * Extract base version from full version string. "2.0.36-dev.20251107.t174150.sha2709699" → "2.0.36-dev"
  */
 const getVersionBase = memoize((): string | undefined => {
-  const match = MACRO.VERSION.match(/^\d+\.\d+\.\d+(?:-[a-z]+)?/)
+  const match = '3.0.1'.match(/^\d+\.\d+\.\d+(?:-[a-z]+)?/)
   return match ? match[0] : undefined
 })
 
@@ -617,9 +617,9 @@ const buildEnvContext = memoize(async (): Promise<EnvContext> => {
     isGithubAction: isEnvTruthy(process.env.GITHUB_ACTIONS),
     isClaudeCodeAction: isEnvTruthy(process.env.CLAUDE_CODE_ACTION),
     isClaudeAiAuth: isClaudeAISubscriber(),
-    version: MACRO.VERSION,
+    version: '3.0.1',
     versionBase: getVersionBase(),
-    buildTime: MACRO.BUILD_TIME,
+    buildTime: '2026-04-04T04:51:22.477Z',
     deploymentEnvironment: env.detectDeploymentEnvironment(),
     ...(isEnvTruthy(process.env.GITHUB_ACTIONS) && {
       githubEventName: process.env.GITHUB_EVENT_NAME,

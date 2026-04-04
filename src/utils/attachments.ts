@@ -195,7 +195,7 @@ import {
 } from './messages.js'
 import { isHumanTurn } from './messagePredicates.js'
 import { isEnvTruthy, getClaudeConfigHomeDir } from './envUtils.js'
-import { feature } from 'bun:bundle'
+import { feature } from '../stubs/bun-bundle.js'
 /* eslint-disable @typescript-eslint/no-require-imports */
 const BRIEF_TOOL_NAME: string | null =
   feature('KAIROS') || feature('KAIROS_BRIEF')
@@ -3519,7 +3519,7 @@ async function getAsyncHookResponseAttachments(): Promise<Attachment[]> {
 
 /**
  * Get teammate mailbox attachments for agent swarm communication
- * Teammates are independent Claude Code sessions running in parallel (swarms),
+ * Teammates are independent RE CODE sessions running in parallel (swarms),
  * not parent-child subagent relationships.
  *
  * This function checks two sources for messages:

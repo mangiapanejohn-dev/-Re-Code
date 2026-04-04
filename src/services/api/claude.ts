@@ -106,7 +106,7 @@ const autoModeStateModule = feature('TRANSCRIPT_CLASSIFIER')
   ? (require('../../utils/permissions/autoModeState.js') as typeof import('../../utils/permissions/autoModeState.js'))
   : null
 
-import { feature } from 'bun:bundle'
+import { feature } from '../../stubs/bun-bundle.js'
 import type { ClientOptions } from '@anthropic-ai/sdk'
 import {
   APIConnectionTimeoutError,
@@ -3293,7 +3293,7 @@ export async function queryHaiku({
 type QueryWithModelOptions = Omit<Options, 'getToolPermissionContext'>
 
 /**
- * Query a specific model through the Claude Code infrastructure.
+ * Query a specific model through the RE CODE infrastructure.
  * This goes through the full query pipeline including proper authentication,
  * betas, and headers - unlike direct API calls.
  */

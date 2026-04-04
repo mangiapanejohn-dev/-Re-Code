@@ -1,4 +1,4 @@
-import { feature } from 'bun:bundle'
+import { feature } from '../../stubs/bun-bundle.js'
 import { z } from 'zod/v4'
 import {
   type AnalyticsMetadata_I_VERIFIED_THIS_IS_NOT_CODE_OR_FILEPATHS,
@@ -66,7 +66,7 @@ export type Output = z.infer<OutputSchema>
 
 export const ConfigTool = buildTool({
   name: CONFIG_TOOL_NAME,
-  searchHint: 'get or set Claude Code settings (theme, model)',
+  searchHint: 'get or set RE CODE settings (theme, model)',
   maxResultSizeChars: 100_000,
   async description() {
     return DESCRIPTION

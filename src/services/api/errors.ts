@@ -195,7 +195,7 @@ export function getRequestTooLargeErrorMessage(): string {
     : `Request too large (${limits}). Double press esc to go back and try with a smaller file.`
 }
 export const OAUTH_ORG_NOT_ALLOWED_ERROR_MESSAGE =
-  'Your account does not have access to Claude Code. Please run /login.'
+  'Your account does not have access to RE CODE. Please run /login.'
 
 export function getTokenRevokedErrorMessage(): string {
   return getIsNonInteractiveSession()
@@ -210,7 +210,7 @@ export function getOauthOrgNotAllowedErrorMessage(): string {
 }
 
 /**
- * Check if we're in CCR (Claude Code Remote) mode.
+ * Check if we're in CCR (RE CODE Remote) mode.
  * In CCR mode, auth is handled via JWTs provided by the infrastructure,
  * not via /login. Transient auth errors should suggest retrying, not logging in.
  */
@@ -685,7 +685,7 @@ export function getAssistantMessageFromError(
     }
 
     if (process.env.USER_TYPE === 'ant') {
-      const baseMessage = `API Error: 400 ${error.message}\n\nRun /share and post the JSON file to ${MACRO.FEEDBACK_CHANNEL}.`
+      const baseMessage = `API Error: 400 ${error.message}\n\nRun /share and post the JSON file to ${'https://github.com/anthropics/claude-code/issues'}.`
       const rewindInstruction = getIsNonInteractiveSession()
         ? ''
         : ' Then, use /rewind to recover the conversation.'
@@ -747,7 +747,7 @@ export function getAssistantMessageFromError(
     })
   }
 
-  // Check for invalid model name error for Ant users. Claude Code may be
+  // Check for invalid model name error for Ant users. RE CODE may be
   // defaulting to a custom internal-only model for Ants, and there might be
   // Ants using new or unknown org IDs that haven't been gated in.
   if (
@@ -760,8 +760,8 @@ export function getAssistantMessageFromError(
     const orgId = getOauthAccountInfo()?.organizationUuid
     const baseMsg = `[ANT-ONLY] Your org isn't gated into the \`${model}\` model. Either run \`claude\` with \`ANTHROPIC_MODEL=${getDefaultMainLoopModelSetting()}\``
     const msg = orgId
-      ? `${baseMsg} or share your orgId (${orgId}) in ${MACRO.FEEDBACK_CHANNEL} for help getting access.`
-      : `${baseMsg} or reach out in ${MACRO.FEEDBACK_CHANNEL} for help getting access.`
+      ? `${baseMsg} or share your orgId (${orgId}) in ${'https://github.com/anthropics/claude-code/issues'} for help getting access.`
+      : `${baseMsg} or reach out in ${'https://github.com/anthropics/claude-code/issues'} for help getting access.`
 
     return createAssistantAPIErrorMessage({
       content: msg,
@@ -1192,8 +1192,8 @@ export function getErrorMessageIfRefusal(
   logEvent('tengu_refusal_api_response', {})
 
   const baseMessage = getIsNonInteractiveSession()
-    ? `${API_ERROR_MESSAGE_PREFIX}: Claude Code is unable to respond to this request, which appears to violate our Usage Policy (https://www.anthropic.com/legal/aup). Try rephrasing the request or attempting a different approach.`
-    : `${API_ERROR_MESSAGE_PREFIX}: Claude Code is unable to respond to this request, which appears to violate our Usage Policy (https://www.anthropic.com/legal/aup). Please double press esc to edit your last message or start a new session for Claude Code to assist with a different task.`
+    ? `${API_ERROR_MESSAGE_PREFIX}: RE CODE is unable to respond to this request, which appears to violate our Usage Policy (https://www.anthropic.com/legal/aup). Try rephrasing the request or attempting a different approach.`
+    : `${API_ERROR_MESSAGE_PREFIX}: RE CODE is unable to respond to this request, which appears to violate our Usage Policy (https://www.anthropic.com/legal/aup). Please double press esc to edit your last message or start a new session for RE CODE to assist with a different task.`
 
   const modelSuggestion =
     model !== 'claude-sonnet-4-20250514'

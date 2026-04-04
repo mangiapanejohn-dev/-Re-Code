@@ -1,4 +1,4 @@
-import { feature } from 'bun:bundle';
+import { feature } from '../../stubs/bun-bundle.js';
 import chalk from 'chalk';
 import * as path from 'path';
 import * as React from 'react';
@@ -761,7 +761,7 @@ function PromptInput({
     if (feature('ULTRAPLAN') && ultraplanTriggers.length) {
       addNotification({
         key: 'ultraplan-active',
-        text: 'This prompt will launch an ultraplan session in Claude Code on the web',
+        text: 'This prompt will launch an ultraplan session in RE CODE on the web',
         priority: 'immediate',
         timeoutMs: 5000
       });

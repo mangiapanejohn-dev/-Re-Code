@@ -1,4 +1,4 @@
-import { feature } from 'bun:bundle'
+import { feature } from '../stubs/bun-bundle.js'
 import { ASYNC_AGENT_ALLOWED_TOOLS } from '../constants/tools.js'
 import { checkStatsigFeatureGate_CACHED_MAY_BE_STALE } from '../services/analytics/growthbook.js'
 import {
@@ -113,7 +113,7 @@ export function getCoordinatorSystemPrompt(): string {
     ? 'Workers have access to Bash, Read, and Edit tools, plus MCP tools from configured MCP servers.'
     : 'Workers have access to standard tools, MCP tools from configured MCP servers, and project skills via the Skill tool. Delegate skill invocations (e.g. /commit, /verify) to workers.'
 
-  return `You are Claude Code, an AI assistant that orchestrates software engineering tasks across multiple workers.
+  return `You are RE CODE, an AI assistant that orchestrates software engineering tasks across multiple workers.
 
 ## 1. Your Role
 

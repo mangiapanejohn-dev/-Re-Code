@@ -56,7 +56,7 @@ import terminalSetup from './commands/terminalSetup/index.js'
 import usage from './commands/usage/index.js'
 import theme from './commands/theme/index.js'
 import vim from './commands/vim/index.js'
-import { feature } from 'bun:bundle'
+import { feature } from '../stubs/bun-bundle.js'
 // Dead code elimination: conditional imports
 /* eslint-disable @typescript-eslint/no-require-imports */
 const proactive =
@@ -190,7 +190,7 @@ import stats from './commands/stats/index.js'
 const usageReport: Command = {
   type: 'prompt',
   name: 'insights',
-  description: 'Generate a report analyzing your Claude Code sessions',
+  description: 'Generate a report analyzing your RE CODE sessions',
   contentLength: 0,
   progressMessage: 'analyzing your sessions',
   source: 'builtin',

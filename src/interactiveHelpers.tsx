@@ -1,4 +1,4 @@
-import { feature } from 'bun:bundle';
+import { feature } from '../stubs/bun-bundle.js';
 import { appendFileSync } from 'fs';
 import React from 'react';
 import { logEvent } from 'src/services/analytics/index.js';
@@ -33,7 +33,7 @@ export function completeOnboarding(): void {
   saveGlobalConfig(current => ({
     ...current,
     hasCompletedOnboarding: true,
-    lastOnboardingVersion: MACRO.VERSION
+    lastOnboardingVersion: '3.0.1'
   }));
 }
 export function showDialog<T = void>(root: Root, renderer: (done: (result: T) => void) => React.ReactNode): Promise<T> {
@@ -202,7 +202,7 @@ export async function showSetupScreens(root: Root, permissionMode: PermissionMod
 
   // Check for custom API key
   // On homespace, ANTHROPIC_API_KEY is preserved in process.env for child
-  // processes but ignored by Claude Code itself (see auth.ts).
+  // processes but ignored by RE CODE itself (see auth.ts).
   if (process.env.ANTHROPIC_API_KEY && !isRunningOnHomespace()) {
     const customApiKeyTruncated = normalizeApiKeyForConfig(process.env.ANTHROPIC_API_KEY);
     const keyStatus = getCustomApiKeyStatus(customApiKeyTruncated);

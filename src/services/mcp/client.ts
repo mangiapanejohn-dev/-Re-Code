@@ -1,4 +1,4 @@
-import { feature } from 'bun:bundle'
+import { feature } from '../../stubs/bun-bundle.js'
 import type {
   Base64ImageSource,
   ContentBlockParam,
@@ -985,7 +985,7 @@ export const connectToServer = memoize(
       const client = new Client(
         {
           name: 'claude-code',
-          title: 'Claude Code',
+          title: 'RE CODE',
           version: MACRO.VERSION ?? 'unknown',
           description: "Anthropic's agentic coding tool",
           websiteUrl: PRODUCT_URL,
@@ -3280,7 +3280,7 @@ export async function setupSdkMcpClients(
       const client = new Client(
         {
           name: 'claude-code',
-          title: 'Claude Code',
+          title: 'RE CODE',
           version: MACRO.VERSION ?? 'unknown',
           description: "Anthropic's agentic coding tool",
           websiteUrl: PRODUCT_URL,

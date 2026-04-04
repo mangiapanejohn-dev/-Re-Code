@@ -1,6 +1,6 @@
 import { c as _c } from "react/compiler-runtime";
 // biome-ignore-all assist/source/organizeImports: ANT-ONLY import markers must not be reordered
-import { feature } from 'bun:bundle';
+import { feature } from '../../stubs/bun-bundle.js';
 import { Box, Text, useTheme, useThemeSetting, useTerminalFocus } from '../../ink.js';
 import type { KeyboardEvent } from '../../ink/events/keyboard-event.js';
 import * as React from 'react';
@@ -1101,7 +1101,7 @@ export function Config({
     });
     // Check for API key changes
     // On homespace, ANTHROPIC_API_KEY is preserved in process.env for child
-    // processes but ignored by Claude Code itself (see auth.ts).
+    // processes but ignored by RE CODE itself (see auth.ts).
     const effectiveApiKey = isRunningOnHomespace() ? undefined : process.env.ANTHROPIC_API_KEY;
     const initialUsingCustomKey = Boolean(effectiveApiKey && initialConfig.current.customApiKeyResponses?.approved?.includes(normalizeApiKeyForConfig(effectiveApiKey)));
     const currentUsingCustomKey = Boolean(effectiveApiKey && globalConfig.customApiKeyResponses?.approved?.includes(normalizeApiKeyForConfig(effectiveApiKey)));
@@ -1623,7 +1623,7 @@ export function Config({
           channel: channel as AnalyticsMetadata_I_VERIFIED_THIS_IS_NOT_CODE_OR_FILEPATHS
         });
       }} />}
-        </Dialog> : showSubmenu === 'ChannelDowngrade' ? <ChannelDowngradeDialog currentVersion={MACRO.VERSION} onChoice={(choice: ChannelDowngradeChoice) => {
+        </Dialog> : showSubmenu === 'ChannelDowngrade' ? <ChannelDowngradeDialog currentVersion={'3.0.1'} onChoice={(choice: ChannelDowngradeChoice) => {
       setShowSubmenu(null);
       setTabsHidden(false);
       if (choice === 'cancel') {
@@ -1640,7 +1640,7 @@ export function Config({
       };
       if (choice === 'stay') {
         // User wants to stay on current version until stable catches up
-        newSettings.minimumVersion = MACRO.VERSION;
+        newSettings.minimumVersion = '3.0.1';
       }
       updateSettingsForSource('userSettings', newSettings);
       setSettingsData(prev_27 => ({

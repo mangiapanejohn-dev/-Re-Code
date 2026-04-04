@@ -25,7 +25,7 @@ import { getStartupPerfLogPath, isDetailedProfilingEnabled } from 'src/utils/sta
 import { EmergencyTip } from './EmergencyTip.js';
 import { VoiceModeNotice } from './VoiceModeNotice.js';
 import { Opus1mMergeNotice } from './Opus1mMergeNotice.js';
-import { feature } from 'bun:bundle';
+import { feature } from '../../stubs/bun-bundle.js';
 
 // Conditional require so ChannelsNotice.tsx tree-shakes when both flags are
 // false. A module-scope helper component inside a feature() ternary does NOT
@@ -92,7 +92,7 @@ export function LogoV2() {
   if ($[2] === Symbol.for("react.memo_cache_sentinel")) {
     t2 = () => {
       const currentConfig = getGlobalConfig();
-      if (currentConfig.lastReleaseNotesSeen === MACRO.VERSION) {
+      if (currentConfig.lastReleaseNotesSeen === '3.0.1') {
         return;
       }
       saveGlobalConfig(_temp3);
@@ -248,8 +248,8 @@ export function LogoV2() {
   }
   const layoutMode = getLayoutMode(columns);
   const userTheme = resolveThemeSetting(getGlobalConfig().theme);
-  const borderTitle = ` ${color("claude", userTheme)("Claude Code")} ${color("inactive", userTheme)(`v${version}`)} `;
-  const compactBorderTitle = color("claude", userTheme)(" Claude Code ");
+  const borderTitle = ` ${color("claude", userTheme)("RE CODE")} ${color("inactive", userTheme)(`v${version}`)} `;
+  const compactBorderTitle = color("claude", userTheme)(" RE CODE ");
   if (layoutMode === "compact") {
     let welcomeMessage = formatWelcomeMessage(username);
     if (stringWidth(welcomeMessage) > columns - 4) {
@@ -526,12 +526,12 @@ export function LogoV2() {
   return t41;
 }
 function _temp3(current) {
-  if (current.lastReleaseNotesSeen === MACRO.VERSION) {
+  if (current.lastReleaseNotesSeen === '3.0.1') {
     return current;
   }
   return {
     ...current,
-    lastReleaseNotesSeen: MACRO.VERSION
+    lastReleaseNotesSeen: '3.0.1'
   };
 }
 function _temp2(s_0) {

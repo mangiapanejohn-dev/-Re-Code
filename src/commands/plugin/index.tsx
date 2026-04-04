@@ -3,7 +3,7 @@ const plugin = {
   type: 'local-jsx',
   name: 'plugin',
   aliases: ['plugins', 'marketplace'],
-  description: 'Manage Claude Code plugins',
+  description: 'Manage RE CODE plugins',
   immediate: true,
   load: () => import('./plugin.js')
 } satisfies Command;
