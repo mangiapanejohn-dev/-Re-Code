@@ -26,19 +26,19 @@ PM_CMD=()
 
 print_banner() {
     echo ""
-    echo -e "${ACCENT}██████╗ ███████╗███████╗ ██████╗ ███╗   ██╗██╗██╗  ██╗${NC}"
-    echo -e "${ACCENT}██╔══██╗██╔════╝██╔════╝██╔═══██╗████╗  ██║██║╚██╗██╔╝${NC}"
-    echo -e "${ACCENT}██████╔╝█████╗  ███████╗██║   ██║██╔██╗ ██║██║ ╚███╔╝ ${NC}"
-    echo -e "${ACCENT}██╔══██╗██╔══╝  ╚════██║██║   ██║██║╚██╗██║██║ ██╔██╗${NC}"
-    echo -e "${ACCENT}██║  ██║███████╗███████║╚██████╔╝██║ ╚████║██║██╔╝╚██╗${NC}"
-    echo -e "${ACCENT}╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝${NC}"
+    echo -e "${ACCENT}██╗     ██╗   ██╗███╗   ███╗██╗██╗    ██╗   ██╗███████╗██╗      ██████╗  ██████╗  █████╗ ███╗   ███╗███████╗${NC}"
+    echo -e "${ACCENT}██║     ██║   ██║████╗ ████║██║██║    ██║   ██║██╔════╝██║     ██╔═══██╗██╔══██╗██╔══██╗████╗ ████║██╔════╝${NC}"
+    echo -e "${ACCENT}██║     ██║   ██║██╔████╔██║██║██║    ██║   ██║███████╗██║     ██║   ██║██████╔╝███████║██╔████╔██║█████╗  ${NC}"
+    echo -e "${ACCENT}██║     ██║   ██║██║╚██╔╝██║██║██║    ██║   ██║██╔══╝ ██║     ██║   ██║██╔══██╗██╔══██║██║╚██╔╝██║██╔══╝ ${NC}"
+    echo -e "${ACCENT}██████╗╚██████╔╝██║ ╚═╝ ██║██║██████╗╚██████╔╝██║     ███████╗╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗${NC}"
+    echo -e "${ACCENT}╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝╚═════╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝${NC}"
     echo ""
-    echo -e "${BOLD}ReCode Installer (macOS/Linux)${NC}"
+    echo -e "${BOLD}RE CODE Installer (macOS/Linux)${NC}"
     echo -e "${MUTED}Source: ${SOURCE_DIR}${NC}"
     echo -e "${MUTED}Binary: ${BIN_DIR}/recode${NC}"
     echo -e "${MUTED}State directory: ~/.recode${NC}"
     echo ""
-    echo -e "${INFO}Setting up ReCode...${NC}"
+    echo -e "${INFO}Setting up RE CODE...${NC}"
     echo ""
 }
 
@@ -258,7 +258,7 @@ ensure_path() {
 
 print_success() {
     echo ""
-    ui_success "ReCode installed successfully!"
+    ui_success "RE CODE installed successfully!"
     echo ""
     echo -e "${BOLD}Next steps${NC}"
     echo "  1) Verify: recode -v"

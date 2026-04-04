@@ -22,18 +22,18 @@ $BOLD = ""
 
 function Write-Banner {
     Write-Host ""
-    Write-Host "██████╗ ███████╗███████╗ ██████╗ ███╗   ██╗██╗██╗  ██╗" -ForegroundColor $ACCENT
-    Write-Host "██╔══██╗██╔════╝██╔════╝██╔═══██╗████╗  ██║██║╚██╗██╔╝" -ForegroundColor $ACCENT
-    Write-Host "██████╔╝█████╗  ███████╗██║   ██║██╔██╗ ██║██║ ╚███╔╝ " -ForegroundColor $ACCENT
-    Write-Host "██╔══██╗██╔══╝  ╚════██║██║   ██║██║╚██╗██║██║ ██╔██╗" -ForegroundColor $ACCENT
-    Write-Host "██║  ██║███████╗███████║╚██████╔╝██║ ╚████║██║██╔╝╚██╗" -ForegroundColor $ACCENT
-    Write-Host "╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝" -ForegroundColor $ACCENT
+    Write-Host "██╗     ██╗   ██╗███╗   ███╗██╗██╗    ██╗   ██╗███████╗██╗      ██████╗  ██████╗  █████╗ ███╗   ███╗███████╗" -ForegroundColor $ACCENT
+    Write-Host "██║     ██║   ██║████╗ ████║██║██║    ██║   ██║██╔════╝██║     ██╔═══██╗██╔══██╗██╔══██╗████╗ ████║██╔════╝" -ForegroundColor $ACCENT
+    Write-Host "██║     ██║   ██║██╔████╔██║██║██║    ██║   ██║███████╗██║     ██║   ██║██████╔╝███████║██╔████╔██║█████╗  " -ForegroundColor $ACCENT
+    Write-Host "██║     ██║   ██║██║╚██╔╝██║██║██║    ██║   ██║██╔══╝ ██║     ██║   ██║██╔══██╗██╔══██║██║╚██╔╝██║██╔══╝ " -ForegroundColor $ACCENT
+    Write-Host "██████╗╚██████╔╝██║ ╚═╝ ██║██║██████╗╚██████╔╝██║     ███████╗╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗" -ForegroundColor $ACCENT
+    Write-Host "╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝╚═════╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝" -ForegroundColor $ACCENT
     Write-Host ""
-    Write-Host "  ReCode Installer (Windows)" -ForegroundColor $WHITE
+    Write-Host "  RE CODE Installer (Windows)" -ForegroundColor $WHITE
     Write-Host "  Source: $SOURCE_DIR" -ForegroundColor $MUTED
     Write-Host "  Binary: $BIN_DIR\recode.exe" -ForegroundColor $MUTED
     Write-Host ""
-    Write-Host "  Setting up ReCode..." -ForegroundColor $INFO
+    Write-Host "  Setting up RE CODE..." -ForegroundColor $INFO
     Write-Host ""
 }
 
@@ -122,7 +122,7 @@ node "$cliPath" %*
 
 function Print-Success {
     Write-Host ""
-    Write-Success "ReCode installed successfully!"
+    Write-Success "RE CODE installed successfully!"
     Write-Host ""
     Write-Host "  Next steps:" -ForegroundColor $WHITE
     Write-Host "    1) Verify: recode -v" -ForegroundColor $MUTED

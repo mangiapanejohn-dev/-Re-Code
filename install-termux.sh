@@ -20,17 +20,17 @@ NC='\033[0m'
 
 print_banner() {
     echo ""
-    echo -e "${ACCENT}██████╗ ███████╗███████╗ ██████╗ ███╗   ██╗██╗██╗  ██╗${NC}"
-    echo -e "${ACCENT}██╔══██╗██╔════╝██╔════╝██╔═══██╗████╗  ██║██║╚██╗██╔╝${NC}"
-    echo -e "${ACCENT}██████╔╝█████╗  ███████╗██║   ██║██╔██╗ ██║██║ ╚███╔╝ ${NC}"
-    echo -e "${ACCENT}██╔══██╗██╔══╝  ╚════██║██║   ██║██║╚██╗██║██║ ██╔██╗${NC}"
-    echo -e "${ACCENT}██║  ██║███████╗███████║╚██████╔╝██║ ╚████║██║██╔╝╚██╗${NC}"
-    echo -e "${ACCENT}╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝${NC}"
+    echo -e "${ACCENT}██╗     ██╗   ██╗███╗   ███╗██╗██╗    ██╗   ██╗███████╗██╗      ██████╗  ██████╗  █████╗ ███╗   ███╗███████╗${NC}"
+    echo -e "${ACCENT}██║     ██║   ██║████╗ ████║██║██║    ██║   ██║██╔════╝██║     ██╔═══██╗██╔══██╗██╔══██╗████╗ ████║██╔════╝${NC}"
+    echo -e "${ACCENT}██║     ██║   ██║██╔████╔██║██║██║    ██║   ██║███████╗██║     ██║   ██║██████╔╝███████║██╔████╔██║█████╗  ${NC}"
+    echo -e "${ACCENT}██║     ██║   ██║██║╚██╔╝██║██║██║    ██║   ██║██╔══╝ ██║     ██║   ██║██╔══██╗██╔══██║██║╚██╔╝██║██╔══╝ ${NC}"
+    echo -e "${ACCENT}██████╗╚██████╔╝██║ ╚═╝ ██║██║██████╗╚██████╔╝██║     ███████╗╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗${NC}"
+    echo -e "${ACCENT}╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚═╝╚═════╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝${NC}"
     echo ""
-    echo -e "${BOLD}ReCode Installer (Termux)${NC}"
+    echo -e "${BOLD}RE CODE Installer (Termux)${NC}"
     echo -e "${MUTED}Source: ${INSTALL_ROOT}${NC}"
     echo ""
-    echo -e "${INFO}Setting up ReCode on Termux...${NC}"
+    echo -e "${INFO}Setting up RE CODE on Termux...${NC}"
     echo ""
 }
 
@@ -134,7 +134,7 @@ WRAPPER
 
 print_success() {
     echo ""
-    ui_success "ReCode installed successfully!"
+    ui_success "RE CODE installed successfully!"
     echo ""
     echo -e "${BOLD}Next steps${NC}"
     echo "  1) Verify: recode -v"
