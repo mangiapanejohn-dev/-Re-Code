@@ -26,334 +26,235 @@
 
 ## 🏗️ Architecture Overview
 
-```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                                    ReCode                                      │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                               │
-│  ╔═══════════════════════════════════════════════════════════════════════╗  │
-│  ║                      PRESENTATION LAYER                               ║  │
-│  ║  ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐  ║  │
-│  ║  │Onboard- │   │ Model   │   │  REPL   │   │Settings │   │ Theme   │  ║  │
-│  ║  │   ing   │──▶│ Picker  │──▶│   UI    │──▶│   UI    │──▶│ Picker  │  ║  │
-│  ║  └─────────┘   └─────────┘   └─────────┘   └─────────┘   └─────────┘  ║  │
-│  ║       │              │             │             │              │       ║  │
-│  ║       └──────────────┴─────────────┴─────────────┴──────────────┘       ║  │
-│  ╚═══════════════════════════════════════════════════════════════════════╝  │
-│                                        │                                       │
-│                                        ▼                                       │
-│  ╔═══════════════════════════════════════════════════════════════════════╗  │
-│  ║                      BUSINESS LOGIC LAYER                             ║  │
-│  ║  ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐  ║  │
-│  ║  │ Command │   │  Query  │   │Session  │   │  Tool   │   │ Permission│║  │
-│  ║  │ Handler│──▶│ Engine  │──▶│ Manager │──▶│Executor │──▶│  System  │  ║  │
-│  ║  └─────────┘   └────┬────┘   └─────────┘   └─────────┘   └─────────┘  ║  │
-│  ║                    │                                                  ║  │
-│  ║              ┌─────┴─────┐                                           ║  │
-│  ║              │  Context  │                                           ║  │
-│  ║              │ Manager   │                                           ║  │
-│  ║              └───────────┘                                           ║  │
-│  ╚═══════════════════════════════════════════════════════════════════════╝  │
-│                                        │                                       │
-│                                        ▼                                       │
-│  ╔═══════════════════════════════════════════════════════════════════════╗  │
-│  ║                            API LAYER                                   ║  │
-│  ║  ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐  ║  │
-│  ║  │ Claude  │   │  Auth   │   │  Error  │   │  Rate   │   │  Token  │  ║  │
-│  ║  │API Client│──▶│OAuth/Key│──▶│ Handler │──▶│ Limiter │──▶│ Estimat.│  ║  │
-│  ║  └─────────┘   └─────────┘   └─────────┘   └─────────┘   └─────────┘  ║  │
-│  ╚═══════════════════════════════════════════════════════════════════════╝  │
-│                                        │                                       │
-│                                        ▼                                       │
-│  ╔═══════════════════════════════════════════════════════════════════════╗  │
-│  ║                     PROVIDER INTEGRATION                               ║  │
-│  ║                                                                       ║  │
-│  ║   ┌─────────────┐   ┌─────────────┐   ┌─────────────┐              ║  │
-│  ║   │  Anthropic  │   │     AWS     │   │   Google    │   ┌────────┐ ║  │
-│  ║   │ (FirstParty)│   │   Bedrock   │   │   Vertex    │   │ Azure  │ ║  │
-│  ║   │             │   │             │   │             │   │Foundry │ ║  │
-│  ║   └─────────────┘   └─────────────┘   └─────────────┘   └────────┘  ║  │
-│  ╚═══════════════════════════════════════════════════════════════════════╝  │
-│                                                                               │
-└──────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph Presentation["🎨 PRESENTATION LAYER"]
+        OB["📝 Onboarding"]
+        MP["🤖 ModelPicker"]
+        REPL["💬 REPL UI"]
+        SET["⚙️ Settings"]
+        THEME["🎨 ThemePicker"]
+    end
+
+    subgraph Business["⚡ BUSINESS LOGIC LAYER"]
+        CMD["📋 Command Handler"]
+        QE["🔍 Query Engine"]
+        SESSION["💾 Session Manager"]
+        TOOL["🔧 Tool Executor"]
+        PERM["🛡️ Permission System"]
+    end
+
+    subgraph API["🌐 API LAYER"]
+        CLIENT["📡 Claude API"]
+        AUTH["🔐 Auth/OAuth"]
+        ERROR["❌ Error Handler"]
+        RATE["📊 Rate Limiter"]
+    end
+
+    subgraph Provider["☁️ PROVIDER INTEGRATION"]
+        ANT[" Anthropic<br/>FirstParty"]
+        BEDROCK["☁️ AWS<br/>Bedrock"]
+        VERTEX["🌐 Google<br/>Vertex"]
+        FOUNDRY["🏢 Azure<br/>Foundry"]
+    end
+
+    OB --> MP --> REPL --> SET --> THEME
+    REPL --> CMD --> QE --> SESSION --> TOOL
+    TOOL --> PERM
+    QE --> CLIENT --> AUTH --> ERROR --> RATE
+    CLIENT --> ANT
+    CLIENT --> BEDROCK
+    CLIENT --> VERTEX
+    CLIENT --> FOUNDRY
+
+    style Presentation fill:#f3e8ff,stroke:#9333ea,stroke-width:2
+    style Business fill:#fdf2f8,stroke:#db2777,stroke-width:2
+    style API fill:#e0e7ff,stroke:#6366f1,stroke-width:2
+    style Provider fill:#ecfdf5,stroke:#059669,stroke-width:2
 ```
 
 ---
 
 ## 🔄 Core Workflow
 
-```
-╔═════════════════════════════════════════════════════════════════════════════╗
-║                         INITIALIZATION FLOW                                   ║
-╚═════════════════════════════════════════════════════════════════════════════╝
+```mermaid
+flowchart TB
+    START["🚀 CLI Entry<br/>cli.js"] --> BOOT["⚙️ Bootstrap<br/>& Config Load"]
+    BOOT --> CHECK{"📋 Configuration<br/>Check"}
 
-                           ┌──────────────────┐
-                           │   CLI Entry      │
-                           │   (cli.js)       │
-                           └────────┬─────────┘
-                                    │
-                                    ▼
-                           ┌──────────────────┐
-                           │   Bootstrap      │
-                           │   & Config Load  │
-                           └────────┬─────────┘
-                                    │
-                                    ▼
-                    ┌───────────────────────────────┐
-                    │      showSetupScreens()       │
-                    │  ┌─────────────────────────┐  │
-                    │  │   Configuration Check  │  │
-                    │  │                        │  │
-                    │  │  ┌──────────────────┐  │  │
-                    │  │  │theme configured? │  │  │
-                    │  │  └────────┬─────────┘  │  │
-                    │  │           │            │  │
-                    │  │  ┌────────▼─────────┐  │  │
-                    │  │  │model configured? │  │  │
-                    │  │  │ (isModelConfigured│  │  │
-                    │  │  └────────┬─────────┘  │  │
-                    │  │           │            │  │
-                    │  │  ┌────────▼─────────┐  │  │
-                    │  │  │onboarding complete│  │  │
-                    │  │  └────────┬─────────┘  │  │
-                    │  └─────────────────────────┘  │
-                    └────────────┬──────────────────┘
-                                 │
-              ┌──────────────────┴──────────────────┐
-              │                                      │
-              ▼                                      ▼
-    ┌─────────────────────┐              ┌─────────────────────┐
-    │    FIRST LAUNCH     │              │ ALREADY CONFIGURED │
-    │                     │              │                     │
-    │  ┌───────────────┐  │              │  ┌───────────────┐  │
-    │  │  Onboarding   │──┼──────────────┼─▶│  Main Loop    │  │
-    │  │   Wizard     │  │              │  │   (REPL UI)   │  │
-    │  └───────┬───────┘  │              │  └───────────────┘  │
-    │          │          │              │         │          │
-    │          ▼          │              │         ▼          │
-    │  ┌───────────────┐  │              │  Waiting for       │
-    │  │ 1. Theme      │  │              │  user input...     │
-    │  │ 2. Model Setup│◄─┼── NEW        │                     │
-    │  │ 3. Security   │  │              │                     │
-    │  └───────────────┘  │              │                     │
-    └─────────────────────┘              └─────────────────────┘
+    CHECK -->|"First Launch"| ONBOARD["📝 Onboarding<br/>Wizard"]
+    CHECK -->|"Already Configured"| MAIN["💬 Main Loop<br/>REPL UI"]
+
+    ONBOARD --> THEME["🎨 Theme<br/>Selection"]
+    THEME --> MODEL["🤖 Model<br/>Configuration<br/>⭐ REQUIRED]
+    MODEL --> SECURITY["🛡️ Security<br/>Notes"]
+    SECURITY --> MAIN
+
+    MODEL -.->|"Save to<br/>settings.json"| CONFIG["💾 Settings<br/>Persisted"]
+    MODEL -.->|"Mark complete"| GLOB["🌍 Global Config<br/>hasCompletedModelSetup"]
+
+    style START fill:#7c3aed,stroke:#333,stroke-width:2,color:#fff
+    style CHECK fill:#f59e0b,stroke:#333,stroke-width:2,color:#000
+    style ONBOARD fill:#ec4899,stroke:#333,stroke-width:2,color:#fff
+    style MODEL fill:#ef4444,stroke:#333,stroke-width:3,color:#fff
+    style MAIN fill:#22c55e,stroke:#333,stroke-width:2,color:#fff
 ```
 
 ---
 
 ## 🔧 Model Configuration System
 
-```
-╔═════════════════════════════════════════════════════════════════════════════╗
-║                    MODEL SELECTION PRIORITY CHAIN                            ║
-╚═════════════════════════════════════════════════════════════════════════════╝
+```mermaid
+flowchart LR
+    subgraph Priority["📊 PRIORITY ORDER"]
+        P1["1. /model cmd"]
+        P2["2. --model flag"]
+        P3["3. ENV variable"]
+        P4["4. settings.json"]
+        P5["5. Default"]
+    end
 
-  Priority    Source              Example
-  ─────────   ──────              ────────
-     1        /model cmd          /model opus
-     2        CLI --model          --model sonnet
-     3        ENV variable         ANTHROPIC_MODEL=haiku
-     4        settings.json        { "model": "claude-opus-4-6" }
-     5        Built-in default     Sonnet 4.6
+    P1 -->|"Highest"| RESOLVE["🔍 Model<br/>Resolution"]
+    P2 --> RESOLVE
+    P3 --> RESOLVE
+    P4 --> RESOLVE
+    P5 -->|"Lowest"| RESOLVE
 
-  ┌─────────────────────────────────────────────────────────────────────────┐
-  │  Model Resolution Flow                                                  │
-  │                                                                         │
-  │  getUserSpecifiedModelSetting()                                        │
-  │         │                                                               │
-  │         ▼                                                               │
-  │  ┌──────────────────────────────┐                                     │
-  │  │ 1. getMainLoopModelOverride()│──▶ /model command (runtime)           │
-  │  └──────────────┬───────────────┘                                     │
-  │                 │                                                       │
-  │                 ▼                                                       │
-  │  ┌──────────────────────────────┐                                     │
-  │  │ 2. ANTHROPIC_MODEL env       │                                     │
-  │  └──────────────┬───────────────┘                                     │
-  │                 │                                                       │
-  │                 ▼                                                       │
-  │  ┌──────────────────────────────┐                                     │
-  │  │ 3. settings.model            │                                     │
-  │  └──────────────┬───────────────┘                                     │
-  │                 │                                                       │
-  │                 ▼                                                       │
-  │  ┌──────────────────────────────┐                                     │
-  │  │ 4. getDefaultMainLoopModel() │──▶ Built-in default                 │
-  │  └──────────────────────────────┘                                     │
-  │                 │                                                       │
-  │                 ▼                                                       │
-  │         ┌───────────────┐                                             │
-  │         │Final Model ID │                                             │
-  │         └───────────────┘                                             │
-  └─────────────────────────────────────────────────────────────────────────┘
+    RESOLVE --> ALIAS["📝 Alias<br/>Resolution"]
+    ALIAS --> SUFFIX["🔢 [1m] Suffix<br/>Handling"]
+    SUFFIX --> PROVIDER["🌍 Provider<br/>Mapping"]
+    PROVIDER --> FINAL["✅ Final<br/>Model ID"]
+
+    style Priority fill:#f3e8ff,stroke:#9333ea,stroke-width:2
+    style RESOLVE fill:#fef3c7,stroke:#f59e0b,stroke-width:2
+    style FINAL fill:#dcfce7,stroke:#22c55e,stroke-width:2
 ```
+
+### Model Selection Priority
+
+| Priority | Source | Example |
+|----------|--------|---------|
+| 1 | `/model` command | `/model opus` |
+| 2 | CLI `--model` flag | `--model sonnet` |
+| 3 | ENV variable | `ANTHROPIC_MODEL=haiku` |
+| 4 | `settings.json` | `{ "model": "claude-opus-4-6" }` |
+| 5 | Built-in default | Sonnet 4.6 |
 
 ---
 
 ## 🌍 Custom Model & Provider Configuration
 
-```
-╔═════════════════════════════════════════════════════════════════════════════╗
-║                     PROVIDER INTEGRATION ARCHITECTURE                         ║
-╚═════════════════════════════════════════════════════════════════════════════╝
+```mermaid
+flowchart TB
+    subgraph Env["🌍 Environment Variables"]
+        BEDROCK["CLAUDE_CODE_USE_BEDROCK=1"]
+        VERTEX["CLAUDE_CODE_USE_VERTEX=1"]
+        FOUNDRY["CLAUDE_CODE_USE_FOUNDRY=1"]
+        CUSTOM["ANTHROPIC_BASE_URL=..."]
+    end
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                        Provider Selection Flow                               │
-└──────────────────────────────────────────────────────────────────────────────┘
+    subgraph Resolution["🔄 Provider Resolution"]
+        API["getAPIProvider()"]
+    end
 
-          Environment Variables              Model Config Resolution
-          ──────────────────────             ────────────────────────
+    subgraph Mapping["📊 Model String Mapping"]
+        CFG["ALL_MODEL_CONFIGS"]
+    end
 
-     ┌────────────────────────┐         ┌──────────────────────────────────┐
-     │ CLAUDE_CODE_USE_BEDROCK│         │ ALL_MODEL_CONFIGS                │
-     └───────────┬────────────┘         │ {                                │
-                 │                     │   opus46: {                      │
-                 ▼                     │     firstParty: 'claude-opus-4-6'│
-     ┌────────────────────────┐         │     bedrock: 'us.anthropic.    │
-     │        Provider        │         │           claude-opus-4-6-v1:0' │
-     │   ┌─────────────────┐  │         │     vertex: 'claude-opus-4-6'   │
-     │   │ AWS Bedrock    │◄─┼─────────│     foundry: 'claude-opus-4-6'   │
-     │   └─────────────────┘  │         │   },                             │
-     └────────────────────────┘         │   sonnet46: { ... },             │
-                                       │   haiku45: { ... }               │
-     ┌────────────────────────┐         │ }                                │
-     │ CLAUDE_CODE_USE_VERTEX│         └──────────────────────────────────┘
-     └───────────┬────────────┘                   │
-                 │                                 │
-                 ▼                                 ▼
-     ┌────────────────────────┐         ┌─────────────────────────────┐
-     │        Provider        │         │    API Call Construction   │
-     │   ┌─────────────────┐  │         │                             │
-     │   │ Google Vertex  │◄─┼─────────│ ┌─────────────────────────┐ │
-     │   └─────────────────┘  │         │ │ base URL + model ID +   │ │
-     └────────────────────────┘         │ │ auth headers            │ │
-                                       │ └─────────────────────────┘ │
-     ┌────────────────────────┐         └─────────────────────────────┘
-     │ CLAUDE_CODE_USE_FOUNDRY│
-     └───────────┬────────────┘
-                 │
-                 ▼
-     ┌────────────────────────┐
-     │        Provider        │
-     │   ┌─────────────────┐  │
-     │   │ Azure Foundry  │◄─┴──────┐
-     │   └─────────────────┘         │
-     └────────────────────────┘       │
-                                    │
-                                    ▼
-                         ┌────────────────────────┐
-                         │    Provider-Specific   │
-                         │    Model Resolution    │
-                         └────────────────────────┘
+    BEDROCK -->|"bedrock"| API
+    VERTEX -->|"vertex"| API
+    FOUNDRY -->|"foundry"| API
+    CUSTOM -->|"firstParty"| API
+
+    API --> CFG
+
+    CFG -->|"bedrock"| ARN["us.anthropic.claude-opus-4-6-v1:0"]
+    CFG -->|"vertex"| VERT["claude-opus-4-6@20250514"]
+    CFG -->|"foundry"| FD["claude-opus-4-6"]
+    CFG -->|"firstParty"| FP["claude-opus-4-6"]
+
+    style Env fill:#e0e7ff,stroke:#6366f1,stroke-width:2
+    style Resolution fill:#fef3c7,stroke:#f59e0b,stroke-width:2
+    style Mapping fill:#f3e8ff,stroke:#9333ea,stroke-width:2
 ```
 
 ---
 
-```
-╔═════════════════════════════════════════════════════════════════════════════╗
-║                     CUSTOM MODEL CONFIGURATION FLOW                          ║
-╚═════════════════════════════════════════════════════════════════════════════╝
+## 🔬 Custom Model Configuration Flow
 
-  User Input: "custom-model" or environment variables
-                     │
-                     ▼
-  ┌───────────────────────────────────────────────────────────────────────────┐
-  │                     parseUserSpecifiedModel()                            │
-  │                                                                           │
-  │  ┌─────────────────────────────────────────────────────────────────────┐  │
-  │  │  Step 1: Alias Resolution                                         │  │
-  │  │                                                                    │  │
-  │  │  'opus'  ──────────▶  getDefaultOpusModel()  ────▶ 'claude-opus-4-6'│
-  │  │  'sonnet' ──────────▶ getDefaultSonnetModel() ────▶ 'claude-sonnet-4-6'│
-  │  │  'haiku'  ──────────▶ getDefaultHaikuModel()  ────▶ 'claude-haiku-4-5'│
-  │  │  'best'   ──────────▶ getBestModel()         ────▶ 'claude-opus-4-6'│
-  │  │  'custom' ──────────▶ passthrough (custom model name)               │
-  │  └─────────────────────────────────────────────────────────────────────┘  │
-  │                                    │                                      │
-  │                                    ▼                                      │
-  │  ┌─────────────────────────────────────────────────────────────────────┐  │
-  │  │  Step 2: Context Suffix Handling                                   │  │
-  │  │                                                                    │  │
-  │  │  'opus[1m]' ──▶ strip '[1m]' ──▶ has1mContext() ──▶ 1M context     │  │
-  │  │  'sonnet'   ──▶ no suffix ──▶ 200K context                        │  │
-  │  └─────────────────────────────────────────────────────────────────────┘  │
-  │                                    │                                      │
-  │                                    ▼                                      │
-  │  ┌─────────────────────────────────────────────────────────────────────┐  │
-  │  │  Step 3: Provider Mapping                                          │  │
-  │  │                                                                    │  │
-  │  │  getAPIProvider() ──▶ firstParty/bedrock/vertex/foundry           │  │
-  │  │                                                                    │  │
-  │  │  if bedrock:    convert to Bedrock ARN format                    │  │
-  │  │  if vertex:     convert to Vertex model string                   │  │
-  │  │  if foundry:   use as Foundry deployment ID                     │  │
-  │  │  if firstParty: use as-is (claude-opus-4-6)                      │  │
-  │  └─────────────────────────────────────────────────────────────────────┘  │
-  └───────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-  ┌───────────────────────────────────────────────────────────────────────────┐
-  │                     Final API Request                                     │
-  │                                                                           │
-  │   Provider: Anthropic (firstParty)                                       │
-  │   Model:    claude-opus-4-6                                             │
-  │   URL:      https://api.anthropic.com/v1/messages                        │
-  │   Headers: { x-api-key: ANTHROPIC_API_KEY, anthropic-version: 2023-06-01}│
-  │   Body:     { model: "claude-opus-4-6", messages: [...], max_tokens: 4096}│
-  └───────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    INPUT["👤 User Input<br/>custom-model-name"] --> PARSE["📝 parseUserSpecifiedModel()"]
+
+    subgraph Step1["Step 1: Alias Resolution"]
+        OPUS["'opus' → getDefaultOpusModel()"]
+        SONNET["'sonnet' → getDefaultSonnetModel()"]
+        HAIKU["'haiku' → getDefaultHaikuModel()"]
+        CUSTOM["'custom' → passthrough"]
+    end
+
+    subgraph Step2["Step 2: Context Suffix"]
+        CONTEXT["'model[1m]' → has1mContext()"]
+    end
+
+    subgraph Step3["Step 3: Provider Mapping"]
+        PROVIDER["getAPIProvider()"]
+    end
+
+    PARSE --> Step1
+    Step1 --> CONTEXT
+    CONTEXT --> PROVIDER
+
+    PROVIDER -->|"firstParty"| FP["claude-opus-4-6"]
+    PROVIDER -->|"bedrock"| BED["AWS ARN format"]
+    PROVIDER -->|"vertex"| VRT["Vertex model string"]
+    PROVIDER -->|"foundry"| FD["Foundry deployment ID"]
+
+    FP --> API["📡 API Call"]
+    BED --> API
+    VRT --> API
+    FD --> API
+
+    style INPUT fill:#ec4899,stroke:#333,stroke-width:2,color:#fff
+    style Step1 fill:#f3e8ff,stroke:#9333ea,stroke-width:2
+    style Step2 fill:#fdf2f8,stroke:#db2777,stroke-width:2
+    style Step3 fill:#e0e7ff,stroke:#6366f1,stroke-width:2
+    style API fill:#dcfce7,stroke:#22c55e,stroke-width:2
 ```
 
 ---
 
-## 🔬 State Management Architecture
+## 📊 State Management Architecture
 
-```
-╔═════════════════════════════════════════════════════════════════════════════╗
-║                        STATE MANAGEMENT LAYERS                               ║
-╚═════════════════════════════════════════════════════════════════════════════╝
+```mermaid
+flowchart TB
+    subgraph AppState["💾 APP STATE (In-Memory)"]
+        MODEL["🤖 mainLoopModel"]
+        FAST["⚡ isFastMode"]
+        PERM["🛡️ permissions"]
+        SESSION["💬 session"]
+    end
 
-  ┌────────────────────────────────────────────────────────────────────────────┐
-  │                          APP STATE (In-Memory)                             │
-  │  ┌────────────────────────────────────────────────────────────────────────┐ │
-  │  │  useAppState()                                                        │ │
-  │  │  ┌─────────────┬─────────────┬─────────────┬─────────────┐          │ │
-  │  │  │mainLoopModel│mainLoopModel│  isFastMode │ permissions  │          │ │
-  │  │  │             │ ForSession  │             │              │          │ │
-  │  │  └─────────────┴─────────────┴─────────────┴─────────────┘          │ │
-  │  │         │                │               │              │             │ │
-  │  │         └────────────────┴───────────────┴──────────────┘             │ │
-  │  │                          │                                          │ │
-  │  │                          ▼                                          │ │
-  │  │                   ┌───────────┐                                   │ │
-  │  │                   │  Session  │                                   │ │
-  │  │                   │   State   │                                   │ │
-  │  │                   └───────────┘                                   │ │
-  │  └────────────────────────────────────────────────────────────────────────┘ │
-  └────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-  ┌────────────────────────────────────────────────────────────────────────────┐
-  │                       GLOBAL CONFIG (Persistent)                          │
-  │  ┌────────────────────────────────────────────────────────────────────────┐ │
-  │  │  saveGlobalConfig()                                                     │ │
-  │  │  ┌────────────────┬────────────────┬────────────────┬────────────┐  │ │
-  │  │  │theme          │hasCompleted    │hasCompleted    │oauthAccount│  │ │
-  │  │  │               │Onboarding      │ModelSetup ◄NEW │            │  │ │
-  │  │  └────────────────┴────────────────┴────────────────┴────────────┘  │ │
-  │  └────────────────────────────────────────────────────────────────────────┘ │
-  └────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-  ┌────────────────────────────────────────────────────────────────────────────┐
-  │                          SETTINGS (settings.json)                         │
-  │  ┌────────────────────────────────────────────────────────────────────────┐ │
-  │  │  updateSettingsForSource()                                             │ │
-  │  │  ┌───────────────┬──────────────┬──────────────┬──────────────┐     │ │
-  │  │  │ model        │ allowedMcp    │ permissions  │ hooks        │     │ │
-  │  │  │ "claude-opus"│ Servers      │ allow/deny   │ pre/post     │     │ │
-  │  │  └───────────────┴──────────────┴──────────────┴──────────────┘     │ │
-  │  └────────────────────────────────────────────────────────────────────────┘ │
-  └────────────────────────────────────────────────────────────────────────────┘
+    subgraph GlobalConfig["🌍 GLOBAL CONFIG (Persistent)"]
+        THEME["🎨 theme"]
+        ONBOARD["✅ hasCompletedOnboarding"]
+        MODELSET["✅ hasCompletedModelSetup ⭐"]
+        OAUTH["🔐 oauthAccount"]
+    end
+
+    subgraph Settings["📁 SETTINGS (settings.json)"]
+        SMODEL["🤖 model: 'claude-opus-4-6'"]
+        MCP["🔌 allowedMcpServers"]
+        PERMRULES["📋 permissions allow/deny"]
+        HOOKS["🪝 hooks pre/post"]
+    end
+
+    AppState -->|"runtime"| GlobalConfig
+    GlobalConfig -->|"persistent"| Settings
+
+    style AppState fill:#fef3c7,stroke:#f59e0b,stroke-width:2
+    style GlobalConfig fill:#f3e8ff,stroke:#9333ea,stroke-width:2
+    style Settings fill:#dcfce7,stroke:#22c55e,stroke-width:2
 ```
 
 ---
@@ -362,105 +263,77 @@
 
 ### One-Click Installation
 
-#### macOS / Linux
-```bash
-curl -sL https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install.sh | bash
+```mermaid
+flowchart LR
+    subgraph Platforms["🖥️ Platforms"]
+        MAC["🍎 macOS<br/>Linux"]
+        WIN["🪟 Windows"]
+        TERMUX["📱 Termux"]
+    end
+
+    MAC -->|"curl|bash"| CMD1["recode"]
+    WIN -->|"PowerShell"| CMD2["recode"]
+    TERMUX -->|"curl|bash"| CMD3["recode"]
+
+    CMD1 --> RUN["✅ Running"]
+    CMD2 --> RUN
+    CMD3 --> RUN
+
+    style Platforms fill:#f3e8ff,stroke:#9333ea,stroke-width:2
+    style RUN fill:#dcfce7,stroke:#22c55e,stroke-width:3
 ```
 
-#### Windows (PowerShell)
-```powershell
-irm https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install.ps1 | iex
-```
-
-#### Termux (Android)
-```bash
-curl -sL https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install-termux.sh | bash
-```
-
-### Manual Installation
-
-```bash
-# Clone repository
-git clone https://github.com/mangiapanejohn-dev/-Re-Code.git
-cd ReCode
-
-# Install dependencies
-npm install
-
-# Start
-node recode-temp/package/cli.js
-```
+| Platform | Command |
+|----------|---------|
+| **macOS / Linux** | `curl -sL https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install.sh \| bash` |
+| **Windows** | `irm https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install.ps1 \| iex` |
+| **Termux** | `curl -sL https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install-termux.sh \| bash` |
 
 ### NPM Installation
 
 ```bash
-# Global installation
 npm install -g @recode/cli
-
-# Run
 recode
 ```
 
 ---
 
-## 💻 Usage Guide
+## 💻 First Launch Flow
 
-### First Launch Flow
+```mermaid
+flowchart TB
+    START["👋 Welcome<br/>Screen"] --> THEME["🎨 Theme<br/>Selection"]
+    THEME --> MODEL["🤖 MODEL<br/>SELECTION ⭐<br/>REQUIRED"]
+    MODEL -->|"Save to<br/>settings.json"| SAVE["💾 Model<br/>Saved"]
+    SAVE -->|"Mark complete"| DONE["✅ hasCompleted<br/>ModelSetup=true"]
+    DONE --> SECURITY["🛡️ Security<br/>Notes"]
+    SECURITY --> REPL["💬 Main Loop<br/>Ready to Use!"]
 
+    style START fill:#7c3aed,stroke:#333,stroke-width:2,color:#fff
+    style THEME fill:#ec4899,stroke:#333,stroke-width:2,color:#fff
+    style MODEL fill:#ef4444,stroke:#333,stroke-width:4,color:#fff
+    style DONE fill:#22c55e,stroke:#333,stroke-width:2,color:#fff
+    style REPL fill:#22c55e,stroke:#333,stroke-width:3,color:#fff
 ```
-┌──────────────────────────────────────────────────────────────────────────────┐
-│                           FIRST LAUNCH FLOW                                   │
-└──────────────────────────────────────────────────────────────────────────────┘
-
-     ┌──────────────┐
-     │   Welcome    │
-     │    Screen   │
-     └──────┬───────┘
-            │
-            ▼
-     ┌──────────────┐
-     │   Theme     │  ◄── Step 1: Choose your preferred color theme
-     │  Selection  │
-     └──────┬───────┘
-            │
-            ▼
-     ┌──────────────┐
-     │    Model    │  ◄── Step 2: SELECT YOUR MODEL (REQUIRED) ⭐
-     │  Picker     │
-     │             │
-     │ ┌────────┐  │
-     │ │Opus 4.6│  │
-     │ ├────────┤  │
-     │ │Sonnet 4│◄─┼─── Select model and press Enter
-     │ ├────────┤  │
-     │ │ Haiku  │  │
-     │ └────────┘  │
-     └──────┬───────┘
-            │
-            ▼
-     ┌──────────────┐
-     │   Security   │  ◄── Step 3: Review security notes
-     │    Notes    │
-     └──────┬───────┘
-            │
-            ▼
-     ┌──────────────┐
-     │ Main Loop    │  ◄── Step 4: Ready to use!
-     │   (REPL)    │
-     └──────────────┘
-```
-
-### Commands
-
-| Command | Description |
-|---------|-------------|
-| `/help` | Display help information |
-| `/model` | Switch AI model |
-| `/config` | View/modify configuration |
-| `/clear` | Clear current session |
-| `/exit` | Exit program |
 
 ### Environment Variables
+
+```mermaid
+flowchart LR
+    subgraph Config["🔧 Configuration"]
+        KEY["ANTHROPIC_API_KEY"]
+        URL["ANTHROPIC_BASE_URL"]
+        MODEL["ANTHROPIC_MODEL"]
+        PROVIDER["CLAUDE_CODE_USE_*"]
+    end
+
+    Config -->|"sets"| ENV["🌍 Environment"]
+    ENV -->|"uses"| API["📡 API Client"]
+
+    style Config fill:#e0e7ff,stroke:#6366f1,stroke-width:2
+    style ENV fill:#fef3c7,stroke:#f59e0b,stroke-width:2
+    style API fill:#dcfce7,stroke:#22c55e,stroke-width:2
+```
 
 ```bash
 # API Configuration
@@ -471,8 +344,20 @@ ANTHROPIC_MODEL=model-name          # Specify model
 # Provider Selection
 CLAUDE_CODE_USE_BEDROCK=1           # Use AWS Bedrock
 CLAUDE_CODE_USE_VERTEX=1             # Use Google Vertex
-CLAUDE_CODE_USE_FOUNDRY=1           # Use Azure Foundry
+CLAUDE_CODE_USE_FOUNDRY=1            # Use Azure Foundry
 ```
+
+---
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `/help` | Display help information |
+| `/model` | Switch AI model |
+| `/config` | View/modify configuration |
+| `/clear` | Clear current session |
+| `/exit` | Exit program |
 
 ---
 

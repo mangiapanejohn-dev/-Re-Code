@@ -1,82 +1,145 @@
-# ReCode Windows 一键安装脚本
-# 使用 PowerShell 运行
+# ReCode Beautiful Installer - Windows PowerShell
+# Purple/Pink Theme
 
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  ReCode Windows 一键安装脚本" -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "     █████╗ ██╗      ██████╗  ██████╗ ██████╗ ██╗    ██╗ █████╗ ██████╗ ████████╗" -ForegroundColor Magenta
+Write-Host "    ██╔══██╗██║     ██╔═══██╗██╔═══██╗██╔══██╗██║    ██║██╔══██╗██╔══██╗╚══██╔══╝" -ForegroundColor Magenta
+Write-Host "    ███████║██║     ██║   ██║██║   ██║██████╔╝██║ █╗ ██║███████║██████╔╝   ██║   " -ForegroundColor Magenta
+Write-Host "    ██╔══██║██║     ██║   ██║██║   ██║██╔══██╗██║███╗██║██╔══██║██╔══██╗   ██║   " -ForegroundColor Magenta
+Write-Host "    ██║  ██║███████╗╚██████╔╝╚██████╔╝██║  ██║╚███╔███╔╝██║  ██║██║  ██║   ██║   " -ForegroundColor Magenta
+Write-Host "    ╚═╝  ╚═╝╚══════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝ ╚══╝ ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   " -ForegroundColor Magenta
+Write-Host ""
+Write-Host "         ───  Multi-Model AI Chat Interface  ───" -ForegroundColor Pink
+Write-Host "                      v3.0.1" -ForegroundColor Gray
 Write-Host ""
 
-# 检查 Node.js
+# ════════════════════════════════════════════════════════════════════════════
+# Configuration
+# ════════════════════════════════════════════════════════════════════════════
+
+$REPO_URL = "https://github.com/mangiapanejohn-dev/-Re-Code.git"
+$INSTALL_DIR = "$env:USERPROFILE\recode"
+
+function Write-Step {
+    param([string]$Message)
+    Write-Host "▸ $Message" -ForegroundColor Magenta
+}
+
+function Write-Success {
+    param([string]$Message)
+    Write-Host "✓ $Message" -ForegroundColor Green
+}
+
+function Write-Info {
+    param([string]$Message)
+    Write-Host "  $Message" -ForegroundColor White
+}
+
+function Draw-Box {
+    param([string]$Title)
+    $width = 60
+    $padding = [Math]::Floor(($width - $Title.Length) / 2)
+    Write-Host ""
+    Write-Host ("=" * $width) -ForegroundColor Magenta
+    Write-Host (" " * $padding) -NoNewline
+    Write-Host $Title -ForegroundColor Pink
+    Write-Host ("=" * $width) -ForegroundColor Magenta
+    Write-Host ""
+}
+
+# ════════════════════════════════════════════════════════════════════════════
+# Check Requirements
+# ════════════════════════════════════════════════════════════════════════════
+
+Write-Step "Checking Node.js..."
 $nodeCheck = Get-Command node -ErrorAction SilentlyContinue
 if (-not $nodeCheck) {
-    Write-Host "❌ 未找到 Node.js，请先安装: https://nodejs.org/" -ForegroundColor Red
-    Read-Host "按 Enter 退出"
+    Write-Host "✗ Node.js not found" -ForegroundColor Red
+    Write-Host "  Please install from: https://nodejs.org/" -ForegroundColor Gray
     exit 1
 }
+Write-Success "Node.js: $(node --version)"
 
-Write-Host "✅ Node.js 版本: $(node --version)" -ForegroundColor Green
-
-# 检查 npm
+Write-Step "Checking npm..."
 $npmCheck = Get-Command npm -ErrorAction SilentlyContinue
 if (-not $npmCheck) {
-    Write-Host "❌ 未找到 npm" -ForegroundColor Red
-    Read-Host "按 Enter 退出"
+    Write-Host "✗ npm not found" -ForegroundColor Red
     exit 1
 }
+Write-Success "npm: $(npm --version)"
 
-Write-Host "✅ npm 版本: $(npm --version)" -ForegroundColor Green
+Write-Step "Preparing installation..."
 
-$repoUrl = "https://github.com/mangiapanejohn-dev/-Re-Code.git"
-$installDir = "$HOME\recode"
+# ════════════════════════════════════════════════════════════════════════════
+# Clone or Update
+# ════════════════════════════════════════════════════════════════════════════
 
-Write-Host ""
-Write-Host "📦 正在克隆 ReCode 仓库..." -ForegroundColor Yellow
-
-# 检查是否已安装
-if (Test-Path $installDir) {
-    Write-Host "⚠️  ReCode 已安装在 $installDir" -ForegroundColor Yellow
-    $response = Read-Host "是否更新? (y/N)"
-    if ($response -eq "y" -or $response -eq "Y") {
-        Set-Location $installDir
-        git pull
+if (Test-Path $INSTALL_DIR) {
+    Draw-Box "UPDATE MODE"
+    Write-Host "⚠ ReCode already installed at $INSTALL_DIR" -ForegroundColor Yellow
+    $response = Read-Host "  Update to latest version? (Y/n)"
+    if ($response -eq "n" -or $response -eq "N") {
+        Write-Host "  Skipping update..." -ForegroundColor Gray
+    } else {
+        Write-Step "Updating ReCode..."
+        Set-Location $INSTALL_DIR
+        git pull 2>$null
     }
 } else {
-    git clone $repoUrl $installDir
+    Draw-Box "FRESH INSTALL"
+    Write-Step "Cloning repository..."
+    git clone $REPO_URL $INSTALL_DIR 2>$null
+    Write-Success "Repository cloned"
 }
 
-Set-Location $installDir
+Set-Location $INSTALL_DIR
 
-Write-Host "📦 安装依赖..." -ForegroundColor Yellow
-npm install
+# ════════════════════════════════════════════════════════════════════════════
+# Install Dependencies
+# ════════════════════════════════════════════════════════════════════════════
 
-# 创建全局命令
-Write-Host "🔗 创建全局命令..." -ForegroundColor Yellow
+Write-Step "Installing dependencies..."
+npm install --silent 2>$null
+Write-Success "Dependencies installed"
 
-# 添加到 PATH 的脚本
-$scriptContent = @"
-@echo off
-node "$installDir\recode-temp\package\cli.js" %*
-"@
+# ════════════════════════════════════════════════════════════════════════════
+# Create Global Command
+# ════════════════════════════════════════════════════════════════════════════
 
-$scriptPath = "$env:USERPROFILE\recode.bat"
-Set-Content -Path $scriptPath -Value $scriptContent -Encoding ASCII
+Write-Step "Creating global command..."
 
-# 添加到 PATH（如果需要）
+# Create batch file in User PATH
+$batchContent = "@echo off`nnode `"$INSTALL_DIR\recode-temp\package\cli.js`" %*"
+$batchPath = "$env:USERPROFILE\recode.bat"
+Set-Content -Path $batchPath -Value $batchContent -Encoding ASCII
+
+# Add to PATH if needed
 $currentPath = [Environment]::GetEnvironmentVariable("Path", "User")
 if ($currentPath -notlike "*$env:USERPROFILE*") {
     [Environment]::SetEnvironmentVariable("Path", "$currentPath;$env:USERPROFILE", "User")
-    Write-Host "⚠️  已添加到 PATH，请重新打开终端" -ForegroundColor Yellow
+    Write-Host "⚠ Added to PATH - please restart your terminal" -ForegroundColor Yellow
 }
 
-Write-Host ""
-Write-Host "========================================" -ForegroundColor Green
-Write-Host "  ✅ 安装完成！" -ForegroundColor Green
-Write-Host "========================================" -ForegroundColor Green
-Write-Host ""
-Write-Host "运行以下命令启动 ReCode:" -ForegroundColor White
-Write-Host "  recode" -ForegroundColor Cyan
-Write-Host "  或" -ForegroundColor White
-Write-Host "  node $installDir\cli.js" -ForegroundColor Cyan
-Write-Host ""
+Write-Success "Command 'recode' created"
 
-Read-Host "按 Enter 退出"
+# ════════════════════════════════════════════════════════════════════════════
+# Complete
+# ════════════════════════════════════════════════════════════════════════════
+
+Draw-Box "INSTALLATION COMPLETE!"
+
+Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Pink
+Write-Host ""
+Write-Host "  Run ReCode:" -ForegroundColor White -Bold
+Write-Host "    recode" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "  Direct run:" -ForegroundColor White
+Write-Host "    node $INSTALL_DIR\cli.js" -ForegroundColor Gray
+Write-Host ""
+Write-Host "  Get help:" -ForegroundColor White
+Write-Host "    recode --help" -ForegroundColor Gray
+Write-Host ""
+Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Pink
+Write-Host ""
+Write-Host "  Thank you for installing ReCode!" -ForegroundColor Gray
+Write-Host ""

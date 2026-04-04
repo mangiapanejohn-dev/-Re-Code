@@ -1,91 +1,144 @@
 #!/bin/bash
-# ReCode Termux 一键安装脚本
+# ReCode Beautiful Installer - Termux (Purple/Pink Theme)
 
 set -e
 
-echo "========================================"
-echo "  ReCode Termux 安装脚本"
-echo "========================================"
+# ════════════════════════════════════════════════════════════════════════════
+# COLOR CONFIGURATION
+# ════════════════════════════════════════════════════════════════════════════
 
-# 检查是否为 Termux
-if [ ! -d "/data/data/com.termux" ]; then
-    echo "⚠️  检测到可能不在 Termux 环境中"
-    echo "是否继续? (y/N)"
-    read -r -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        exit 0
-    fi
-fi
+PURPLE='\033[38;2;147;112;219m'
+PINK='\033[38;2;255;105;180m'
+MAGENTA='\033[38;2;255;0;255m'
+CYAN='\033[38;2;0;255;255m'
+WHITE='\033[97m'
+GRAY='\033[90m'
+GREEN='\033[92m'
+RED='\033[91m'
+YELLOW='\033[93m'
+BOLD='\033[1m'
+RESET='\033[0m'
 
-echo "📦 更新软件包..."
-apt update && apt upgrade -y
+# ════════════════════════════════════════════════════════════════════════════
+# ASCII ART BANNER
+# ════════════════════════════════════════════════════════════════════════════
 
-# 检查 Node.js
-if ! command -v node &> /dev/null; then
-    echo "📦 安装 Node.js..."
-    apt install -y nodejs
-fi
+echo -e "${PURPLE}"
+cat << 'EOF'
+     █████╗ ██╗      ██████╗  ██████╗ ██████╗ ██╗    ██╗ █████╗ ██████╗ ████████╗
+    ██╔══██╗██║     ██╔═══██╗██╔═══██╗██╔══██╗██║    ██║██╔══██╗██╔══██╗╚══██╔══╝
+    ███████║██║     ██║   ██║██║   ██║██████╔╝██║ █╗ ██║███████║██████╔╝   ██║
+    ██╔══██║██║     ██║   ██║██║   ██║██╔══██╗██║███╗██║██╔══██║██╔══██╗   ██║
+    ██║  ██║███████╗╚██████╔╝╚██████╔╝██║  ██║╚███╔███╔╝██║  ██║██║  ██║   ██║
+    ╚═╝  ╚═╝╚══════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝ ╚══╝ ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝
+EOF
+echo -e "${RESET}"
+echo -e "${PINK}         ───  Multi-Model AI Chat Interface  ───${RESET}"
+echo -e "${GRAY}                      v3.0.1${RESET}"
+echo ""
 
-echo "✅ Node.js 版本: $(node --version)"
+# ════════════════════════════════════════════════════════════════════════════
+# Configuration
+# ════════════════════════════════════════════════════════════════════════════
 
-# 检查 git
-if ! command -v git &> /dev/null; then
-    echo "📦 安装 Git..."
-    apt install -y git
-fi
-
-echo "✅ Git 版本: $(git --version)"
-
-# 安装
 REPO_URL="https://github.com/mangiapanejohn-dev/-Re-Code.git"
 INSTALL_DIR="$HOME/recode"
 
-echo ""
-echo "📦 克隆 ReCode 仓库..."
+echo -e "${PURPLE}▸ Checking environment...${RESET}"
 
-if [ -d "$INSTALL_DIR" ]; then
-    cd "$INSTALL_DIR"
-    git pull
-else
-    git clone "$REPO_URL" "$INSTALL_DIR"
-    cd "$INSTALL_DIR"
+# Check if running in Termux
+if [ ! -d "/data/data/com.termux" ]; then
+    echo -e "${YELLOW}⚠ Not running in Termux - continuing anyway${RESET}"
 fi
 
-echo "📦 安装依赖..."
-npm install
+# Update packages
+echo -e "${PURPLE}▸ Updating packages...${RESET}"
+apt update -qq && apt upgrade -y -qq 2>/dev/null
+echo -e "${GREEN}✓ Packages updated${RESET}"
 
-# 创建启动脚本
-echo "🔗 创建启动命令..."
+# Install Node.js if needed
+if ! command -v node &> /dev/null; then
+    echo -e "${PURPLE}▸ Installing Node.js...${RESET}"
+    apt install -y nodejs 2>/dev/null
+fi
+echo -e "${GREEN}✓ Node.js: $(node --version)${RESET}"
 
-# 创建 bin 目录（如果不存在）
+# Install Git if needed
+if ! command -v git &> /dev/null; then
+    echo -e "${PURPLE}▸ Installing Git...${RESET}"
+    apt install -y git 2>/dev/null
+fi
+echo -e "${GREEN}✓ Git: $(git --version)${RESET}"
+
+echo ""
+echo -e "${PURPLE}▸ Preparing installation...${RESET}"
+
+# Clone or Update
+if [ -d "$INSTALL_DIR" ]; then
+    echo -e "${YELLOW}⚠ ReCode already installed${RESET}"
+    read -p "  Update to latest version? (Y/n): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "${GRAY}  Skipping update...${RESET}"
+    else
+        echo -e "${PURPLE}▸ Updating ReCode...${RESET}"
+        cd "$INSTALL_DIR" && git pull 2>/dev/null
+        echo -e "${GREEN}✓ Updated${RESET}"
+    fi
+else
+    echo -e "${PURPLE}▸ Cloning repository...${RESET}"
+    git clone "$REPO_URL" "$INSTALL_DIR" 2>/dev/null
+    echo -e "${GREEN}✓ Repository cloned${RESET}"
+fi
+
+cd "$INSTALL_DIR"
+
+# Install dependencies
+echo ""
+echo -e "${PURPLE}▸ Installing dependencies...${RESET}"
+npm install --silent 2>/dev/null
+echo -e "${GREEN}✓ Dependencies installed${RESET}"
+
+# Create global command
+echo -e "${PURPLE}▸ Creating global command...${RESET}"
 mkdir -p "$HOME/.local/bin"
-
-# 创建 recode 命令
 cat > "$HOME/.local/bin/recode" << 'EOF'
-#!/data/data/com.termux/files/home/recode/recode-temp/package/cli.js
+#!/bin/bash
+cd $HOME/recode
+exec node recode-temp/package/cli.js "$@"
 EOF
-
-# 使其可执行
 chmod +x "$HOME/.local/bin/recode"
 
-# 添加到 PATH（如果还没有）
+# Add to PATH
 BASHRC="$HOME/.bashrc"
 if [ -f "$BASHRC" ]; then
-    if ! grep -q ".local/bin" "$BASHrc"; then
+    if ! grep -q "\.local/bin" "$BASHRC" 2>/dev/null; then
         echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$BASHRC"
     fi
 fi
+echo -e "${GREEN}✓ Command 'recode' created${RESET}"
+
+# ════════════════════════════════════════════════════════════════════════════
+# Complete
+# ════════════════════════════════════════════════════════════════════════════
 
 echo ""
-echo "========================================"
-echo "  ✅ 安装完成！"
-echo "========================================"
+echo -e "${PURPLE}╔═══════════════════════════════════════════════════════════╗${RESET}"
+echo -e "${PURPLE}║${RESET}       ${PINK}INSTALLATION COMPLETE!${RESET}                          ${PURPLE}║${RESET}"
+echo -e "${PURPLE}╚═══════════════════════════════════════════════════════════╝${RESET}"
 echo ""
-echo "运行以下命令启动 ReCode:"
-echo "  source ~/.bashrc  # 刷新环境"
-echo "  recode"
+echo -e "${PINK}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
 echo ""
-echo "或直接运行:"
-echo "  node $INSTALL_DIR/cli.js"
+echo -e "  ${BOLD}Run ReCode:${RESET}"
+echo -e "    ${CYAN}recode${RESET}"
+echo ""
+echo -e "  ${BOLD}Refresh terminal:${RESET}"
+echo -e "    ${GRAY}source ~/.bashrc${RESET}"
+echo ""
+echo -e "  ${BOLD}Direct run:${RESET}"
+echo -e "    ${GRAY}node $INSTALL_DIR/cli.js${RESET}"
+echo ""
+echo -e "${PINK}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+echo ""
+echo -e "${GRAY}  Thank you for installing ReCode!${RESET}"
 echo ""
