@@ -180,9 +180,10 @@ run_install() {
 
     if [[ "$PM_KIND" == "pnpm" ]]; then
         ui_info "Installing dependencies with pnpm..."
-        if ! "${PM_CMD[@]}" install --frozen-lockfile; then
-            ui_warn "Frozen lockfile install failed; retrying with relaxed mode."
-            "${PM_CMD[@]}" install
+        # No lockfile in fresh clone, use regular install
+        if ! "${PM_CMD[@]}" install; then
+            ui_warn "pnpm install failed, trying npm..."
+            npm install
         fi
         ui_success "Dependencies installed"
         return
