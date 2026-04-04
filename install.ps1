@@ -1,145 +1,143 @@
-# ReCode Beautiful Installer - Windows PowerShell
-# Purple/Pink Theme
+# ReCode Installer - Windows PowerShell
+# Usage: iwr -useb https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install.ps1 | iex
+# Updated: 2026-04-04
 
-Write-Host ""
-Write-Host "     █████╗ ██╗      ██████╗  ██████╗ ██████╗ ██╗    ██╗ █████╗ ██████╗ ████████╗" -ForegroundColor Magenta
-Write-Host "    ██╔══██╗██║     ██╔═══██╗██╔═══██╗██╔══██╗██║    ██║██╔══██╗██╔══██╗╚══██╔══╝" -ForegroundColor Magenta
-Write-Host "    ███████║██║     ██║   ██║██║   ██║██████╔╝██║ █╗ ██║███████║██████╔╝   ██║   " -ForegroundColor Magenta
-Write-Host "    ██╔══██║██║     ██║   ██║██║   ██║██╔══██╗██║███╗██║██╔══██║██╔══██╗   ██║   " -ForegroundColor Magenta
-Write-Host "    ██║  ██║███████╗╚██████╔╝╚██████╔╝██║  ██║╚███╔███╔╝██║  ██║██║  ██║   ██║   " -ForegroundColor Magenta
-Write-Host "    ╚═╝  ╚═╝╚══════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝ ╚══╝ ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   " -ForegroundColor Magenta
-Write-Host ""
-Write-Host "         ───  Multi-Model AI Chat Interface  ───" -ForegroundColor Pink
-Write-Host "                      v3.0.1" -ForegroundColor Gray
-Write-Host ""
+$ErrorActionPreference = "Stop"
 
-# ════════════════════════════════════════════════════════════════════════════
 # Configuration
-# ════════════════════════════════════════════════════════════════════════════
-
 $REPO_URL = "https://github.com/mangiapanejohn-dev/-Re-Code.git"
-$INSTALL_DIR = "$env:USERPROFILE\recode"
+$INSTALL_ROOT = "$env:USERPROFILE\.recode"
+$SOURCE_DIR = "$INSTALL_ROOT\source"
+$BIN_DIR = "$env:USERPROFILE\AppData\Local\Programs\recode"
 
-function Write-Step {
-    param([string]$Message)
-    Write-Host "▸ $Message" -ForegroundColor Magenta
-}
+# Colors (Purple/Pink theme)
+$ACCENT = [ConsoleColor]::Magenta
+$INFO = [ConsoleColor]::Cyan
+$SUCCESS = [ConsoleColor]::Green
+$WARN = [ConsoleColor]::Yellow
+$ERROR = [ConsoleColor]::Red
+$MUTED = [ConsoleColor]::DarkGray
+$WHITE = [ConsoleColor]::White
+$BOLD = ""
 
-function Write-Success {
-    param([string]$Message)
-    Write-Host "✓ $Message" -ForegroundColor Green
-}
-
-function Write-Info {
-    param([string]$Message)
-    Write-Host "  $Message" -ForegroundColor White
-}
-
-function Draw-Box {
-    param([string]$Title)
-    $width = 60
-    $padding = [Math]::Floor(($width - $Title.Length) / 2)
+function Write-Banner {
     Write-Host ""
-    Write-Host ("=" * $width) -ForegroundColor Magenta
-    Write-Host (" " * $padding) -NoNewline
-    Write-Host $Title -ForegroundColor Pink
-    Write-Host ("=" * $width) -ForegroundColor Magenta
+    Write-Host "██████╗ ███████╗███████╗ ██████╗ ███╗   ██╗██╗██╗  ██╗" -ForegroundColor $ACCENT
+    Write-Host "██╔══██╗██╔════╝██╔════╝██╔═══██╗████╗  ██║██║╚██╗██╔╝" -ForegroundColor $ACCENT
+    Write-Host "██████╔╝█████╗  ███████╗██║   ██║██╔██╗ ██║██║ ╚███╔╝ " -ForegroundColor $ACCENT
+    Write-Host "██╔══██╗██╔══╝  ╚════██║██║   ██║██║╚██╗██║██║ ██╔██╗" -ForegroundColor $ACCENT
+    Write-Host "██║  ██║███████╗███████║╚██████╔╝██║ ╚████║██║██╔╝╚██╗" -ForegroundColor $ACCENT
+    Write-Host "╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝" -ForegroundColor $ACCENT
+    Write-Host ""
+    Write-Host "  ReCode Installer (Windows)" -ForegroundColor $WHITE
+    Write-Host "  Source: $SOURCE_DIR" -ForegroundColor $MUTED
+    Write-Host "  Binary: $BIN_DIR\recode.exe" -ForegroundColor $MUTED
+    Write-Host ""
+    Write-Host "  Setting up ReCode..." -ForegroundColor $INFO
     Write-Host ""
 }
 
-# ════════════════════════════════════════════════════════════════════════════
-# Check Requirements
-# ════════════════════════════════════════════════════════════════════════════
+function Write-Info { param([string]$Message) Write-Host "[INFO] $Message" -ForegroundColor $INFO }
+function Write-Success { param([string]$Message) Write-Host "[OK] $Message" -ForegroundColor $SUCCESS }
+function Write-Warn { param([string]$Message) Write-Host "[WARN] $Message" -ForegroundColor $WARN }
+function Write-ErrorExit { param([string]$Message) Write-Host "[ERROR] $Message" -ForegroundColor $ERROR; exit 1 }
 
-Write-Step "Checking Node.js..."
-$nodeCheck = Get-Command node -ErrorAction SilentlyContinue
-if (-not $nodeCheck) {
-    Write-Host "✗ Node.js not found" -ForegroundColor Red
-    Write-Host "  Please install from: https://nodejs.org/" -ForegroundColor Gray
-    exit 1
-}
-Write-Success "Node.js: $(node --version)"
-
-Write-Step "Checking npm..."
-$npmCheck = Get-Command npm -ErrorAction SilentlyContinue
-if (-not $npmCheck) {
-    Write-Host "✗ npm not found" -ForegroundColor Red
-    exit 1
-}
-Write-Success "npm: $(npm --version)"
-
-Write-Step "Preparing installation..."
-
-# ════════════════════════════════════════════════════════════════════════════
-# Clone or Update
-# ════════════════════════════════════════════════════════════════════════════
-
-if (Test-Path $INSTALL_DIR) {
-    Draw-Box "UPDATE MODE"
-    Write-Host "⚠ ReCode already installed at $INSTALL_DIR" -ForegroundColor Yellow
-    $response = Read-Host "  Update to latest version? (Y/n)"
-    if ($response -eq "n" -or $response -eq "N") {
-        Write-Host "  Skipping update..." -ForegroundColor Gray
-    } else {
-        Write-Step "Updating ReCode..."
-        Set-Location $INSTALL_DIR
-        git pull 2>$null
+function Check-Requirements {
+    if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
+        Write-ErrorExit "Node.js not found. Install Node.js 22+ first: https://nodejs.org"
     }
-} else {
-    Draw-Box "FRESH INSTALL"
-    Write-Step "Cloning repository..."
-    git clone $REPO_URL $INSTALL_DIR 2>$null
-    Write-Success "Repository cloned"
+    $nodeVersion = node --version
+    $majorVersion = [int]($nodeVersion -replace '^v(\d+).*', '$1')
+    if ($majorVersion -lt 22) {
+        Write-ErrorExit "Node.js 22+ is required. Current: $nodeVersion"
+    }
+    if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+        Write-ErrorExit "Git is required. Install from https://git-scm.com"
+    }
+    if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
+        Write-ErrorExit "npm is required. Reinstall Node.js with npm included."
+    }
+    Write-Success "Requirements checked (Node $nodeVersion)"
 }
 
-Set-Location $INSTALL_DIR
+function Install-Source {
+    if (Test-Path "$SOURCE_DIR\.git") {
+        Write-Info "Updating existing ReCode checkout..."
+        Set-Location $SOURCE_DIR
+        git remote set-url origin $REPO_URL 2>$null
+        if (git fetch --depth 1 origin main 2>$null) {
+            git checkout -q main 2>$null
+            git reset --hard origin/main 2>$null
+            Write-Success "Source updated"
+            return
+        }
+    }
 
-# ════════════════════════════════════════════════════════════════════════════
-# Install Dependencies
-# ════════════════════════════════════════════════════════════════════════════
+    if (Test-Path $SOURCE_DIR) {
+        Write-Warn "Existing path at ${SOURCE_DIR}; removing and recloning."
+        Remove-Item $SOURCE_DIR -Recurse -Force
+    }
 
-Write-Step "Installing dependencies..."
-npm install --silent 2>$null
-Write-Success "Dependencies installed"
-
-# ════════════════════════════════════════════════════════════════════════════
-# Create Global Command
-# ════════════════════════════════════════════════════════════════════════════
-
-Write-Step "Creating global command..."
-
-# Create batch file in User PATH
-$batchContent = "@echo off`nnode `"$INSTALL_DIR\recode-temp\package\cli.js`" %*"
-$batchPath = "$env:USERPROFILE\recode.bat"
-Set-Content -Path $batchPath -Value $batchContent -Encoding ASCII
-
-# Add to PATH if needed
-$currentPath = [Environment]::GetEnvironmentVariable("Path", "User")
-if ($currentPath -notlike "*$env:USERPROFILE*") {
-    [Environment]::SetEnvironmentVariable("Path", "$currentPath;$env:USERPROFILE", "User")
-    Write-Host "⚠ Added to PATH - please restart your terminal" -ForegroundColor Yellow
+    Write-Info "Cloning ReCode source..."
+    git clone --depth 1 $REPO_URL $SOURCE_DIR 2>$null
+    Write-Success "Source cloned"
 }
 
-Write-Success "Command 'recode' created"
+function Install-Deps {
+    Set-Location $SOURCE_DIR
+    Write-Info "Installing dependencies..."
+    npm install 2>$null
+    Write-Success "Dependencies installed"
+}
 
-# ════════════════════════════════════════════════════════════════════════════
-# Complete
-# ════════════════════════════════════════════════════════════════════════════
+function Run-Build {
+    Set-Location $SOURCE_DIR
+    Write-Info "Building ReCode CLI..."
+    npm run build 2>$null
+    Write-Success "Build completed"
+}
 
-Draw-Box "INSTALLATION COMPLETE!"
+function Install-Launcher {
+    New-Item -ItemType Directory -Force -Path $BIN_DIR | Out-Null
 
-Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Pink
-Write-Host ""
-Write-Host "  Run ReCode:" -ForegroundColor White -Bold
-Write-Host "    recode" -ForegroundColor Cyan
-Write-Host ""
-Write-Host "  Direct run:" -ForegroundColor White
-Write-Host "    node $INSTALL_DIR\cli.js" -ForegroundColor Gray
-Write-Host ""
-Write-Host "  Get help:" -ForegroundColor White
-Write-Host "    recode --help" -ForegroundColor Gray
-Write-Host ""
-Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Pink
-Write-Host ""
-Write-Host "  Thank you for installing ReCode!" -ForegroundColor Gray
-Write-Host ""
+    $cliPath = "$SOURCE_DIR\recode-temp\package\cli.js"
+    if (-not (Test-Path $cliPath)) {
+        Write-ErrorExit "CLI entry not found at $cliPath"
+    }
+
+    @"
+@echo off
+node "$cliPath" %*
+"@ | Set-Content "$BIN_DIR\recode.bat" -Encoding ASCII
+
+    # Add to PATH if needed
+    $currentPath = [Environment]::GetEnvironmentVariable("Path", "User")
+    if ($currentPath -notlike "*$BIN_DIR*") {
+        [Environment]::SetEnvironmentVariable("Path", "$currentPath;$BIN_DIR", "User")
+        Write-Warn "Added to PATH - please restart your terminal"
+    }
+
+    Write-Success "Launcher installed at $BIN_DIR\recode.bat"
+}
+
+function Print-Success {
+    Write-Host ""
+    Write-Success "ReCode installed successfully!"
+    Write-Host ""
+    Write-Host "  Next steps:" -ForegroundColor $WHITE
+    Write-Host "    1) Verify: recode -v" -ForegroundColor $MUTED
+    Write-Host "    2) First launch: recode" -ForegroundColor $MUTED
+    Write-Host "    3) Get help: recode --help" -ForegroundColor $MUTED
+    Write-Host ""
+    Write-Host "  If 'recode' is not found, restart your terminal." -ForegroundColor $MUTED
+    Write-Host ""
+}
+
+# Main
+Write-Banner
+Check-Requirements
+Install-Source
+Install-Deps
+Run-Build
+Install-Launcher
+Print-Success
