@@ -2,58 +2,240 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/version-3.0.1-blue.svg" alt="Version">
-  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux%20%7C%20Termux-green.svg" alt="Platforms">
+  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux%7C-Termux-green.svg" alt="Platforms">
   <img src="https://img.shields.io/badge/license-MIT-orange.svg" alt="License">
   <img src="https://img.shields.io/badge/node-%3E%3D18.0.0-yellow.svg" alt="Node Version">
 </p>
 
-> 🔄 **ReCode** 是一个开源的多模型 AI 对话界面，让你可以自由选择和配置各种 AI 模型。
+> **ReCode** — A powerful open-source multi-model AI chat interface with extensive customization capabilities.
 
-## ✨ 核心特性
+---
 
-### 🤖 多模型支持
-- **Claude 系列**: Opus 4.6, Sonnet 4.6, Haiku 4.5 等
-- **自定义模型**: 支持配置自己的模型和 API Endpoint
-- **多提供商**: 支持 Anthropic API、AWS Bedrock、Google Vertex、Azure Foundry
+## 🔥 Why ReCode?
 
-### 🔧 高度可配置
-- 首次启动引导配置模型
-- 灵活的模型选择器
-- 支持环境变量配置
-- 本地设置持久化
+| Feature | Description |
+|---------|-------------|
+| 🤖 **Multi-Model Support** | Claude Opus/Sonnet/Haiku, custom models, any OpenAI-compatible API |
+| 🔧 **Highly Configurable** | Model selection, API endpoints, environment variables |
+| 🌍 **Provider Agnostic** | Anthropic API, AWS Bedrock, Google Vertex, Azure Foundry |
+| 💻 **Cross-Platform** | Windows, macOS, Linux, Termux |
+| 🛡️ **Enterprise-Grade** | Permission system, workspace trust, MCP approval |
+| ⚡ **Zero Dependencies** | Terminal-based, instant startup |
 
-### 🛡️ 企业级安全
-- 完整的权限控制系统
-- 工作区信任机制
-- MCP 服务器审批
-- 代码安全审查
+---
 
-### 💻 跨平台支持
-- Windows / macOS / Linux / Termux
-- 终端界面，零依赖
-- 快速启动，即开即用
-
-## 📸 界面预览
+## 🏗️ Architecture Overview
 
 ```
-╔══════════════════════════════════════════════════════════╗
-║  ReCode v3.0.1                                            ║
-║  ───────────────────────────────────────────────          ║
-║  🤖 AI Assistant                                          ║
-║                                                          ║
-║  你好！我是 ReCode，一个强大的 AI 对话助手。              ║
-║  有什么我可以帮你的吗？                                  ║
-║                                                          ║
-║  ───────────────────────────────────────────────          ║
-║  > _                                                     ║
-║                                                          ║
-║  模型: Claude Sonnet 4.6 | 会话: 1                       ║
-╚══════════════════════════════════════════════════════════╝
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                    ReCode                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌────────────────────────────────────────────────────────────────────┐    │
+│  │                         PRESENTATION LAYER                          │    │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌──────────┐  │    │
+│  │  │  Onboarding │  │ ModelPicker │  │    REPL     │  │ Settings │  │    │
+│  │  └─────────────┘  └─────────────┘  └─────────────┘  └──────────┘  │    │
+│  │       (React + Ink Terminal UI Framework)                          │    │
+│  └────────────────────────────────────────────────────────────────────┘    │
+│                                    │                                         │
+│                                    ▼                                         │
+│  ┌────────────────────────────────────────────────────────────────────┐    │
+│  │                         BUSINESS LOGIC LAYER                        │    │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌──────────┐  │    │
+│  │  │   Command   │  │    Query    │  │   Session   │  │  Tool    │  │    │
+│  │  │   Handler   │  │   Engine    │  │  Manager    │  │  Executor│  │    │
+│  │  └─────────────┘  └─────────────┘  └─────────────┘  └──────────┘  │    │
+│  │       /help, /model, /config, /exit                                   │    │
+│  └────────────────────────────────────────────────────────────────────┘    │
+│                                    │                                         │
+│                                    ▼                                         │
+│  ┌────────────────────────────────────────────────────────────────────┐    │
+│  │                            API LAYER                                │    │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌──────────┐  │    │
+│  │  │   Claude    │  │  Auth &      │  │   Error     │  │  Rate    │  │    │
+│  │  │   API Client│  │  OAuth       │  │  Handling   │  │  Limiter │  │    │
+│  │  └─────────────┘  └─────────────┘  └─────────────┘  └──────────┘  │    │
+│  └────────────────────────────────────────────────────────────────────┘    │
+│                                    │                                         │
+│                                    ▼                                         │
+│  ┌────────────────────────────────────────────────────────────────────┐    │
+│  │                     PROVIDER INTEGRATION                           │    │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌──────────┐  │    │
+│  │  │  Anthropic  │  │    AWS      │  │   Google    │  │  Azure   │  │    │
+│  │  │  (FirstParty)│  │  Bedrock   │  │   Vertex    │  │  Foundry │  │    │
+│  │  └─────────────┘  └─────────────┘  └─────────────┘  └──────────┘  │    │
+│  └────────────────────────────────────────────────────────────────────┘    │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🚀 快速开始
+---
 
-### 一键安装
+## 🔄 Core Workflow
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            INITIALIZATION FLOW                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+    ┌──────────────┐
+    │   CLI Entry  │
+    │  (cli.js)    │
+    └──────┬───────┘
+           │
+           ▼
+    ┌──────────────┐
+    │   Bootstrap  │
+    │  & Config    │
+    └──────┬───────┘
+           │
+           ▼
+    ┌──────────────────────────────────────────┐
+    │         showSetupScreens()               │
+    │  ┌────────────────────────────────────┐  │
+    │  │  Config Check:                       │  │
+    │  │  • hasCompletedOnboarding           │  │
+    │  │  • hasCompletedModelSetup  ◄── NEW │  │
+    │  │  • theme configured                 │  │
+    │  └────────────────────────────────────┘  │
+    └──────┬───────────────────────────────────┘
+           │
+     ┌─────┴─────────────────────────────────────────────┐
+     │                                                   │
+     ▼                                                   ▼
+┌───────────────────┐                           ┌───────────────────┐
+│   FIRST LAUNCH   │                           │  ALREADY CONFIGURED│
+│                   │                           │                    │
+│ 1. Onboarding    │                           │  Main Loop (REPL) │
+│    - Theme        │                           │                    │
+│    - Model Setup  │◄─── NEW: ModelPicker     │  Waiting for      │
+│    - Security     │      + Settings Save     │  user input...    │
+│                   │                           │                    │
+└───────────────────┘                           └───────────────────┘
+```
+
+---
+
+## 🔧 Model Configuration System
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        MODEL SELECTION & CONFIGURATION                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────┐      ┌─────────────────────────────┐
+│     Configuration Sources    │      │    Priority Order          │
+├─────────────────────────────┤      ├─────────────────────────────┤
+│ 1. /model command (runtime) │      │ 1. /model (runtime)        │
+│ 2. --model CLI flag         │─────▶│ 2. --model (startup)       │
+│ 3. ANTHROPIC_MODEL env       │      │ 3. ANTHROPIC_MODEL env      │
+│ 4. settings.json (global)   │      │ 4. settings.json            │
+│ 5. Default (Sonnet 4.6)     │      │ 5. Built-in default         │
+└─────────────────────────────┘      └─────────────────────────────┘
+
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        MODEL CONFIG STRUCTURE                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────┐
+  │  export const ALL_MODEL_CONFIGS = {                         │
+  │    opus46: { firstParty: 'claude-opus-4-6', ... },          │
+  │    sonnet46: { firstParty: 'claude-sonnet-4-6', ... },    │
+  │    haiku45: { firstParty: 'claude-haiku-4-5', ... },       │
+  │    // Custom models can be added via config                 │
+  │  }                                                          │
+  └─────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────┐
+  │  API Providers Supported:                                   │
+  │  ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌─────────┐  │
+  │  │ firstParty │ │  bedrock   │ │  vertex   │ │ foundry │  │
+  │  │(Anthropic) │ │ (AWS)      │ │ (Google)  │ │(Azure)  │  │
+  │  └────────────┘ └────────────┘ └────────────┘ └─────────┘  │
+  │                                                              │
+  │  Controlled via:                                             │
+  │  • CLAUDE_CODE_USE_BEDROCK=1                                │
+  │  • CLAUDE_CODE_USE_VERTEX=1                                  │
+  │  • CLAUDE_CODE_USE_FOUNDRY=1                                │
+  └─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🌍 Custom Model Support
+
+ReCode supports **any OpenAI-compatible API endpoint**. Here's how to configure:
+
+### Using Environment Variables
+
+```bash
+# Option 1: Custom API Endpoint (OpenAI-compatible)
+export ANTHROPIC_BASE_URL="https://your-custom-api.com/v1"
+export ANTHROPIC_API_KEY="your-api-key"
+
+# Option 2: Using Custom Model Name
+export ANTHROPIC_MODEL="gpt-4-turbo"
+
+# Option 3: AWS Bedrock
+export CLAUDE_CODE_USE_BEDROCK=1
+
+# Option 4: Google Vertex AI
+export CLAUDE_CODE_USE_VERTEX=1
+
+# Option 5: Azure Foundry
+export CLAUDE_CODE_USE_FOUNDRY=1
+```
+
+### Configuration Flow
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                  CUSTOM MODEL RESOLUTION                        │
+└─────────────────────────────────────────────────────────────────┘
+
+     User Input (model/custom-name)
+              │
+              ▼
+┌─────────────────────────────┐
+│  parseUserSpecifiedModel() │
+│  - Alias resolution         │
+│  - [1m] suffix handling    │
+│  - Provider mapping        │
+└─────────────┬───────────────┘
+              │
+              ▼
+┌─────────────────────────────┐
+│  Provider Resolution        │
+│  ┌─────────────────────┐    │
+│  │ getAPIProvider()   │    │
+│  │ firstParty/bedrock │    │
+│  │ /vertex/foundry    │    │
+│  └─────────────────────┘    │
+└─────────────┬───────────────┘
+              │
+              ▼
+┌─────────────────────────────┐
+│  Model String Mapping       │
+│  ┌─────────────────────┐    │
+│  │ configs.ts          │    │
+│  │ • firstParty ID     │    │
+│  │ • bedrock ARN       │    │
+│  │ • vertex model      │    │
+│  │ • foundry deploy ID│    │
+│  └─────────────────────┘    │
+└─────────────┬───────────────┘
+              │
+              ▼
+        API Call → Model Response
+```
+
+---
+
+## 📦 Installation
+
+### One-Click Installation
 
 #### macOS / Linux
 ```bash
@@ -65,179 +247,193 @@ curl -sL https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/inst
 irm https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install.ps1 | iex
 ```
 
-#### Termux
+#### Termux (Android)
 ```bash
 curl -sL https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install-termux.sh | bash
 ```
 
-### 手动安装
+### Manual Installation
 
 ```bash
-# 克隆仓库
+# Clone repository
 git clone https://github.com/mangiapanejohn-dev/-Re-Code.git
 cd ReCode
 
-# 安装依赖
+# Install dependencies
 npm install
 
-# 启动
-npm start
-# 或
-node cli.js
+# Start
+node recode-temp/package/cli.js
 ```
 
-### NPM 安装
+### NPM Installation
 
 ```bash
-# 全局安装
+# Global installation
 npm install -g @recode/cli
 
-# 启动
+# Run
 recode
 ```
 
-## 📖 使用指南
+---
 
-### 首次启动
+## 💻 Usage Guide
 
-首次启动时，系统会引导你完成初始配置：
+### First Launch
 
-1. **主题选择** - 选择你喜欢的界面主题
-2. **模型配置** - 选择要使用的 AI 模型
-3. **安全设置** - 了解安全使用指南
+On first launch, the system guides you through:
 
-### 基本命令
+1. **Theme Selection** - Choose your preferred color scheme
+2. **Model Configuration** - Select your AI model (REQUIRED) ⭐
+3. **Security Briefing** - Understand safe usage practices
 
-| 命令 | 说明 |
-|------|------|
-| `/help` | 显示帮助信息 |
-| `/model` | 切换模型 |
-| `/config` | 查看/修改配置 |
-| `/clear` | 清除会话 |
-| `/exit` | 退出程序 |
+### Commands
 
-### 环境变量配置
+| Command | Description |
+|---------|-------------|
+| `/help` | Display help information |
+| `/model` | Switch AI model |
+| `/config` | View/modify configuration |
+| `/clear` | Clear current session |
+| `/exit` | Exit program |
 
-```bash
-# 设置 API Key
-export ANTHROPIC_API_KEY="your-api-key"
-
-# 使用自定义模型
-export ANTHROPIC_MODEL="claude-opus-4-6"
-
-# 自定义 API 地址
-export ANTHROPIC_BASE_URL="https://api.anthropic.com"
-```
-
-### 使用其他 AI 提供商
+### Environment Variables
 
 ```bash
-# AWS Bedrock
-export CLAUDE_CODE_USE_BEDROCK=1
+# API Configuration
+ANTHROPIC_API_KEY=your-key          # API authentication
+ANTHROPIC_BASE_URL=custom-endpoint # Custom API URL
+ANTHROPIC_MODEL=model-name         # Specify model
 
-# Google Vertex
-export CLAUDE_CODE_USE_VERTEX=1
-
-# Azure Foundry
-export CLAUDE_CODE_USE_FOUNDRY=1
+# Provider Selection
+CLAUDE_CODE_USE_BEDROCK=1          # Use AWS Bedrock
+CLAUDE_CODE_USE_VERTEX=1           # Use Google Vertex
+CLAUDE_CODE_USE_FOUNDRY=1          # Use Azure Foundry
 ```
 
-## 🔧 工作原理
+---
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                         ReCode                               │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐  │
-│  │   UI Layer   │───▶│  API Layer   │───▶│  AI Provider │  │
-│  │  (Ink/React) │    │ (Client/Auth)│    │ (Anthropic)  │  │
-│  └──────────────┘    └──────────────┘    └──────────────┘  │
-│         │                   │                   │           │
-│         ▼                   ▼                   ▼           │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │              State Management                       │   │
-│  │  - App State (models, sessions, permissions)         │   │
-│  │  - Settings (user preferences, config)              │   │
-│  │  - Global Config (onboarding, theme)                │   │
-│  └─────────────────────────────────────────────────────┘   │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### 核心模块
-
-1. **UI 层** (`src/components/`)
-   - Onboarding: 首次启动引导
-   - ModelPicker: 模型选择器
-   - REPL: 主交互界面
-
-2. **API 层** (`src/services/api/`)
-   - Claude API 客户端
-   - 认证与授权
-   - 错误处理与重试
-
-3. **状态管理层** (`src/utils/`)
-   - Settings: 用户配置持久化
-   - Config: 全局配置管理
-   - Model: 模型选择逻辑
-
-### 启动流程
-
-```
-1. CLI 入口 (cli.js)
-       │
-       ▼
-2. 初始化 (init.ts / main.tsx)
-       │
-       ▼
-3. 检查配置 (showSetupScreens)
-       │
-       ├──▶ 首次启动 → Onboarding → Model Setup
-       │
-       └──▶ 已配置 → 主循环 (REPL)
-```
-
-## 📁 项目结构
+## 🗂️ Project Structure
 
 ```
 ReCode/
 ├── src/
-│   ├── components/       # React 组件
-│   │   ├── Onboarding.tsx       # 首次启动引导
-│   │   ├── ModelPicker.tsx     # 模型选择器
-│   │   └── REPL.tsx            # 主界面
-│   ├── services/         # 服务层
-│   │   └── api/           # API 客户端
-│   ├── utils/            # 工具函数
-│   │   ├── model/         # 模型配置
-│   │   ├── settings/     # 设置管理
-│   │   └── config.ts     # 全局配置
-│   └── commands/         # 命令处理
-├── cli.js                # 入口文件
-├── package.json          # 依赖配置
-└── README.md             # 本文件
+│   ├── components/           # React UI components
+│   │   ├── Onboarding.tsx    # First-launch wizard
+│   │   ├── ModelPicker.tsx   # Model selection UI
+│   │   └── REPL.tsx          # Main chat interface
+│   ├── services/api/         # API client layer
+│   │   ├── claude.ts         # Anthropic client
+│   │   └── errors.ts         # Error handling
+│   ├── utils/
+│   │   ├── model/            # Model configuration
+│   │   │   ├── model.ts      # Model selection logic
+│   │   │   ├── configs.ts    # Model configs
+│   │   │   ├── providers.ts  # Provider resolution
+│   │   │   └── validateModel.ts
+│   │   ├── settings/         # User preferences
+│   │   └── config.ts         # Global config
+│   └── commands/             # CLI commands
+├── recode-temp/package/
+│   ├── cli.js               # Built CLI binary
+│   └── package.json          # NPM package config
+├── install.sh               # macOS/Linux installer
+├── install.ps1              # Windows installer
+├── install-termux.sh        # Termux installer
+└── README.md                # This file
 ```
 
-## 🤝 贡献
+---
 
-欢迎提交 Issue 和 Pull Request！
+## 🔬 Technical Deep Dive
 
-1. Fork 本仓库
-2. 创建你的分支 (`git checkout -b feature/amazing`)
-3. 提交你的更改 (`git commit -m 'Add amazing feature'`)
-4. 推送到分支 (`git push origin feature/amazing`)
-5. 创建 Pull Request
+### State Management Architecture
 
-## 📝 许可证
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      STATE MANAGEMENT                           │
+└─────────────────────────────────────────────────────────────────┘
 
-MIT License - 详见 [LICENSE](LICENSE)
+  ┌──────────────────┐     ┌──────────────────┐
+  │   App State      │     │  Global Config   │
+  │  (In-Memory)     │     │   (Persistent)   │
+  ├──────────────────┤     ├──────────────────┤
+  │ • mainLoopModel  │     │ • theme          │
+  │ • mainLoopModel  │     │ • hasCompleted   │
+  │   ForSession    │     │   Onboarding     │
+  │ • isFastMode    │     │ • hasCompleted   │
+  │ • session       │     │   ModelSetup     │
+  │ • permissions   │     │ • oauthAccount   │
+  └────────┬─────────┘     └────────┬─────────┘
+           │                        │
+           └────────┬───────────────┘
+                    │
+                    ▼
+        ┌─────────────────────────┐
+        │    Settings Layer       │
+        │   (settings.json)       │
+        │ • model: "claude-opus"  │
+        │ • allowedMcpServers    │
+        │ • permissions          │
+        └─────────────────────────┘
+```
 
-## 🙏 致谢
+### API Request Flow
 
-- [Anthropic](https://www.anthropic.com/) - 提供 Claude API
-- [Ink](https://github.com/vadimdemedes/ink) - 终端 UI 框架
-- 所有贡献者和测试者
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      API REQUEST FLOW                           │
+└─────────────────────────────────────────────────────────────────┘
+
+  User Input
+      │
+      ▼
+  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+  │   Parser    │───▶│   Query     │───▶│    API      │
+  │  (commands) │    │   Engine    │    │   Client    │
+  └─────────────┘    └──────┬──────┘    └──────┬──────┘
+                             │                  │
+                             ▼                  ▼
+                    ┌──────────────┐    ┌──────────────┐
+                    │   Tool       │    │   Claude     │
+                    │  Execution   │    │   API        │
+                    └──────────────┘    └──────┬───────┘
+                                                │
+                                                ▼
+                                       ┌──────────────┐
+                                       │  Provider    │
+                                       │  (Anthropic/ │
+                                       │   Bedrock/   │
+                                       │   Vertex/)   │
+                                       └──────────────┘
+```
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how to get started:
+
+1. **Fork** the repository
+2. **Create** your feature branch (`git checkout -b feature/amazing`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing`)
+5. **Create** a Pull Request
+
+---
+
+## 📜 License
+
+MIT License - See [LICENSE](LICENSE) for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- [Anthropic](https://www.anthropic.com/) - Claude API
+- [Ink](https://github.com/vadimdemedes/ink) - Terminal UI framework
+- All contributors and testers
 
 ---
 
