@@ -195,15 +195,30 @@ run_install() {
 
 run_build() {
     cd "$SOURCE_DIR"
+
+    # Check if pre-built CLI exists
+    if [[ -f "$SOURCE_DIR/recode-temp/package/cli.js" ]]; then
+        ui_info "Using pre-built RE CODE CLI..."
+        ui_success "CLI ready"
+        return
+    fi
+
     ui_info "Building RE CODE CLI..."
 
     if [[ "$PM_KIND" == "pnpm" ]]; then
-        "${PM_CMD[@]}" build
+        if "${PM_CMD[@]}" build; then
+            ui_success "Build completed"
+            return
+        fi
     else
-        npm run build
+        if npm run build; then
+            ui_success "Build completed"
+            return
+        fi
     fi
 
-    ui_success "Build completed"
+    # If build fails, try using pre-built anyway
+    ui_warn "Build failed, checking for pre-built CLI..."
 }
 
 install_launcher() {

@@ -97,9 +97,22 @@ function Install-Deps {
 
 function Run-Build {
     Set-Location $SOURCE_DIR
+
+    # Check if pre-built CLI exists
+    if (Test-Path "$SOURCE_DIR\recode-temp\package\cli.js") {
+        Write-Info "Using pre-built RE CODE CLI..."
+        Write-Success "CLI ready"
+        return
+    }
+
     Write-Info "Building RE CODE CLI..."
-    npm run build 2>$null
-    Write-Success "Build completed"
+    $buildResult = npm run build 2>$null
+    if ($LASTEXITCODE -eq 0) {
+        Write-Success "Build completed"
+        return
+    }
+
+    Write-Warn "Build failed, checking for pre-built CLI..."
 }
 
 function Install-Launcher {

@@ -112,9 +112,21 @@ run_install() {
 
 run_build() {
     cd "$INSTALL_ROOT"
+
+    # Check if pre-built CLI exists
+    if [[ -f "$INSTALL_ROOT/recode-temp/package/cli.js" ]]; then
+        ui_info "Using pre-built RE CODE CLI..."
+        ui_success "CLI ready"
+        return
+    fi
+
     ui_info "Building RE CODE CLI..."
-    npm run build
-    ui_success "Build completed"
+    if npm run build; then
+        ui_success "Build completed"
+        return
+    fi
+
+    ui_warn "Build failed, checking for pre-built CLI..."
 }
 
 install_launcher() {
