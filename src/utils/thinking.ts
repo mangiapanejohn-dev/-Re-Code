@@ -59,7 +59,7 @@ export function findThinkingTriggerPositions(text: string): Array<{
 
 const RAINBOW_COLORS: Array<keyof Theme> = [
   'rainbow_red',
-  'rainbow_orange',
+  'purple_theme',
   'rainbow_yellow',
   'rainbow_green',
   'rainbow_blue',
@@ -69,7 +69,7 @@ const RAINBOW_COLORS: Array<keyof Theme> = [
 
 const RAINBOW_SHIMMER_COLORS: Array<keyof Theme> = [
   'rainbow_red_shimmer',
-  'rainbow_orange_shimmer',
+  'purple_theme_shimmer',
   'rainbow_yellow_shimmer',
   'rainbow_green_shimmer',
   'rainbow_blue_shimmer',

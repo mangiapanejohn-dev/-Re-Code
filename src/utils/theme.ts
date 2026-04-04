@@ -42,7 +42,7 @@ export type Theme = {
   green_FOR_SUBAGENTS_ONLY: string
   yellow_FOR_SUBAGENTS_ONLY: string
   purple_FOR_SUBAGENTS_ONLY: string
-  orange_FOR_SUBAGENTS_ONLY: string
+  pink_FOR_SUBAGENTS_ONLY: string
   pink_FOR_SUBAGENTS_ONLY: string
   cyan_FOR_SUBAGENTS_ONLY: string
   // Grove colors
@@ -73,14 +73,14 @@ export type Theme = {
   briefLabelClaude: string
   // Rainbow colors for ultrathink keyword highlighting
   rainbow_red: string
-  rainbow_orange: string
+  purple_theme: string
   rainbow_yellow: string
   rainbow_green: string
   rainbow_blue: string
   rainbow_indigo: string
   rainbow_violet: string
   rainbow_red_shimmer: string
-  rainbow_orange_shimmer: string
+  purple_theme_shimmer: string
   rainbow_yellow_shimmer: string
   rainbow_green_shimmer: string
   rainbow_blue_shimmer: string
@@ -115,8 +115,8 @@ export type ThemeSetting = (typeof THEME_SETTINGS)[number]
 const lightTheme: Theme = {
   autoAccept: 'rgb(135,0,255)', // Electric violet
   bashBorder: 'rgb(255,0,135)', // Vibrant pink
-  claude: 'rgb(215,119,87)', // Claude orange
-  claudeShimmer: 'rgb(245,149,117)', // Lighter claude orange for shimmer effect
+  claude: 'rgb(147,51,219)', // Claude orange
+  claudeShimmer: 'rgb(168,85,247)', // Lighter claude orange for shimmer effect
   claudeBlue_FOR_SYSTEM_SPINNER: 'rgb(87,105,247)', // Medium blue for system spinner
   claudeBlueShimmer_FOR_SYSTEM_SPINNER: 'rgb(117,135,255)', // Lighter blue for system spinner shimmer
   permission: 'rgb(87,105,247)', // Medium blue
@@ -150,7 +150,7 @@ const lightTheme: Theme = {
   green_FOR_SUBAGENTS_ONLY: 'rgb(22,163,74)', // Green 600
   yellow_FOR_SUBAGENTS_ONLY: 'rgb(202,138,4)', // Yellow 600
   purple_FOR_SUBAGENTS_ONLY: 'rgb(147,51,234)', // Purple 600
-  orange_FOR_SUBAGENTS_ONLY: 'rgb(234,88,12)', // Orange 600
+  pink_FOR_SUBAGENTS_ONLY: 'rgb(234,88,12)', // Orange 600
   pink_FOR_SUBAGENTS_ONLY: 'rgb(219,39,119)', // Pink 600
   cyan_FOR_SUBAGENTS_ONLY: 'rgb(8,145,178)', // Cyan 600
   // Grove colors
@@ -158,7 +158,7 @@ const lightTheme: Theme = {
   // Chrome colors
   chromeYellow: 'rgb(251,188,4)', // Chrome yellow
   // TUI V2 colors
-  clawd_body: 'rgb(215,119,87)',
+  clawd_body: 'rgb(147,51,219)',
   clawd_background: 'rgb(0,0,0)',
   userMessageBackground: 'rgb(240, 240, 240)', // Slightly darker grey for optimal contrast
   userMessageBackgroundHover: 'rgb(252, 252, 252)', // ≥250 to quantize distinct from base at 256-color level
@@ -169,20 +169,20 @@ const lightTheme: Theme = {
   memoryBackgroundColor: 'rgb(230, 245, 250)',
   rate_limit_fill: 'rgb(87,105,247)', // Medium blue
   rate_limit_empty: 'rgb(39,47,111)', // Dark blue
-  fastMode: 'rgb(255,106,0)', // Electric orange
-  fastModeShimmer: 'rgb(255,150,50)', // Lighter orange for shimmer
+  fastMode: 'rgb(168,85,247)', // Electric orange
+  fastModeShimmer: 'rgb(192,132,246)', // Lighter orange for shimmer
   // Brief/assistant mode
   briefLabelYou: 'rgb(37,99,235)', // Blue
-  briefLabelClaude: 'rgb(215,119,87)', // Brand orange
+  briefLabelClaude: 'rgb(147,51,219)', // Brand orange
   rainbow_red: 'rgb(235,95,87)',
-  rainbow_orange: 'rgb(245,139,87)',
+  purple_theme: 'rgb(147,51,219)',
   rainbow_yellow: 'rgb(250,195,95)',
   rainbow_green: 'rgb(145,200,130)',
   rainbow_blue: 'rgb(130,170,220)',
   rainbow_indigo: 'rgb(155,130,200)',
   rainbow_violet: 'rgb(200,130,180)',
   rainbow_red_shimmer: 'rgb(250,155,147)',
-  rainbow_orange_shimmer: 'rgb(255,185,137)',
+  purple_theme_shimmer: 'rgb(192,132,246)',
   rainbow_yellow_shimmer: 'rgb(255,225,155)',
   rainbow_green_shimmer: 'rgb(185,230,180)',
   rainbow_blue_shimmer: 'rgb(180,205,240)',
@@ -232,7 +232,7 @@ const lightAnsiTheme: Theme = {
   green_FOR_SUBAGENTS_ONLY: 'ansi:green',
   yellow_FOR_SUBAGENTS_ONLY: 'ansi:yellow',
   purple_FOR_SUBAGENTS_ONLY: 'ansi:magenta',
-  orange_FOR_SUBAGENTS_ONLY: 'ansi:redBright',
+  pink_FOR_SUBAGENTS_ONLY: 'ansi:redBright',
   pink_FOR_SUBAGENTS_ONLY: 'ansi:magentaBright',
   cyan_FOR_SUBAGENTS_ONLY: 'ansi:cyan',
   // Grove colors
@@ -256,14 +256,14 @@ const lightAnsiTheme: Theme = {
   briefLabelYou: 'ansi:blue',
   briefLabelClaude: 'ansi:redBright',
   rainbow_red: 'ansi:red',
-  rainbow_orange: 'ansi:redBright',
+  purple_theme: 'ansi:redBright',
   rainbow_yellow: 'ansi:yellow',
   rainbow_green: 'ansi:green',
   rainbow_blue: 'ansi:cyan',
   rainbow_indigo: 'ansi:blue',
   rainbow_violet: 'ansi:magenta',
   rainbow_red_shimmer: 'ansi:redBright',
-  rainbow_orange_shimmer: 'ansi:yellow',
+  purple_theme_shimmer: 'ansi:yellow',
   rainbow_yellow_shimmer: 'ansi:yellowBright',
   rainbow_green_shimmer: 'ansi:greenBright',
   rainbow_blue_shimmer: 'ansi:cyanBright',
@@ -313,7 +313,7 @@ const darkAnsiTheme: Theme = {
   green_FOR_SUBAGENTS_ONLY: 'ansi:greenBright',
   yellow_FOR_SUBAGENTS_ONLY: 'ansi:yellowBright',
   purple_FOR_SUBAGENTS_ONLY: 'ansi:magentaBright',
-  orange_FOR_SUBAGENTS_ONLY: 'ansi:redBright',
+  pink_FOR_SUBAGENTS_ONLY: 'ansi:redBright',
   pink_FOR_SUBAGENTS_ONLY: 'ansi:magentaBright',
   cyan_FOR_SUBAGENTS_ONLY: 'ansi:cyanBright',
   // Grove colors
@@ -337,14 +337,14 @@ const darkAnsiTheme: Theme = {
   briefLabelYou: 'ansi:blueBright',
   briefLabelClaude: 'ansi:redBright',
   rainbow_red: 'ansi:red',
-  rainbow_orange: 'ansi:redBright',
+  purple_theme: 'ansi:redBright',
   rainbow_yellow: 'ansi:yellow',
   rainbow_green: 'ansi:green',
   rainbow_blue: 'ansi:cyan',
   rainbow_indigo: 'ansi:blue',
   rainbow_violet: 'ansi:magenta',
   rainbow_red_shimmer: 'ansi:redBright',
-  rainbow_orange_shimmer: 'ansi:yellow',
+  purple_theme_shimmer: 'ansi:yellow',
   rainbow_yellow_shimmer: 'ansi:yellowBright',
   rainbow_green_shimmer: 'ansi:greenBright',
   rainbow_blue_shimmer: 'ansi:cyanBright',
@@ -394,7 +394,7 @@ const lightDaltonizedTheme: Theme = {
   green_FOR_SUBAGENTS_ONLY: 'rgb(0,204,0)', // Pure green
   yellow_FOR_SUBAGENTS_ONLY: 'rgb(255,204,0)', // Golden yellow
   purple_FOR_SUBAGENTS_ONLY: 'rgb(128,0,128)', // True purple
-  orange_FOR_SUBAGENTS_ONLY: 'rgb(255,128,0)', // True orange
+  pink_FOR_SUBAGENTS_ONLY: 'rgb(255,128,0)', // True orange
   pink_FOR_SUBAGENTS_ONLY: 'rgb(255,102,178)', // Adjusted pink
   cyan_FOR_SUBAGENTS_ONLY: 'rgb(0,178,178)', // Adjusted cyan
   // Grove colors
@@ -402,7 +402,7 @@ const lightDaltonizedTheme: Theme = {
   // Chrome colors
   chromeYellow: 'rgb(251,188,4)', // Chrome yellow
   // TUI V2 colors
-  clawd_body: 'rgb(215,119,87)',
+  clawd_body: 'rgb(147,51,219)',
   clawd_background: 'rgb(0,0,0)',
   userMessageBackground: 'rgb(220, 220, 220)', // Slightly darker grey for optimal contrast
   userMessageBackgroundHover: 'rgb(232, 232, 232)', // ≥230 to quantize distinct from base at 256-color level
@@ -413,19 +413,19 @@ const lightDaltonizedTheme: Theme = {
   memoryBackgroundColor: 'rgb(230, 245, 250)',
   rate_limit_fill: 'rgb(51,102,255)', // Bright blue
   rate_limit_empty: 'rgb(23,46,114)', // Dark blue
-  fastMode: 'rgb(255,106,0)', // Electric orange (color-blind safe)
-  fastModeShimmer: 'rgb(255,150,50)', // Lighter orange for shimmer
+  fastMode: 'rgb(168,85,247)', // Electric orange (color-blind safe)
+  fastModeShimmer: 'rgb(192,132,246)', // Lighter orange for shimmer
   briefLabelYou: 'rgb(37,99,235)', // Blue
   briefLabelClaude: 'rgb(255,153,51)', // Orange adjusted for deuteranopia (matches claude)
   rainbow_red: 'rgb(235,95,87)',
-  rainbow_orange: 'rgb(245,139,87)',
+  purple_theme: 'rgb(147,51,219)',
   rainbow_yellow: 'rgb(250,195,95)',
   rainbow_green: 'rgb(145,200,130)',
   rainbow_blue: 'rgb(130,170,220)',
   rainbow_indigo: 'rgb(155,130,200)',
   rainbow_violet: 'rgb(200,130,180)',
   rainbow_red_shimmer: 'rgb(250,155,147)',
-  rainbow_orange_shimmer: 'rgb(255,185,137)',
+  purple_theme_shimmer: 'rgb(192,132,246)',
   rainbow_yellow_shimmer: 'rgb(255,225,155)',
   rainbow_green_shimmer: 'rgb(185,230,180)',
   rainbow_blue_shimmer: 'rgb(180,205,240)',
@@ -440,7 +440,7 @@ const lightDaltonizedTheme: Theme = {
 const darkTheme: Theme = {
   autoAccept: 'rgb(175,135,255)', // Electric violet
   bashBorder: 'rgb(253,93,177)', // Bright pink
-  claude: 'rgb(215,119,87)', // Claude orange
+  claude: 'rgb(147,51,219)', // Claude orange
   claudeShimmer: 'rgb(235,159,127)', // Lighter claude orange for shimmer effect
   claudeBlue_FOR_SYSTEM_SPINNER: 'rgb(147,165,255)', // Blue for system spinner
   claudeBlueShimmer_FOR_SYSTEM_SPINNER: 'rgb(177,195,255)', // Lighter blue for system spinner shimmer
@@ -475,7 +475,7 @@ const darkTheme: Theme = {
   green_FOR_SUBAGENTS_ONLY: 'rgb(22,163,74)', // Green 600
   yellow_FOR_SUBAGENTS_ONLY: 'rgb(202,138,4)', // Yellow 600
   purple_FOR_SUBAGENTS_ONLY: 'rgb(147,51,234)', // Purple 600
-  orange_FOR_SUBAGENTS_ONLY: 'rgb(234,88,12)', // Orange 600
+  pink_FOR_SUBAGENTS_ONLY: 'rgb(234,88,12)', // Orange 600
   pink_FOR_SUBAGENTS_ONLY: 'rgb(219,39,119)', // Pink 600
   cyan_FOR_SUBAGENTS_ONLY: 'rgb(8,145,178)', // Cyan 600
   // Grove colors
@@ -483,7 +483,7 @@ const darkTheme: Theme = {
   // Chrome colors
   chromeYellow: 'rgb(251,188,4)', // Chrome yellow
   // TUI V2 colors
-  clawd_body: 'rgb(215,119,87)',
+  clawd_body: 'rgb(147,51,219)',
   clawd_background: 'rgb(0,0,0)',
   userMessageBackground: 'rgb(55, 55, 55)', // Lighter grey for better visual contrast
   userMessageBackgroundHover: 'rgb(70, 70, 70)',
@@ -497,16 +497,16 @@ const darkTheme: Theme = {
   fastMode: 'rgb(255,120,20)', // Electric orange for dark bg
   fastModeShimmer: 'rgb(255,165,70)', // Lighter orange for shimmer
   briefLabelYou: 'rgb(122,180,232)', // Light blue
-  briefLabelClaude: 'rgb(215,119,87)', // Brand orange
+  briefLabelClaude: 'rgb(147,51,219)', // Brand orange
   rainbow_red: 'rgb(235,95,87)',
-  rainbow_orange: 'rgb(245,139,87)',
+  purple_theme: 'rgb(147,51,219)',
   rainbow_yellow: 'rgb(250,195,95)',
   rainbow_green: 'rgb(145,200,130)',
   rainbow_blue: 'rgb(130,170,220)',
   rainbow_indigo: 'rgb(155,130,200)',
   rainbow_violet: 'rgb(200,130,180)',
   rainbow_red_shimmer: 'rgb(250,155,147)',
-  rainbow_orange_shimmer: 'rgb(255,185,137)',
+  purple_theme_shimmer: 'rgb(192,132,246)',
   rainbow_yellow_shimmer: 'rgb(255,225,155)',
   rainbow_green_shimmer: 'rgb(185,230,180)',
   rainbow_blue_shimmer: 'rgb(180,205,240)',
@@ -556,7 +556,7 @@ const darkDaltonizedTheme: Theme = {
   green_FOR_SUBAGENTS_ONLY: 'rgb(102,255,102)', // Bright green
   yellow_FOR_SUBAGENTS_ONLY: 'rgb(255,255,102)', // Bright yellow
   purple_FOR_SUBAGENTS_ONLY: 'rgb(178,102,255)', // Bright purple
-  orange_FOR_SUBAGENTS_ONLY: 'rgb(255,178,102)', // Bright orange
+  pink_FOR_SUBAGENTS_ONLY: 'rgb(255,178,102)', // Bright orange
   pink_FOR_SUBAGENTS_ONLY: 'rgb(255,153,204)', // Bright pink
   cyan_FOR_SUBAGENTS_ONLY: 'rgb(102,204,204)', // Bright cyan
   // Grove colors
@@ -564,7 +564,7 @@ const darkDaltonizedTheme: Theme = {
   // Chrome colors
   chromeYellow: 'rgb(251,188,4)', // Chrome yellow
   // TUI V2 colors
-  clawd_body: 'rgb(215,119,87)',
+  clawd_body: 'rgb(147,51,219)',
   clawd_background: 'rgb(0,0,0)',
   userMessageBackground: 'rgb(55, 55, 55)', // Lighter grey for better visual contrast
   userMessageBackgroundHover: 'rgb(70, 70, 70)',
@@ -580,14 +580,14 @@ const darkDaltonizedTheme: Theme = {
   briefLabelYou: 'rgb(122,180,232)', // Light blue
   briefLabelClaude: 'rgb(255,153,51)', // Orange adjusted for deuteranopia (matches claude)
   rainbow_red: 'rgb(235,95,87)',
-  rainbow_orange: 'rgb(245,139,87)',
+  purple_theme: 'rgb(147,51,219)',
   rainbow_yellow: 'rgb(250,195,95)',
   rainbow_green: 'rgb(145,200,130)',
   rainbow_blue: 'rgb(130,170,220)',
   rainbow_indigo: 'rgb(155,130,200)',
   rainbow_violet: 'rgb(200,130,180)',
   rainbow_red_shimmer: 'rgb(250,155,147)',
-  rainbow_orange_shimmer: 'rgb(255,185,137)',
+  purple_theme_shimmer: 'rgb(192,132,246)',
   rainbow_yellow_shimmer: 'rgb(255,225,155)',
   rainbow_green_shimmer: 'rgb(185,230,180)',
   rainbow_blue_shimmer: 'rgb(180,205,240)',

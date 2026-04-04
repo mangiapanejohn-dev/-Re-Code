@@ -28,7 +28,7 @@ export const AGENT_COLOR_TO_THEME_COLOR = {
   green: 'green_FOR_SUBAGENTS_ONLY',
   yellow: 'yellow_FOR_SUBAGENTS_ONLY',
   purple: 'purple_FOR_SUBAGENTS_ONLY',
-  orange: 'orange_FOR_SUBAGENTS_ONLY',
+  orange: 'pink_FOR_SUBAGENTS_ONLY',
   pink: 'pink_FOR_SUBAGENTS_ONLY',
   cyan: 'cyan_FOR_SUBAGENTS_ONLY',
 } as const satisfies Record<AgentColorName, keyof Theme>
