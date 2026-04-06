@@ -14,10 +14,6 @@
   </a>
 </p>
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/assets/banner.png" alt="RE CODE Banner" width="800">
-</p>
-
 ---
 
 ## ✨ Features
