@@ -1,109 +1,89 @@
 # RE CODE 👾
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-3.0.1-purple.svg" alt="Version">
-  <img src="https://img.shields.io/badge/platform-Windows%20macOS%20Linux%20Termux-pink.svg" alt="Platforms">
-  <img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License">
-  <img src="https://img.shields.io/badge/npm-Not%20Published-purple.svg" alt="NPM">
+  <a href="https://github.com/mangiapanejohn-dev/-Re-Code/stargazers">
+    <img src="https://img.shields.io/github/stars/mangiapanejohn-dev/-Re-Code?style=flat-square&logo=github" alt="Stars">
+  </a>
+  <a href="https://github.com/mangiapanejohn-dev/-Re-Code/forks">
+    <img src="https://img.shields.io/github/forks/mangiapanejohn-dev/-Re-Code?style=flat-square&logo=github" alt="Forks">
+  </a>
+  <img src="https://img.shields.io/badge/version-3.0.2-purple?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux%20%7C%20Termux-pink?style=flat-square" alt="Platforms">
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
+  </a>
 </p>
 
-**RE CODE** — Open-source multi-model AI chat interface with custom model support.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/assets/banner.png" alt="RE CODE Banner" width="800">
+</p>
 
 ---
 
-## Why ReCode?
+## ✨ Features
 
 | Feature | Description |
-|---------|-------------|
-| Multi-Model | Claude Opus/Sonnet/Haiku, custom models |
-| Configurable | Model selection, API endpoints, env vars |
-| Multi-Provider | Anthropic, AWS Bedrock, Google Vertex, Azure |
-| Cross-Platform | Windows, macOS, Linux, Termux |
-| Enterprise | Permissions, workspace trust |
+|:---:|:---|
+| 🤖 **Multi-Model** | Claude Opus / Sonnet / Haiku + Custom Models |
+| 🔧 **Configurable** | Model selection, API endpoints, environment variables |
+| 🌐 **Multi-Provider** | Anthropic, AWS Bedrock, Google Vertex, Azure |
+| 💻 **Cross-Platform** | Windows, macOS, Linux, Termux |
+| 🛡️ **Enterprise** | Permissions, workspace trust |
 
 ---
 
-## Architecture
+## 🚀 Quick Install
 
+### macOS / Linux
+```bash
+curl -fsSL https://cdn.jsdelivr.net/gh/mangiapanejohn-dev/-Re-Code/install.sh | bash
 ```
-┌─────────────────────────────────────┐
-│         Presentation Layer          │
-│  Onboarding → ModelPicker → REPL   │
-└────────────────┬────────────────────┘
-                 ▼
-┌─────────────────────────────────────┐
-│         Business Logic Layer        │
-│  Commands → Query Engine → Tools   │
-└────────────────┬────────────────────┘
-                 ▼
-┌─────────────────────────────────────┐
-│              API Layer              │
-│      Claude API → Auth → Errors    │
-└────────────────┬────────────────────┘
-                 ▼
-┌─────────────────────────────────────┐
-│       Provider Integration          │
-│  Anthropic │ Bedrock │ Vertex │ Foundry │
-└─────────────────────────────────────┘
+
+### Windows (PowerShell)
+```powershell
+irm -useb https://cdn.jsdelivr.net/gh/mangiapanejohn-dev/-Re-Code/install.ps1 | iex
+```
+
+### Termux
+```bash
+curl -fsSL https://cdn.jsdelivr.net/gh/mangiapanejohn-dev/-Re-Code/install-termux.sh | bash
 ```
 
 ---
 
-## Core Workflow
+## 📖 Usage
 
-```
-CLI Entry → Bootstrap → Config Check
-                    │
-        ┌───────────┴───────────┐
-        ▼                       ▼
-   First Launch            Main Loop
-        │                       │
-   Onboarding          Ready to Use!
-   Theme → Model → Security
-```
+### Basic Commands
 
----
+| Command | Description |
+|:---|:---|
+| `recode` | Start RE CODE |
+| `recode -v` | Show version |
+| `recode --help` | Show help |
 
-## Model Configuration
+### Slash Commands
 
-### Priority Order
-
-| # | Source | Example |
-|---|--------|---------|
-| 1 | /model cmd | /model opus |
-| 2 | --model flag | --model sonnet |
-| 3 | ENV variable | ANTHROPIC_MODEL=haiku |
-| 4 | settings.json | { "model": "..." } |
-| 5 | Default | Sonnet 4.6 |
-
-### Model Resolution Flow
-
-```
-User Input → Alias Resolution → [1m] Suffix → Provider Mapping → Final Model
-```
+| Command | Description |
+|:---|:---|
+| `/help` | Show help |
+| `/model [name]` | Switch model (opus, sonnet, haiku) |
+| `/config` | View/edit configuration |
+| `/clear` | Clear session |
+| `/exit` | Exit |
 
 ---
 
-## Custom Model & Providers
-
-```
-Environment Variables → getAPIProvider()
-                              │
-         ┌────────┬─────────┴────────┬──────────┐
-         ▼        ▼            ▼          ▼
-    Bedrock   Vertex      Foundry     FirstParty
-      │          │            │           │
-      ▼          ▼            ▼           ▼
-    AWS ARN   Vertex ID   Deploy ID   claude-xxx
-```
+## ⚙️ Configuration
 
 ### Environment Variables
 
 ```bash
-# API Config
-ANTHROPIC_API_KEY=your-key
+# API Configuration
+ANTHROPIC_API_KEY=your-api-key
+ANTHROPIC_MODEL=claude-sonnet-4-20250514
+
+# Alternative Providers
 ANTHROPIC_BASE_URL=custom-endpoint
-ANTHROPIC_MODEL=model-name
 
 # Provider Selection
 CLAUDE_CODE_USE_BEDROCK=1
@@ -111,98 +91,99 @@ CLAUDE_CODE_USE_VERTEX=1
 CLAUDE_CODE_USE_FOUNDRY=1
 ```
 
----
-
-## State Management
+### Model Priority
 
 ```
-App State (In-Memory)
-    │
-    └── mainLoopModel, isFastMode, permissions
-    │
-    ▼
-Global Config (Persistent)
-    │
-    └── theme, hasCompletedOnboarding, hasCompletedModelSetup
-    │
-    ▼
-Settings (settings.json)
-    │
-    └── model, allowedMcpServers, permissions
+1. /model command    → Highest priority
+2. --model flag
+3. ENV variable      → ANTHROPIC_MODEL=xxx
+4. settings.json
+5. Default           → Sonnet 4.6
 ```
 
 ---
 
-## Installation
+## 🏗️ Architecture
 
-| Platform | Command |
-|----------|---------|
-| macOS/Linux | `curl -sL https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install.sh \| bash` |
-| Windows | `irm https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install.ps1 \| iex` |
-| Termux | `curl -sL https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install-termux.sh \| bash` |
-| NPM | `npm install -g github:mangiapanejohn-dev/-Re-Code` |
+```
+┌─────────────────────────────────────────────┐
+│            Presentation Layer              │
+│   Onboarding → ModelPicker → REPL → TUI    │
+└──────────────────────┬──────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────┐
+│           Business Logic Layer              │
+│    Commands → Query Engine → Tools         │
+└──────────────────────┬──────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────┐
+│               API Layer                     │
+│      Claude API → Auth → Errors            │
+└──────────────────────┬──────────────────────┘
+                       ▼
+┌─────────────────────────────────────────────┐
+│         Provider Integration                │
+│   Anthropic │ Bedrock │ Vertex │ Foundry   │
+└─────────────────────────────────────────────┘
+```
 
 ---
 
-## First Launch Flow
-
-```
-Welcome → Theme Selection → MODEL SELECTION (REQUIRED) → Security → Ready!
-                                              │
-                              ┌───────────────┴───────────────┐
-                              ▼                               ▼
-                    Save to settings.json          Mark hasCompletedModelSetup=true
-```
-
-### Commands
-
-| Command | Description |
-|---------|-------------|
-| /help | Show help |
-| /model | Switch model |
-| /config | View/edit config |
-| /clear | Clear session |
-| /exit | Exit |
-
----
-
-## Project Structure
+## 📁 Project Structure
 
 ```
 ReCode/
 ├── src/
-│   ├── components/     # React UI
+│   ├── components/          # React UI
 │   │   ├── Onboarding.tsx
 │   │   ├── ModelPicker.tsx
 │   │   └── REPL.tsx
-│   ├── utils/
-│   │   ├── model/      # Model config
-│   │   └── settings/   # User settings
-│   └── commands/       # CLI commands
-├── recode-temp/package/  # Built CLI
-├── install.sh            # macOS/Linux
-├── install.ps1           # Windows
-└── install-termux.sh     # Termux
+│   ├── utils/              # Utilities
+│   │   ├── config/         # Configuration
+│   │   └── settings/       # User settings
+│   ├── commands/           # CLI commands
+│   ├── tools/              # Built-in tools
+│   └── skills/             # Custom skills
+├── recode-temp/package/    # Built CLI
+├── install.sh              # macOS/Linux
+├── install.ps1             # Windows
+├── install-termux.sh      # Termux
+└── README.md              # This file
 ```
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
 ```bash
+# Clone the repository
 git clone https://github.com/mangiapanejohn-dev/-Re-Code.git
 cd ReCode
-git checkout -b feature/amazing
-git commit -m 'Add feature'
-git push origin feature/amazing
+
+# Create a feature branch
+git checkout -b feature/awesome-feature
+
+# Make your changes
+# ...
+
+# Commit and push
+git add .
+git commit -m 'Add awesome feature'
+git push origin feature/awesome-feature
 ```
 
 ---
 
-## License
+## 📄 License
 
-MIT - See LICENSE
+MIT License - See [LICENSE](LICENSE) for details.
 
 ---
 
-<p align="center">Made with love by ReCode Team</p>
+<p align="center">
+  Made with 💜 by <a href="https://github.com/mangiapanejohn-dev">ReCode Team</a>
+</p>
+
+<p align="center">
+  <img src="https://komarev.com/ghpvc/?username=mangiapanejohn-dev&label=Profile%20Views&color=purple&style=flat-square" alt="Profile views">
+</p>
