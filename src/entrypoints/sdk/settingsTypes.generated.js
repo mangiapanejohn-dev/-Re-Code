@@ -1,0 +1,2 @@
+// Stub for settingsTypes  
+export {}

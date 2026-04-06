@@ -124,10 +124,18 @@ export function companionUserId(): string {
 // Regenerate bones from userId, merge with stored soul. Bones never persist
 // so species renames and SPECIES-array edits can't break stored companions,
 // and editing config.companion can't fake a rarity.
+// Apply user customizations (species, eye, hat) if set.
 export function getCompanion(): Companion | undefined {
   const stored = getGlobalConfig().companion
+  const customization = getGlobalConfig().companionCustomization
   if (!stored) return undefined
   const { bones } = roll(companionUserId())
+  // Apply user customizations to override hash-generated values
+  if (customization) {
+    if (customization.species) bones.species = customization.species
+    if (customization.eye) bones.eye = customization.eye
+    if (customization.hat) bones.hat = customization.hat
+  }
   // bones last so stale bones fields in old-format configs get overridden
   return { ...stored, ...bones }
 }

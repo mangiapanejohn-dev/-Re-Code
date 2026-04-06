@@ -1095,7 +1095,7 @@ function renderStatsToAnsi(stats: ClaudeCodeStats, activeTab: 'Overview' | 'Mode
 function renderOverviewToAnsi(stats: ClaudeCodeStats): string[] {
   const lines: string[] = [];
   const theme = getTheme(resolveThemeSetting(getGlobalConfig().theme));
-  const h = (text: string) => applyColor(text, theme.claude as Color);
+  const h = (text: string) => applyColor(text, theme.reCode as Color);
 
   // Two-column helper with fixed spacing
   // Column 1: label (18 chars) + value + padding to reach col 2

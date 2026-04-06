@@ -438,7 +438,7 @@ export async function teleportResumeCodeSession(sessionId: string, onProgress?: 
       logEvent('tengu_teleport_resume_error', {
         error_type: 'no_access_token' as AnalyticsMetadata_I_VERIFIED_THIS_IS_NOT_CODE_OR_FILEPATHS
       });
-      throw new Error('RE CODE web sessions require authentication with a Claude.ai account. API key authentication is not sufficient. Please run /login to authenticate, or check your authentication status with /status.');
+      throw new Error('RE CODE web sessions require a subscription account. API key authentication is not sufficient. Please run /login to authenticate, or check your authentication status with /status.');
     }
 
     // Get organization UUID
@@ -1010,7 +1010,7 @@ export async function teleportToRemote(options: {
       if (!bundle.success) {
         logError(new Error(`Bundle upload failed: ${bundle.error}`));
         // Only steer users to GitHub setup when there's a remote to clone from.
-        const setup = repoInfo ? '. Please setup GitHub on https://claude.ai/code' : '';
+        const setup = repoInfo ? '. Please set up GitHub in the web app: https://claude.ai/code' : '';
         let msg: string;
         switch (bundle.failReason) {
           case 'empty_repo':

@@ -317,7 +317,7 @@ Minimum interval is 1 hour. \`*/30 * * * *\` will be rejected.
 - Accept GitHub URLs in any format (https://github.com/org/repo, org/repo, etc.) and normalize to the full HTTPS URL (without .git suffix)
 - The prompt is the most important part — spend time getting it right. The remote agent starts with zero context, so the prompt must be self-contained.
 - To delete a trigger, direct users to https://claude.ai/code/scheduled
-${needsGitHubAccessReminder ? `- If the user's request seems to require GitHub repo access (e.g. cloning a repo, opening PRs, reading code), remind them that ${getFeatureValue_CACHED_MAY_BE_STALE('tengu_cobalt_lantern', false) ? "they should run /web-setup to connect their GitHub account (or install the Claude GitHub App on the repo as an alternative) — otherwise the remote agent won't be able to access it" : "they need the Claude GitHub App installed on the repo — otherwise the remote agent won't be able to access it"}.` : ''}
+${needsGitHubAccessReminder ? `- If the user's request seems to require GitHub repo access (e.g. cloning a repo, opening PRs, reading code), remind them that ${getFeatureValue_CACHED_MAY_BE_STALE('tengu_cobalt_lantern', false) ? "they should run /web-setup to connect their GitHub account (or install the GitHub App on the repo as an alternative) — otherwise the remote agent won't be able to access it" : "they need the GitHub App installed on the repo — otherwise the remote agent won't be able to access it"}.` : ''}
 ${userArgs ? `\n## User Request\n\nThe user said: "${userArgs}"\n\nStart by understanding their intent and working through the appropriate workflow above.` : ''}`
 }
 
@@ -338,7 +338,7 @@ export function registerScheduleRemoteAgentsSkill(): void {
         return [
           {
             type: 'text',
-            text: 'You need to authenticate with a claude.ai account first. API accounts are not supported. Run /login, then try /schedule again.',
+            text: 'You need to authenticate with a subscription account first. API accounts are not supported. Run /login, then try /schedule again.',
           },
         ]
       }
@@ -353,7 +353,7 @@ export function registerScheduleRemoteAgentsSkill(): void {
         return [
           {
             type: 'text',
-            text: "We're having trouble connecting with your remote claude.ai account to set up a scheduled task. Please try /schedule again in a few minutes.",
+            text: "We're having trouble connecting with your remote account to set up a scheduled task. Please try /schedule again in a few minutes.",
           },
         ]
       }
@@ -402,8 +402,8 @@ export function registerScheduleRemoteAgentsSkill(): void {
             false,
           )
           const msg = webSetupEnabled
-            ? `GitHub not connected for ${repo.owner}/${repo.name} \u2014 run /web-setup to sync your GitHub credentials, or install the Claude GitHub App at https://claude.ai/code/onboarding?magic=github-app-setup.`
-            : `Claude GitHub App not installed on ${repo.owner}/${repo.name} \u2014 install at https://claude.ai/code/onboarding?magic=github-app-setup if your trigger needs this repo.`
+            ? `GitHub not connected for ${repo.owner}/${repo.name} \u2014 run /web-setup to sync your GitHub credentials, or install the GitHub App at https://claude.ai/code/onboarding?magic=github-app-setup.`
+            : `GitHub App not installed on ${repo.owner}/${repo.name} \u2014 install at https://claude.ai/code/onboarding?magic=github-app-setup if your trigger needs this repo.`
           setupNotes.push(msg)
         }
       }

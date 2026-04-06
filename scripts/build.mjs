@@ -58,6 +58,59 @@ await mkdir(BUILD, { recursive: true })
 await cp(join(ROOT, 'src'), join(BUILD, 'src'), { recursive: true })
 console.log('✅ Phase 1: Copied src/ → build-src/')
 
+// Also copy stub files from src/ root to build-src/src/ root (these are not .ts so not copied above)
+const rootStubs = ['cachedMicrocompact.js', 'devtools.js', 'types.js', 'MonitorMcpDetailDialog.js', 'WorkflowDetailDialog.js', 'UserCrossSessionMessage.js', 'UserForkBoilerplateMessage.js', 'UserGitHubWebhookMessage.js']
+for (const stub of rootStubs) {
+  const srcPath = join(ROOT, 'src', stub)
+  if (await exists(srcPath)) {
+    await cp(srcPath, join(BUILD, 'src', stub))
+  }
+}
+
+// Copy messages directory
+if (await exists(join(ROOT, 'src', 'messages'))) {
+  await cp(join(ROOT, 'src', 'messages'), join(BUILD, 'src', 'messages'), { recursive: true })
+}
+
+// Copy yolo-classifier-prompts
+if (await exists(join(ROOT, 'src', 'yolo-classifier-prompts'))) {
+  await cp(join(ROOT, 'src', 'yolo-classifier-prompts'), join(BUILD, 'src', 'yolo-classifier-prompts'), { recursive: true })
+}
+
+// Copy verify directory
+if (await exists(join(ROOT, 'src', 'verify'))) {
+  await cp(join(ROOT, 'src', 'verify'), join(BUILD, 'src', 'verify'), { recursive: true })
+}
+
+// Copy buddy directory (JS files)
+if (await exists(join(ROOT, 'src', 'buddy'))) {
+  await cp(join(ROOT, 'src', 'buddy'), join(BUILD, 'src', 'buddy'), { recursive: true })
+}
+
+// Copy compact directory (JS files)
+if (await exists(join(ROOT, 'src', 'compact'))) {
+  await cp(join(ROOT, 'src', 'compact'), join(BUILD, 'src', 'compact'), { recursive: true })
+}
+
+// Also copy compact JS files to services/compact (some imports are from there)
+if (await exists(join(ROOT, 'src', 'compact'))) {
+  for (const f of await readdir(join(ROOT, 'src', 'compact'))) {
+    if (f.endsWith('.js')) {
+      await cp(join(ROOT, 'src', 'compact', f), join(BUILD, 'src', 'services', 'compact', f))
+    }
+  }
+}
+
+// Copy utils/config.js
+if (await exists(join(ROOT, 'src', 'utils', 'config.js'))) {
+  await cp(join(ROOT, 'src', 'utils', 'config.js'), join(BUILD, 'src', 'utils', 'config.js'))
+}
+
+// Copy global.d.ts stub
+if (await exists(join(ROOT, 'src', 'global.d.ts'))) {
+  await cp(join(ROOT, 'src', 'global.d.ts'), join(BUILD, 'src', 'global.d.ts'))
+}
+
 // ══════════════════════════════════════════════════════════════════════════════
 // PHASE 2: Transform source
 // ══════════════════════════════════════════════════════════════════════════════
@@ -140,13 +193,15 @@ const OUT_FILE = join(OUT_DIR, 'cli.js')
 // Run up to 5 rounds of: esbuild → collect missing → create stubs → retry
 const MAX_ROUNDS = 5
 let succeeded = false
+let lastOutput = ''
 
 for (let round = 1; round <= MAX_ROUNDS; round++) {
   console.log(`\n🔨 Phase 4 round ${round}/${MAX_ROUNDS}: Bundling...`)
 
   let esbuildOutput = ''
+  let exitCode = 0
   try {
-    esbuildOutput = execSync([
+    const result = execSync([
       'npx esbuild',
       `"${ENTRY}"`,
       '--bundle',
@@ -157,20 +212,35 @@ for (let round = 1; round <= MAX_ROUNDS; round++) {
       `--banner:js=$'#!/usr/bin/env node\\n// Re Code v${VERSION} (built from source)\\n// Copyright (c) Re Code Team. All rights reserved.\\n'`,
       '--packages=external',
       '--external:bun:*',
+      '--external:@anthropic-ai/sdk',
+      '--external:lodash-es/*',
+      '--external:zod',
+      '--external:axios',
       '--allow-overwrite',
-      '--log-level=error',
+      '--log-level=warning',
       '--log-limit=0',
       '--sourcemap',
+      '--resolve-extensions=.ts,.tsx,.js,.jsx,.mjs',
     ].join(' '), {
       cwd: ROOT,
       stdio: ['pipe', 'pipe', 'pipe'],
       shell: true,
-    }).stderr?.toString() || ''
-    succeeded = true
-    break
+    })
+    esbuildOutput = (result.stderr?.toString() || '') + (result.stdout?.toString() || '')
+    exitCode = result.status
   } catch (e) {
     esbuildOutput = (e.stderr?.toString() || '') + (e.stdout?.toString() || '')
+    exitCode = e.status || 1
   }
+
+  // Check if build succeeded (no errors)
+  // For now, we consider any run that produces output as progress
+  // The stubs should make later rounds have fewer errors
+  if (exitCode === 0) {
+    succeeded = true
+    break
+  }
+  lastOutput = esbuildOutput
 
   // Parse missing modules
   const missingRe = /Could not resolve "([^"]+)"/g
@@ -213,14 +283,26 @@ for (let round = 1; round <= MAX_ROUNDS; round++) {
 
     // JS/TS modules → export empty
     if (/\.[tj]sx?$/.test(cleanMod)) {
-      for (const base of [join(BUILD, 'src'), join(BUILD, 'src', 'src')]) {
-        const p = join(base, cleanMod)
+      // Try multiple possible locations for the file
+      const locations = [
+        join(BUILD, 'src', cleanMod),
+        join(BUILD, 'src', cleanMod.replace(/\.js$/, '.ts')),
+      ]
+      let created = false
+      for (const p of locations) {
         await mkdir(dirname(p), { recursive: true }).catch(() => {})
         if (!await exists(p)) {
+          const tsPath = p.replace(/\.js$/, '.ts')
+          if (await exists(tsPath)) {
+            continue
+          }
           const name = cleanMod.split('/').pop().replace(/\.[tj]sx?$/, '')
           const safeName = name.replace(/[^a-zA-Z0-9_$]/g, '_') || 'stub'
-          await writeFile(p, `// Auto-generated stub\nexport default function ${safeName}() {}\nexport const ${safeName} = () => {}\n`, 'utf8')
+          // Create proper JS stub (not TypeScript)
+          await writeFile(p, `// Stub for ${name}\nmodule.exports = {};\n`, 'utf8')
           stubCount++
+          created = true
+          break
         }
       }
     }

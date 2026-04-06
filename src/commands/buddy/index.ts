@@ -1,7 +1,7 @@
 import type { Command, CommandResultDisplay } from '../types/command.js'
 import { getGlobalConfig, setGlobalConfig } from '../utils/config.js'
-import { SPECIES, RARITIES, type Species, type Rarity, EYES, HATS, type Eye, type Hat } from '../buddy/types.js'
-import { roll, rollWithSeed } from '../buddy/companion.js'
+import { SPECIES, type Species, type Rarity, EYES, HATS, type Eye, type Hat } from '../buddy/types.js'
+import { rollWithSeed } from '../buddy/companion.js'
 
 // Custom companion that allows user selection
 const CompanionSelectionCommand: Command = {
@@ -29,7 +29,6 @@ const CompanionSelectionCommand: Command = {
       message += '**Commands:**\n'
       message += '`/👾 spawn` - Create a new random companion\n'
       message += '`/👾 select <species>` - Choose a specific species\n'
-      message += '`/👾 rarity <level>` - Choose rarity (common/uncommon/rare/epic/legendary)\n'
       message += '`/👾 eye <type>` - Choose eye style\n'
       message += '`/👾 hat <type>` - Choose hat style\n'
       message += '`/👾 name <name>` - Set companion name\n'
@@ -45,10 +44,6 @@ const CompanionSelectionCommand: Command = {
         list += '**Species:**\n'
         for (const s of SPECIES) {
           list += `- ${s}\n`
-        }
-        list += '\n**Rarity:**\n'
-        for (const r of RARITIES) {
-          list += `- ${r}\n`
         }
         list += '\n**Eyes:**\n'
         for (const e of EYES) {
@@ -70,7 +65,8 @@ const CompanionSelectionCommand: Command = {
           personality: generatePersonality(bones.rarity),
           hatchedAt: Date.now(),
         }
-        setGlobalConfig({ companion })
+        // Clear any customizations when spawning new companion
+        setGlobalConfig({ companion, companionCustomization: undefined })
         return { prompt: `✨ **New Companion Born!**\n\n**Name:** ${companion.name}\n**Species:** ${bones.species}\n**Rarity:** ${bones.rarity}\n**Eye:** ${bones.eye}\n**Hat:** ${bones.hat}\n**Shiny:** ${bones.shiny ? '✨ Yes!' : 'No'}\n\nStats:\n- DEBUGGING: ${bones.stats.DEBUGGING}\n- PATIENCE: ${bones.stats.PATIENCE}\n- CHAOS: ${bones.stats.CHAOS}\n- WISDOM: ${bones.stats.WISDOM}\n- SNARK: ${bones.stats.SNARK}` }
       }
 
@@ -79,32 +75,45 @@ const CompanionSelectionCommand: Command = {
         if (!species || !SPECIES.includes(species)) {
           return { prompt: `❌ Invalid species. Use \`/👾 list\` to see available options.` }
         }
-        // Generate companion with specific species
-        const seed = `${species}-${Date.now()}-${Math.random()}`
-        const { bones } = rollWithSeed(seed)
-        bones.species = species
-        const current = config.companion || { name: 'Companion', personality: 'Friendly', hatchedAt: Date.now() }
-        const newCompanion = { ...current, ...bones }
-        setGlobalConfig({ companion: { name: current.name, personality: current.personality, hatchedAt: current.hatchedAt } })
-        // Actually set with bones
-        const fullCompanion = {
-          name: current.name,
-          personality: current.personality,
-          hatchedAt: current.hatchedAt,
-          ...bones,
+        if (!config.companion) {
+          return { prompt: `❌ You don't have a companion yet. Use \`/👾 spawn\` to create one first.` }
         }
-        setGlobalConfig({ companion: { name: fullCompanion.name, personality: fullCompanion.personality, hatchedAt: fullCompanion.hatchedAt } })
+        // Store the customization, getCompanion will apply it
+        const currentCustomization = config.companionCustomization || {}
+        setGlobalConfig({
+          companionCustomization: { ...currentCustomization, species }
+        })
         return { prompt: `✅ Species changed to **${species}**!` }
       }
 
-      case 'rarity': {
-        const rarity = args[1]?.toLowerCase() as Rarity | undefined
-        if (!rarity || !RARITIES.includes(rarity)) {
-          return { prompt: `❌ Invalid rarity. Use \`/👾 list\` to see available options.` }
+      case 'eye': {
+        const eye = args[1]?.toLowerCase() as Eye | undefined
+        if (!eye || !EYES.includes(eye)) {
+          return { prompt: `❌ Invalid eye style. Use \`/👾 list\` to see available options.` }
         }
-        // Note: Can't actually force rarity due to hash-based generation
-        // But we can explain it
-        return { prompt: `📝 Rarity is determined by a special algorithm based on your user ID. Each user gets a unique companion!\n\nYour current rarity is determined at creation time. Use \`/👾 spawn\` to try for a new one (the algorithm uses your user ID, so you'll get the same result each time - but new users have a chance at any rarity!).` }
+        if (!config.companion) {
+          return { prompt: `❌ You don't have a companion yet. Use \`/👾 spawn\` to create one first.` }
+        }
+        const currentCustomization = config.companionCustomization || {}
+        setGlobalConfig({
+          companionCustomization: { ...currentCustomization, eye }
+        })
+        return { prompt: `✅ Eye style changed to **${eye}**!` }
+      }
+
+      case 'hat': {
+        const hat = args[1]?.toLowerCase() as Hat | undefined
+        if (!hat || !HATS.includes(hat)) {
+          return { prompt: `❌ Invalid hat style. Use \`/👾 list\` to see available options.` }
+        }
+        if (!config.companion) {
+          return { prompt: `❌ You don't have a companion yet. Use \`/👾 spawn\` to create one first.` }
+        }
+        const currentCustomization = config.companionCustomization || {}
+        setGlobalConfig({
+          companionCustomization: { ...currentCustomization, hat }
+        })
+        return { prompt: `✅ Hat style changed to **${hat}**!` }
       }
 
       case 'name': {
@@ -123,7 +132,8 @@ const CompanionSelectionCommand: Command = {
         if (!config.companion) {
           return { prompt: `❌ You don't have a companion to delete.` }
         }
-        // To delete, we'd need to update config, but let's just say it's done
+        // Actually delete the companion
+        setGlobalConfig({ companion: undefined, companionCustomization: undefined })
         return { prompt: `🗑️ Companion deleted! Use \`/👾 spawn\` to create a new one.` }
       }
 

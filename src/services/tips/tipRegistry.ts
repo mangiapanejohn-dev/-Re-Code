@@ -96,7 +96,7 @@ const externalTips: Tip[] = [
   {
     id: 'new-user-warmup',
     content: async () =>
-      `Start with small features or bug fixes, tell Claude to propose a plan, and verify its suggested edits`,
+      `Start with small features or bug fixes, tell RE CODE to propose a plan, and verify its suggested edits`,
     cooldownSessions: 3,
     async isRelevant() {
       const config = getGlobalConfig()
@@ -265,14 +265,14 @@ const externalTips: Tip[] = [
   {
     id: 'enter-to-steer-in-relatime',
     content: async () =>
-      'Send messages to Claude while it works to steer Claude in real-time',
+      'Send messages to RE CODE while it works to steer it in real time',
     cooldownSessions: 20,
     isRelevant: async () => true,
   },
   {
     id: 'todo-list',
     content: async () =>
-      'Ask Claude to create a todo list when working on complex tasks to track progress and remain on track',
+      'Ask RE CODE to create a todo list when working on complex tasks to track progress and remain on track',
     cooldownSessions: 20,
     isRelevant: async () => true,
   },
@@ -466,7 +466,7 @@ const externalTips: Tip[] = [
   {
     id: 'mobile-app',
     content: async () =>
-      '/mobile to use RE CODE from the Claude app on your phone',
+      '/mobile to use RE CODE from the mobile app on your phone',
     cooldownSessions: 15,
     isRelevant: async () => true,
   },
@@ -550,8 +550,8 @@ const externalTips: Tip[] = [
         'off' | 'copy_a' | 'copy_b'
       >('tengu_tern_alloy', 'off')
       return variant === 'copy_b'
-        ? `For big tasks, tell Claude to ${blue('use subagents')}. They work in parallel and keep your main thread clean.`
-        : `Say ${blue('"fan out subagents"')} and Claude sends a team. Each one digs deep so nothing gets missed.`
+        ? `For big tasks, tell RE CODE to ${blue('use subagents')}. They work in parallel and keep your main thread clean.`
+        : `Say ${blue('"fan out subagents"')} and RE CODE sends a team. Each one digs deep so nothing gets missed.`
     },
     cooldownSessions: 3,
     isRelevant: async () => {

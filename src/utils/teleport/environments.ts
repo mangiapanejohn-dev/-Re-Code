@@ -33,7 +33,7 @@ export async function fetchEnvironments(): Promise<EnvironmentResource[]> {
   const accessToken = getClaudeAIOAuthTokens()?.accessToken
   if (!accessToken) {
     throw new Error(
-      'RE CODE web sessions require authentication with a Claude.ai account. API key authentication is not sufficient. Please run /login to authenticate, or check your authentication status with /status.',
+      'RE CODE web sessions require a subscription account. API key authentication is not sufficient. Please run /login to authenticate, or check your authentication status with /status.',
     )
   }
 

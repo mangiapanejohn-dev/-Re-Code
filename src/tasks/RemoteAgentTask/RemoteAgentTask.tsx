@@ -146,7 +146,7 @@ export async function checkRemoteAgentEligibility({
 export function formatPreconditionError(error: BackgroundRemoteSessionPrecondition): string {
   switch (error.type) {
     case 'not_logged_in':
-      return 'Please run /login and sign in with your Claude.ai account (not Console).';
+      return 'Please run /login and sign in with your subscription account.';
     case 'no_remote_environment':
       return 'No cloud environment available. Set one up at https://claude.ai/code/onboarding?magic=env-setup';
     case 'not_in_git_repo':
@@ -154,7 +154,7 @@ export function formatPreconditionError(error: BackgroundRemoteSessionPreconditi
     case 'no_git_remote':
       return 'Background tasks require a GitHub remote. Add one with `git remote add origin REPO_URL`.';
     case 'github_app_not_installed':
-      return 'The Claude GitHub app must be installed on this repository first.\nhttps://github.com/apps/claude/installations/new';
+      return 'The GitHub App must be installed on this repository first.\nhttps://github.com/apps/claude/installations/new';
     case 'policy_blocked':
       return "Remote sessions are disabled by your organization's policy. Contact your organization admin to enable them.";
   }

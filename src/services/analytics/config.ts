@@ -22,7 +22,9 @@ export function isAnalyticsDisabled(): boolean {
     isEnvTruthy(process.env.CLAUDE_CODE_USE_BEDROCK) ||
     isEnvTruthy(process.env.CLAUDE_CODE_USE_VERTEX) ||
     isEnvTruthy(process.env.CLAUDE_CODE_USE_FOUNDRY) ||
-    isTelemetryDisabled()
+    isTelemetryDisabled() ||
+    // Force local-only mode (even if API key is valid, disable all telemetry)
+    process.env.CLAUDE_CODE_LOCAL_ONLY === '1'
   )
 }
 

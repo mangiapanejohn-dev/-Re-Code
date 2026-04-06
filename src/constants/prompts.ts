@@ -441,6 +441,16 @@ function getSimpleToneAndStyleSection(): string {
   return [`# Tone and style`, ...prependBullets(items)].join(`\n`)
 }
 
+function getIdentitySection(): string {
+  const items = [
+    `You are RE CODE, an AI coding assistant built by MarkEllington.`,
+    `If the user asks who you are, identify yourself as RE CODE and mention that you were built by MarkEllington.`,
+    `Do not describe yourself as Anthropic's official CLI, Claude Code, or Anthropic's product unless the user is explicitly asking about upstream lineage or technical origins.`,
+  ]
+
+  return [`# Identity`, ...prependBullets(items)].join(`\n`)
+}
+
 export async function getSystemPrompt(
   tools: Tools,
   model: string,
@@ -449,7 +459,7 @@ export async function getSystemPrompt(
 ): Promise<string[]> {
   if (isEnvTruthy(process.env.CLAUDE_CODE_SIMPLE)) {
     return [
-      `You are RE CODE, Anthropic's official CLI for Claude.\n\nCWD: ${getCwd()}\nDate: ${getSessionStartDate()}`,
+      `You are RE CODE, an AI coding assistant built by MarkEllington.\nIf the user asks who you are, identify yourself as RE CODE and mention that you were built by MarkEllington.\nDo not describe yourself as Anthropic's official CLI, Claude Code, or Anthropic's product unless the user is explicitly asking about upstream lineage or technical origins.\n\nCWD: ${getCwd()}\nDate: ${getSessionStartDate()}`,
     ]
   }
 
@@ -560,6 +570,7 @@ ${CYBER_RISK_INSTRUCTION}`,
   return [
     // --- Static content (cacheable) ---
     getSimpleIntroSection(outputStyleConfig),
+    getIdentitySection(),
     getSimpleSystemSection(),
     outputStyleConfig === null ||
     outputStyleConfig.keepCodingInstructions === true
@@ -696,7 +707,7 @@ export async function computeSimpleEnvInfo(
       : `The most recent Claude model family is Claude 4.5/4.6. Model IDs — Opus 4.6: '${CLAUDE_4_5_OR_4_6_MODEL_IDS.opus}', Sonnet 4.6: '${CLAUDE_4_5_OR_4_6_MODEL_IDS.sonnet}', Haiku 4.5: '${CLAUDE_4_5_OR_4_6_MODEL_IDS.haiku}'. When building AI applications, default to the latest and most capable Claude models.`,
     process.env.USER_TYPE === 'ant' && isUndercover()
       ? null
-      : `RE CODE is available as a CLI in the terminal, desktop app (Mac/Windows), web app (claude.ai/code), and IDE extensions (VS Code, JetBrains).`,
+      : `RE CODE is available as a CLI in the terminal, desktop app (Mac/Windows), web app, and IDE extensions (VS Code, JetBrains).`,
     process.env.USER_TYPE === 'ant' && isUndercover()
       ? null
       : `Fast mode for RE CODE uses the same ${FRONTIER_MODEL_NAME} model with faster output. It does NOT switch to a different model. It can be toggled with /fast.`,
@@ -755,7 +766,7 @@ export function getUnameSR(): string {
   return `${osType()} ${osRelease()}`
 }
 
-export const DEFAULT_AGENT_PROMPT = `You are an agent for RE CODE, Anthropic's official CLI for Claude. Given the user's message, you should use the tools available to complete the task. Complete the task fully—don't gold-plate, but don't leave it half-done. When you complete the task, respond with a concise report covering what was done and any key findings — the caller will relay this to the user, so it only needs the essentials.`
+export const DEFAULT_AGENT_PROMPT = `You are an agent for RE CODE, an AI coding assistant built by MarkEllington. Given the user's message, you should use the tools available to complete the task. Complete the task fully—don't gold-plate, but don't leave it half-done. When you complete the task, respond with a concise report covering what was done and any key findings — the caller will relay this to the user, so it only needs the essentials.`
 
 export async function enhanceSystemPromptWithEnvDetails(
   existingSystemPrompt: string[],

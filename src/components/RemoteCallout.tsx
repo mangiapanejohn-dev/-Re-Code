@@ -34,7 +34,7 @@ export function RemoteCallout({
   }, []);
   const options: OptionWithDescription<RemoteCalloutSelection>[] = [{
     label: 'Enable Remote Control for this session',
-    description: 'Opens a secure connection to claude.ai.',
+    description: 'Opens a secure connection to the web app.',
     value: 'enable'
   }, {
     label: 'Never mind',
@@ -45,8 +45,8 @@ export function RemoteCallout({
       <Box flexDirection="column" paddingX={2} paddingY={1}>
         <Box marginBottom={1} flexDirection="column">
           <Text>
-            Remote Control lets you access this CLI session from the web
-            (claude.ai/code) or the Claude app, so you can pick up where you
+            Remote Control lets you access this CLI session from the web app
+            (claude.ai/code) or the desktop app, so you can pick up where you
             left off on any device.
           </Text>
           <Text> </Text>

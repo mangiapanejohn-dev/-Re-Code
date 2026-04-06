@@ -28,7 +28,7 @@ export function ReCodeLogo({ pose = 'default' }: Props) {
   if (env.terminal === "Apple_Terminal") {
     let t1;
     if ($[0] !== pose) {
-      t1 = <Text bold={true} color="claude">{RECODE_COMPACT}</Text>;
+      t1 = <Text bold={true} color="reCode">{RECODE_COMPACT}</Text>;
       $[0] = pose;
       $[1] = t1;
     } else {
@@ -41,12 +41,12 @@ export function ReCodeLogo({ pose = 'default' }: Props) {
   if ($[2] === Symbol.for("react.memo_cache_sentinel")) {
     t2 = (
       <Box flexDirection="column">
-        <Text color="claude">{RECODE_ART[0]}</Text>
-        <Text color="claude">{RECODE_ART[1]}</Text>
-        <Text color="claude">{RECODE_ART[2]}</Text>
-        <Text color="claude">{RECODE_ART[3]}</Text>
-        <Text color="claude">{RECODE_ART[4]}</Text>
-        <Text color="claude">{RECODE_ART[5]}</Text>
+        <Text color="reCode">{RECODE_ART[0]}</Text>
+        <Text color="reCode">{RECODE_ART[1]}</Text>
+        <Text color="reCode">{RECODE_ART[2]}</Text>
+        <Text color="reCode">{RECODE_ART[3]}</Text>
+        <Text color="reCode">{RECODE_ART[4]}</Text>
+        <Text color="reCode">{RECODE_ART[5]}</Text>
       </Box>
     );
     $[2] = t2;

@@ -377,7 +377,7 @@ const LABEL_MAP: Record<string, string> = {
   wrong_approach: 'Wrong Approach',
   buggy_code: 'Buggy Code',
   user_rejected_action: 'User Rejected Action',
-  claude_got_blocked: 'Claude Got Blocked',
+  claude_got_blocked: 'RE CODE Got Blocked',
   user_stopped_early: 'User Stopped Early',
   wrong_file_or_location: 'Wrong File/Location',
   excessive_changes: 'Excessive Changes',
@@ -432,8 +432,8 @@ const FACET_EXTRACTION_PROMPT = `Analyze this RE CODE session and extract struct
 CRITICAL GUIDELINES:
 
 1. **goal_categories**: Count ONLY what the USER explicitly asked for.
-   - DO NOT count Claude's autonomous codebase exploration
-   - DO NOT count work Claude decided to do on its own
+   - DO NOT count RE CODE's autonomous codebase exploration
+   - DO NOT count work RE CODE decided to do on its own
    - ONLY count when user says "can you...", "please...", "I need...", "let's..."
 
 2. **user_satisfaction_counts**: Base ONLY on explicit user signals.
@@ -444,7 +444,7 @@ CRITICAL GUIDELINES:
    - "this is broken", "I give up" → frustrated
 
 3. **friction_counts**: Be specific about what went wrong.
-   - misunderstood_request: Claude interpreted incorrectly
+   - misunderstood_request: RE CODE interpreted incorrectly
    - wrong_approach: Right goal, wrong solution method
    - buggy_code: Code didn't work correctly
    - user_rejected_action: User said no/stop to a tool call
@@ -869,7 +869,7 @@ function formatTranscriptForFacets(log: LogOption): string {
 
 const SUMMARIZE_CHUNK_PROMPT = `Summarize this portion of a RE CODE session transcript. Focus on:
 1. What the user asked for
-2. What Claude did (tools used, files modified)
+2. What RE CODE did (tools used, files modified)
 3. Any friction or issues
 4. The outcome
 
@@ -1354,7 +1354,7 @@ Include 4-5 areas. Skip internal CC operations.`,
 
 RESPOND WITH ONLY A VALID JSON OBJECT:
 {
-  "narrative": "2-3 paragraphs analyzing HOW the user interacts with RE CODE. Use second person 'you'. Describe patterns: iterate quickly vs detailed upfront specs? Interrupt often or let Claude run? Include specific examples. Use **bold** for key insights.",
+  "narrative": "2-3 paragraphs analyzing HOW the user interacts with RE CODE. Use second person 'you'. Describe patterns: iterate quickly vs detailed upfront specs? Interrupt often or let RE CODE run? Include specific examples. Use **bold** for key insights.",
   "key_pattern": "One sentence summary of most distinctive interaction style"
 }`,
     maxTokens: 8192,
@@ -1393,9 +1393,9 @@ Include 3 friction categories with 2 examples each.`,
     name: 'suggestions',
     prompt: `Analyze this RE CODE usage data and suggest improvements.
 
-## CC FEATURES REFERENCE (pick from these for features_to_try):
-1. **MCP Servers**: Connect Claude to external tools, databases, and APIs via Model Context Protocol.
-   - How to use: Run \`claude mcp add <server-name> -- <command>\`
+## RE CODE FEATURES REFERENCE (pick from these for features_to_try):
+1. **MCP Servers**: Connect RE CODE to external tools, databases, and APIs via Model Context Protocol.
+   - How to use: Run \`recode mcp add <server-name> -- <command>\`
    - Good for: database queries, Slack integration, GitHub issue lookup, connecting to internal APIs
 
 2. **Custom Skills**: Reusable prompts you define as markdown files that run with a single /command.
@@ -1406,12 +1406,12 @@ Include 3 friction categories with 2 examples each.`,
    - How to use: Add to \`.claude/settings.json\` under "hooks" key.
    - Good for: auto-formatting code, running type checks, enforcing conventions
 
-4. **Headless Mode**: Run Claude non-interactively from scripts and CI/CD.
-   - How to use: \`claude -p "fix lint errors" --allowedTools "Edit,Read,Bash"\`
+4. **Headless Mode**: Run RE CODE non-interactively from scripts and CI/CD.
+   - How to use: \`recode -p "fix lint errors" --allowedTools "Edit,Read,Bash"\`
    - Good for: CI/CD integration, batch code fixes, automated reviews
 
-5. **Task Agents**: Claude spawns focused sub-agents for complex exploration or parallel work.
-   - How to use: Claude auto-invokes when helpful, or ask "use an agent to explore X"
+5. **Task Agents**: RE CODE spawns focused sub-agents for complex exploration or parallel work.
+   - How to use: RE CODE auto-invokes when helpful, or ask "use an agent to explore X"
    - Good for: codebase exploration, understanding complex systems
 
 RESPOND WITH ONLY A VALID JSON OBJECT:
@@ -1427,7 +1427,7 @@ RESPOND WITH ONLY A VALID JSON OBJECT:
   ]
 }
 
-IMPORTANT for claude_md_additions: PRIORITIZE instructions that appear MULTIPLE TIMES in the user data. If user told Claude the same thing in 2+ sessions (e.g., 'always run tests', 'use TypeScript'), that's a PRIME candidate - they shouldn't have to repeat themselves.
+IMPORTANT for claude_md_additions: PRIORITIZE instructions that appear MULTIPLE TIMES in the user data. If user told RE CODE the same thing in 2+ sessions (e.g., 'always run tests', 'use TypeScript'), that's a PRIME candidate - they shouldn't have to repeat themselves.
 
 IMPORTANT for features_to_try: Pick 2-3 from the CC FEATURES REFERENCE above. Include 2-3 items for each category.`,
     maxTokens: 8192,
@@ -1735,15 +1735,15 @@ async function generateParallelInsights(
       .join('\n') || ''
 
   // Now generate "At a Glance" with access to other sections' outputs
-  const atAGlancePrompt = `You're writing an "At a Glance" summary for a RE CODE usage insights report for RE CODE users. The goal is to help them understand their usage and improve how they can use Claude better, especially as models improve.
+  const atAGlancePrompt = `You're writing an "At a Glance" summary for a RE CODE usage insights report for RE CODE users. The goal is to help them understand their usage and improve how they can use RE CODE better, especially as models improve.
 
 Use this 4-part structure:
 
-1. **What's working** - What is the user's unique style of interacting with Claude and what are some impactful things they've done? You can include one or two details, but keep it high level since things might not be fresh in the user's memory. Don't be fluffy or overly complimentary. Also, don't focus on the tool calls they use.
+1. **What's working** - What is the user's unique style of interacting with RE CODE and what are some impactful things they've done? You can include one or two details, but keep it high level since things might not be fresh in the user's memory. Don't be fluffy or overly complimentary. Also, don't focus on the tool calls they use.
 
-2. **What's hindering you** - Split into (a) Claude's fault (misunderstandings, wrong approaches, bugs) and (b) user-side friction (not providing enough context, environment issues -- ideally more general than just one project). Be honest but constructive.
+2. **What's hindering you** - Split into (a) RE CODE's fault (misunderstandings, wrong approaches, bugs) and (b) user-side friction (not providing enough context, environment issues -- ideally more general than just one project). Be honest but constructive.
 
-3. **Quick wins to try** - Specific RE CODE features they could try from the examples below, or a workflow technique if you think it's really compelling. (Avoid stuff like "Ask Claude to confirm before taking actions" or "Type out more context up front" which are less compelling.)
+3. **Quick wins to try** - Specific RE CODE features they could try from the examples below, or a workflow technique if you think it's really compelling. (Avoid stuff like "Ask RE CODE to confirm before taking actions" or "Type out more context up front" which are less compelling.)
 
 4. **Ambitious workflows for better models** - As we move to much more capable models over the next 3-6 months, what should they prepare for? What workflows that seem impossible now will become possible? Draw from the appropriate section below.
 
@@ -2067,7 +2067,7 @@ function generateHtmlReport(
       suggestions.claude_md_additions &&
       suggestions.claude_md_additions.length > 0
         ? `
-    <h2 id="section-features">Existing CC Features to Try</h2>
+    <h2 id="section-features">Existing RE CODE Features to Try</h2>
     <div class="claude-md-section">
       <h3>Suggested CLAUDE.md Additions</h3>
       <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">Just copy this into RE CODE to add it to your CLAUDE.md.</p>
@@ -2610,7 +2610,7 @@ function generateHtmlReport(
 
     <div class="charts-row">
       <div class="chart-card">
-        <div class="chart-title">What Helped Most (Claude's Capabilities)</div>
+        <div class="chart-title">What Helped Most (RE CODE's Capabilities)</div>
         ${generateBarChart(data.success, '#16a34a')}
       </div>
       <div class="chart-card">
