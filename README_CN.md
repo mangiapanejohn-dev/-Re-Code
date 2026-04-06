@@ -69,100 +69,36 @@ sequenceDiagram
     participant USER as 用户
     participant CLI as CLI/TUI 终端
     participant ENGINE as 客户端引擎
-    participant L1 as 第一层<br/>设备身份
-    participant L2 as 第二层<br/>请求模式
-    participant L3 as 第三层<br/>网络身份
-    participant L4 as 第四层<br/>API 密钥保护
-    participant TUNNEL as 安全隧道
-    participant PROXY as 代理基础设施
-    participant GATEWAY as API 网关
+    participant SEC as 安全管道
+    participant PROXY as 代理
     participant API as Anthropic Claude API
     
-    %% 用户输入阶段
     USER->>CLI: 输入查询
     CLI->>ENGINE: 解析并加入队列
+    ENGINE->>ENGINE: 验证并构建上下文
     
-    %% 客户端引擎处理
-    ENGINE->>ENGINE: 验证输入
-    ENGINE->>ENGINE: 构建上下文
+    ENGINE->>SEC: 受保护的请求
+    Note over SEC: 4层安全管道
+    SEC->>SEC: 第1层: 设备身份混淆
+    SEC->>SEC: 第2层: 请求模式随机化
+    SEC->>SEC: 第3层: 网络身份管理
+    SEC->>SEC: 第4层: API 密钥保护
+    SEC->>SEC: AES-256 加密 + HMAC 签名
     
-    %% 安全层 1: 设备身份混淆
-    ENGINE->>L1: 原始请求
-    Note over L1: 设备身份混淆
-    L1->>L1: MAC 地址轮换
-    L1->>L1: 硬件 UUID 伪装
-    L1->>L1: 显示器信息噪声注入
-    L1->>L1: 时区标准化
-    L1->>L1: User-Agent 轮换
-    L1->>L2: 设备混淆后的请求
+    SEC->>PROXY: 加密请求
+    PROXY->>PROXY: 负载均衡 + IP 轮换
+    PROXY->>API: 转发请求
     
-    %% 安全层 2: 请求模式随机化
-    Note over L2: 请求模式随机化
-    L2->>L2: 请求时序随机化
-    L2->>L2: Token 序列置换
-    L2->>L2: 载荷大小填充
-    L2->>L2: Header 清理
-    L2->>L2: Cookie 隔离
-    L2->>L3: 模式掩码请求
-    
-    %% 安全层 3: 网络身份管理
-    Note over L3: 网络身份管理
-    L3->>L3: 从住宅代理 IP 池选择
-    L3->>L3: 强制地理位置一致性
-    L3->>L3: 检查 IP 信誉评分
-    L3->>L3: 自动 IP 轮换
-    L3->>L3: 需要时智能故障转移
-    L3->>L4: 网络身份请求
-    
-    %% 安全层 4: API 密钥保护
-    Note over L4: API 密钥保护
-    L4->>L4: 从本地加密加载
-    L4->>L4: 仅存储在内存中
-    L4->>L4: 进程隔离
-    L4->>L4: 密钥轮换支持
-    L4->>L4: 从不暴露给第三方
-    L4->>TUNNEL: 安全保护的请求
-    
-    %% 安全隧道处理
-    Note over TUNNEL: 安全隧道
-    TUNNEL->>TUNNEL: AES-256 加密
-    TUNNEL->>TUNNEL: 载荷压缩
-    TUNNEL->>TUNNEL: HMAC 签名
-    TUNNEL->>TUNNEL: 时序随机化
-    TUNNEL->>PROXY: 加密转发请求
-    
-    %% 代理基础设施处理
-    Note over PROXY: 代理基础设施
-    PROXY->>PROXY: 全球负载均衡
-    PROXY->>PROXY: 边缘节点选择
-    PROXY->>PROXY: 请求混淆
-    PROXY->>PROXY: 指纹随机化
-    PROXY->>PROXY: 出口节点选择
-    PROXY->>GATEWAY: 路由请求
-    
-    %% API 网关处理
-    Note over GATEWAY: API 网关
-    GATEWAY->>GATEWAY: 速率限制
-    GATEWAY->>GATEWAY: 重试引擎
-    GATEWAY->>GATEWAY: 故障转移控制器
-    GATEWAY->>API: 转发到 Claude API
-    
-    %% 响应阶段
-    alt 成功响应
-        API->>GATEWAY: Claude 响应
-        GATEWAY->>PROXY: 响应数据
-        PROXY->>TUNNEL: 加密响应
-        TUNNEL->>TUNNEL: 解密响应
-        TUNNEL->>ENGINE: 解析响应
-        ENGINE->>ENGINE: 更新上下文缓存
+    alt 成功
+        API->>PROXY: 响应
+        PROXY->>SEC: 加密响应
+        SEC->>ENGINE: 解密响应
         ENGINE->>CLI: 显示结果
         CLI->>USER: 输出
-    else 速率限制/封号风险
-        API->>GATEWAY: 速率限制错误
-        GATEWAY->>PROXY: 触发重试
-        PROXY->>PROXY: 切换出口节点
-        PROXY->>GATEWAY: 使用新 IP 重试
-        GATEWAY->>API: 重试请求
+    else 速率限制
+        API->>PROXY: 速率限制错误
+        PROXY->>PROXY: 切换IP并重试
+        PROXY->>API: 重试请求
     end
 ```
 
@@ -171,10 +107,9 @@ sequenceDiagram
 | 组件 | 功能 | 技术 |
 |:---|:---|:---|
 | **客户端引擎** | 用户交互、命令解析 | React + Node.js |
-| **混淆层** | 设备指纹随机化 | 自定义中间件 |
-| **隧道协议** | 加密请求路由 | TLS 1.3 + WireGuard |
-| **出口节点池** | IP轮换、住宅代理 | 动态节点管理 |
-| **API代理** | 请求/响应转换 | Nginx + Lua 脚本 |
+| **安全管道** | 4层安全 + 加密 | 自定义中间件 |
+| **代理网络** | 负载均衡、IP轮换 | 动态节点管理 |
+| **API 网关** | 速率限制、重试、故障转移 | Nginx + Lua 脚本 |
 
 ---
 

@@ -69,44 +69,40 @@ sequenceDiagram
     participant USER as User
     participant CLI as CLI/TUI
     participant ENGINE as Client Engine
-    participant L1 as Layer 1<br/>Device Identity
-    participant L2 as Layer 2<br/>Request Pattern
-    participant L3 as Layer 3<br/>Network Identity
-    participant L4 as Layer 4<br/>API Key Protection
-    participant TUNNEL as Security Tunnel
-    participant PROXY as Proxy Infrastructure
-    participant GATEWAY as API Gateway
+    participant SEC as Security Pipeline
+    participant PROXY as Proxy
     participant API as Anthropic Claude API
     
-    %% User Input Phase
     USER->>CLI: Input Query
     CLI->>ENGINE: Parse & Queue
+    ENGINE->>ENGINE: Validate & Build Context
     
-    %% Client Engine Processing
-    ENGINE->>ENGINE: Validate Input
-    ENGINE->>ENGINE: Build Context
+    ENGINE->>SEC: Protected Request
+    Note over SEC: 4-Layer Security Pipeline
+    SEC->>SEC: Layer 1: Device Identity Obfuscation
+    SEC->>SEC: Layer 2: Request Pattern Randomization
+    SEC->>SEC: Layer 3: Network Identity Management
+    SEC->>SEC: Layer 4: API Key Protection
+    SEC->>SEC: AES-256 Encryption + HMAC Sign
     
-    %% Security Layer 1: Device Identity Obfuscation
-    ENGINE->>L1: Raw Request
-    Note over L1: Device Identity Obfuscation
-    L1->>L1: MAC Address Rotation
-    L1->>L1: Hardware UUID Spoofing
-    L1->>L1: Display Info Noise Injection
-    L1->>L1: Timezone Normalization
-    L1->>L1: User-Agent Rotation
-    L1->>L2: Device-Obfuscated Request
+    SEC->>PROXY: Encrypted Request
+    PROXY->>PROXY: Load Balance + IP Rotation
+    PROXY->>API: Forward Request
     
-    %% Security Layer 2: Request Pattern Randomization
-    Note over L2: Request Pattern Randomization
-    L2->>L2: Request Timing Randomization
-    L2->>L2: Token Sequence Permutation
-    L2->>L2: Payload Size Padding
-    L2->>L2: Header Sanitization
-    L2->>L2: Cookie Isolation
-    L2->>L3: Pattern-Masked Request
-    
-    %% Security Layer 3: Network Identity Management
-    Note over L3: Network Identity Management
+    alt Success
+        API->>PROXY: Response
+        PROXY->>SEC: Encrypted Response
+        SEC->>ENGINE: Decrypted Response
+        ENGINE->>CLI: Display Result
+        CLI->>USER: Output
+    else Rate Limit
+        API->>PROXY: Rate Limit Error
+        PROXY->>PROXY: Switch IP & Retry
+        PROXY->>API: Retry Request
+    end
+```
+
+### Core Components
     L3->>L3: Select from Residential IP Pool
     L3->>L3: Enforce Geo-Location Consistency
     L3->>L3: Check IP Reputation Score
@@ -171,10 +167,9 @@ sequenceDiagram
 | Component | Function | Technology |
 |:---|:---|:---|
 | **Client Engine** | User interaction, command parsing | React + Node.js |
-| **Obfuscation Layer** | Device fingerprint randomization | Custom middleware |
-| **Tunnel Protocol** | Encrypted request routing | TLS 1.3 + WireGuard |
-| **Exit Node Pool** | IP rotation, residential proxies | Dynamic node management |
-| **API Proxy** | Request/response transformation | Nginx + Lua scripts |
+| **Security Pipeline** | 4-layer security + encryption | Custom middleware |
+| **Proxy Network** | Load balance, IP rotation | Dynamic node management |
+| **API Gateway** | Rate limiting, retry, failover | Nginx + Lua scripts |
 
 ---
 
