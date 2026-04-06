@@ -23,7 +23,7 @@
 
 ---
 
-## 🛡️ RE CODE 是什么？
+## RE CODE 是什么？
 
 **RE CODE** 是一个开源的 Claude API 客户端，专门解决 Claude 被封号的问题。
 
@@ -64,70 +64,91 @@ Claude 内部有代号为 **"天狗" (Tango Tengu)** 的监控系统，会收集
 
 ### 系统概览
 
-```
-+-----------------------------------------------------------------------+
-|                           RE CODE 系统                                |
-+-----------------------------------------------------------------------+
-|                                                                       |
-|  ┌─────────────┐    ┌─────────────┐    ┌─────────────────────────┐  |
-|  │   客户端    │    │   隧道      │    │      代理基础设施        │  |
-|  │   层        │───▶│   层        │───▶│        层               │  |
-|  └─────────────┘    └─────────────┘    └─────────────────────────┘  |
-|         │                  │                      │                  |
-|         ▼                  ▼                      ▼                  |
-|  ┌─────────────┐    ┌─────────────┐    ┌─────────────────────────┐  |
-|  │ 用户输入    │    │ 加密通道    │    │ 请求混淆引擎             │  |
-|  │ 处理器      │    │ 管道        │    │                        │  |
-|  └─────────────┘    └─────────────┘    └─────────────────────────┘  |
-|                                            │                         |
-|                                            ▼                         |
-|                                   ┌─────────────────────────┐          |
-|                                   │   出口节点池            │          |
-|                                   │   (住宅代理IP)          │          |
-|                                   └─────────────────────────┘          |
-|                                            │                         |
-+--------------------------------------------│-------------------------+
-                                             ▼
-                              ┌────────────────────────────┐
-                              │       ANTHROPIC API         │
-                              │       (Claude 后端)         │
-                              └────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph CLIENT["客户端层"]
+        USER["用户输入"] --> INPUT["输入处理器"]
+        INPUT --> CMD["命令解析器"]
+        CMD --> QUEUE["请求队列"]
+    end
+    
+    subgraph TUNNEL["隧道层"]
+        QUEUE --> ENCRYPT["加密通道"]
+        ENCRYPT --> COMPRESS["载荷压缩"]
+        COMPRESS --> SIGN["请求签名"]
+    end
+    
+    subgraph PROXY["代理基础设施"]
+        SIGN --> LB["负载均衡"]
+        LB --> ROUTE["动态路由"]
+        ROUTE --> POOL["出口节点池"]
+        POOL --> RESIDENT["住宅代理IP"]
+        
+        ROUTE --> OBFUSCATE["请求混淆"]
+        OBFUSCATE --> FINGERPRINT["指纹随机化"]
+        OBFUSCATE --> TIMING["时序随机化"]
+        OBFUSCATE --> HEADER["Header 清理"]
+    end
+    
+    PROXY --> ANTHROPIC["Anthropic API"]
+    ANTHROPIC --> RESP["响应处理器"]
+    RESP --> DECRYPT["解密"]
+    DECRYPT --> DISPLAY["用户展示"]
+    
+    style CLIENT fill:#1e1b4b,stroke:#4338ca,stroke-width:2,color:#fff
+    style TUNNEL fill:#1e3a5f,stroke:#0ea5e9,stroke-width:2,color:#fff
+    style PROXY fill:#14532d,stroke:#22c55e,stroke-width:2,color:#fff
+    style USER fill:#fff,stroke:#333,stroke-width:2
+    style INPUT fill:#e0e7ff,stroke:#4338ca
+    style CMD fill:#e0e7ff,stroke:#4338ca
+    style QUEUE fill:#c7d2fe,stroke:#4338ca
+    style ENCRYPT fill:#e0f2fe,stroke:#0ea5e9
+    style COMPRESS fill:#e0f2fe,stroke:#0ea5e9
+    style SIGN fill:#e0f2fe,stroke:#0ea5e9
+    style LB fill:#dcfce7,stroke:#22c55e
+    style ROUTE fill:#dcfce7,stroke:#22c55e
+    style POOL fill:#dcfce7,stroke:#22c55e
+    style RESIDENT fill:#bbf7d0,stroke:#22c55e
+    style OBFUSCATE fill:#fef3c7,stroke:#f59e0b
+    style FINGERPRINT fill:#fed7aa,stroke:#f59e0b
+    style TIMING fill:#fed7aa,stroke:#f59e0b
+    style HEADER fill:#fed7aa,stroke:#f59e0b
+    style ANTHROPIC fill:#7c3aed,stroke:#9333ea,stroke-width:3,color:#fff
+    style RESP fill:#fce7f3,stroke:#db2777
+    style DECRYPT fill:#fce7f3,stroke:#db2777
+    style DISPLAY fill:#fff,stroke:#333
 ```
 
 ### 请求流程
 
-```
-    ┌──────────┐         ┌──────────────┐         ┌─────────────────┐
-    │  用户    │         │   RE CODE    │         │    代理         │
-    │  查询    │────────▶│   客户端     │────────▶│    网络         │
-    └──────────┘         └──────────────┘         └─────────────────┘
-                                                            │
-                                                            │ 混淆后的
-                                                            │ 请求
-                                                            ▼
-                                                      ┌─────────────────┐
-                                                      │  出口节点       │
-                                                      │  轮换           │
-                                                      └─────────────────┘
-                                                            │
-                                                            ▼
-                                                      ┌─────────────────┐
-                                                      │  Claude API     │
-                                                      │  (Anthropic)    │
-                                                      └─────────────────┘
-                                                            │
-                                                            │ 响应
-                                                            ▼
-                                                      ┌─────────────────┐
-                                                      │  响应           │
-                                                      │  解密           │
-                                                      └─────────────────┘
-                                                            │
-                                                            ▼
-                                                      ┌─────────────────┐
-                                                      │  用户           │
-                                                      │  展示           │
-                                                      └─────────────────┘
+```mermaid
+sequenceDiagram
+    participant U as 用户
+    participant R as RE CODE 客户端
+    participant T as 隧道层
+    participant P as 代理网络
+    participant E as 出口节点
+    participant A as Anthropic API
+    
+    U->>R: 用户查询
+    R->>R: 解析验证
+    R->>T: 加密请求
+    T->>P: 混淆请求
+    P->>E: 轮换IP节点
+    E->>A: 转发请求
+    
+    alt 请求验证通过
+        A->>E: 有效响应
+        E->>P: 响应数据
+        P->>T: 解密响应
+        T->>R: 解析响应
+        R->>U: 显示结果
+    else 速率限制/封号风险
+        A->>E: 速率限制错误
+        E->>P: 自动重试
+        P->>P: 切换出口节点
+        P->>A: 使用新IP重试
+    end
 ```
 
 ### 核心组件
@@ -142,38 +163,36 @@ Claude 内部有代号为 **"天狗" (Tango Tengu)** 的监控系统，会收集
 
 ### 安全机制
 
-```
-+----------------------------------------------------------------------+
-|                     安全层                                           |
-+----------------------------------------------------------------------+
-
-  第一层: 设备指纹随机化
-  ─────────────────────────────────────────
-  - MAC 地址轮换
-  - 硬件 UUID 伪装
-  - 屏幕分辨率噪声注入
-  - 时区标准化
-
-  第二层: 请求模式混淆  
-  ─────────────────────────────────────────
-  - 请求时序随机化
-  - Token 序列置换
-  - 载荷大小填充
-  - Header 清理
-
-  第三层: 网络身份管理
-  ─────────────────────────────────────────
-  - 住宅代理 IP 池
-  - 地理一致性强制执行
-  - IP 信誉评分
-  - 自动故障转移
-
-  第四层: API 密钥保护
-  ─────────────────────────────────────────
-  - 本地加密存储
-  - 从不暴露给第三方
-  - 内存级密钥处理
-  - 自动密钥轮换支持
+```mermaid
+flowchart LR
+    subgraph L1["第一层: 设备指纹"]
+        MAC["MAC轮换"] --> UUID["UUID伪装"]
+        UUID --> RES["分辨率噪声"]
+        RES --> TZ["时区标准化"]
+    end
+    
+    subgraph L2["第二层: 请求混淆"]
+        TIMING["时序随机化"] --> TOKEN["Token置换"]
+        TOKEN --> PAD["载荷填充"]
+        PAD --> HEADER["Header清理"]
+    end
+    
+    subgraph L3["第三层: 网络身份"]
+        RESIP["住宅代理池"] --> GEO["地理一致性"]
+        GEO --> SCORE["IP信誉评分"]
+        SCORE --> FAILOVER["自动故障转移"]
+    end
+    
+    subgraph L4["第四层: 密钥保护"]
+        ENCRYPT["本地加密"] --> MEMORY["内存级处理"]
+        MEMORY --> EXPOSE["从不暴露"]
+        EXPOSE --> ROTATE["自动轮换"]
+    end
+    
+    style L1 fill:#fef3c7,stroke:#f59e0b,stroke-width:2
+    style L2 fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2
+    style L3 fill:#dcfce7,stroke:#22c55e,stroke-width:2
+    style L4 fill:#fce7f3,stroke:#db2777,stroke-width:2
 ```
 
 ---
@@ -197,7 +216,7 @@ curl -fsSL https://cdn.jsdelivr.net/gh/mangiapanejohn-dev/-Re-Code/install-termu
 
 ---
 
-## ⚙️ 隐私配置
+## 隐私配置
 
 ```bash
 # 关闭遥测（减少数据收集）
@@ -212,7 +231,7 @@ export ANTHROPIC_API_KEY=sk-xxx
 
 ---
 
-## 📖 使用方法
+## 使用方法
 
 | 命令 | 说明 |
 |:---|:---|
@@ -225,7 +244,7 @@ export ANTHROPIC_API_KEY=sk-xxx
 
 ---
 
-## 🏗️ 项目结构
+## 项目结构
 
 ```
 ReCode/
@@ -243,7 +262,7 @@ ReCode/
 
 ---
 
-## 🤝 贡献
+## 贡献
 
 ```bash
 git clone https://github.com/mangiapanejohn-dev/-Re-Code.git
@@ -255,12 +274,12 @@ git push origin feature/your-feature
 
 ---
 
-## 📄 许可证
+## 许可证
 
 MIT License - See [LICENSE](LICENSE)
 
 ---
 
 <p align="center">
-  Made with 💜 by <a href="https://github.com/mangiapanejohn-dev">ReCode Team</a>
+  Made with by <a href="https://github.com/mangiapanejohn-dev">ReCode Team</a>
 </p>
