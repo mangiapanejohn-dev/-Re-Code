@@ -65,64 +65,48 @@ Claude 内部有代号为 **"天狗" (Tango Tengu)** 的监控系统，会收集
 ### 系统概览
 
 ```mermaid
-flowchart TB
-    subgraph USER_LAYER["用户层"]
-        direction LR
-        CLI["CLI/TUI 终端"] --> WEB["Web 界面"]
-        WEB --> SDK["SDK API"]
-    end
+sequenceDiagram
+    participant USER as 用户
+    participant CLI as CLI/TUI 终端
+    participant ENGINE as 客户端引擎
+    participant TUNNEL as 安全隧道
+    participant PROXY as 代理基础设施
+    participant GATEWAY as API 网关
+    participant API as Anthropic API
     
-    USER_LAYER --> CLIENT_ENGINE
+    Note over USER,CLI: 用户层
+    USER->>CLI: 输入查询
+    CLI->>ENGINE: 解析并加入队列
     
-    subgraph CLIENT_ENGINE["客户端引擎"]
-        direction TB
-        PARSE["输入解析器"] --> VALIDATE["验证器"]
-        VALIDATE --> QUEUE["请求队列"]
-        QUEUE --> CONTEXT["上下文管理器"]
-    end
+    Note over ENGINE: 客户端引擎层
+    ENGINE->>ENGINE: 验证输入
+    ENGINE->>ENGINE: 构建上下文
+    ENGINE->>TUNNEL: 加密载荷
     
-    CLIENT_ENGINE --> TUNNEL
+    Note over TUNNEL: 安全隧道层
+    TUNNEL->>TUNNEL: AES-256 加密
+    TUNNEL->>TUNNEL: 压缩载荷
+    TUNNEL->>TUNNEL: HMAC 签名
+    TUNNEL->>TUNNEL: 时序随机化
+    TUNNEL->>PROXY: 转发请求
     
-    subgraph TUNNEL["安全隧道"]
-        direction TB
-        ENCRYPT["AES-256 加密"] --> COMPRESS["载荷压缩"]
-        COMPRESS --> SIGNATURE["HMAC 签名"]
-        SIGNATURE --> TIMING["时序随机化"]
-    end
+    Note over PROXY: 代理基础设施层
+    PROXY->>PROXY: 负载均衡
+    PROXY->>PROXY: 混淆请求
+    PROXY->>PROXY: 随机化指纹
+    PROXY->>PROXY: 选择出口节点
+    PROXY->>GATEWAY: 路由请求
     
-    TUNNEL --> PROXY
+    Note over GATEWAY: API 网关层
+    GATEWAY->>GATEWAY: 速率限制
+    GATEWAY->>API: 转发请求
     
-    subgraph PROXY["代理基础设施"]
-        direction TB
-        LB["全球负载均衡"] --> EDGE["边缘节点"]
-        EDGE --> OBFS["混淆引擎"]
-        OBFS --> FINGERPRINT["指纹随机化"]
-        FINGERPRINT --> IP_POOL["IP 池管理器"]
-        IP_POOL --> RESIDENTIAL["住宅代理"]
-    end
-    
-    PROXY --> API_GATEWAY
-    
-    subgraph API_GATEWAY["API 网关"]
-        direction TB
-        RATE["速率限制器"] --> RETRY["重试引擎"]
-        RETRY --> FAILOVER["故障转移控制器"]
-    end
-    
-    API_GATEWAY --> ANTHROPIC
-    
-    ANTHROPIC[("Anthropic Claude API")] --> RESPONSE
-    RESPONSE["响应处理器"] --> DECODE["响应解码器"]
-    DECODE --> CACHE["上下文缓存"]
-    CACHE --> DISPLAY["用户界面"]
-    
-    style USER_LAYER fill:#0f172a,stroke:#334155,stroke-width:2,color:#fff
-    style CLIENT_ENGINE fill:#1e1b4b,stroke:#4338ca,stroke-width:2,color:#fff
-    style TUNNEL fill:#164e63,stroke:#06b6d4,stroke-width:2,color:#fff
-    style PROXY fill:#14532d,stroke:#22c55e,stroke-width:2,color:#fff
-    style API_GATEWAY fill:#7c2d12,stroke:#f97316,stroke-width:2,color:#fff
-    style ANTHROPIC fill:#7c3aed,stroke:#9333ea,stroke-width:3,color:#fff
-    style RESPONSE fill:#4a044e,stroke:#db2777,stroke-width:2,color:#fff
+    API->>GATEWAY: 响应
+    GATEWAY->>PROXY: 响应数据
+    PROXY->>TUNNEL: 解密响应
+    TUNNEL->>ENGINE: 解析响应
+    ENGINE->>CLI: 显示结果
+    CLI->>USER: 输出
 ```
 
 ### 请求流程
@@ -170,77 +154,47 @@ sequenceDiagram
 ### 安全机制
 
 ```mermaid
-flowchart TB
-    subgraph LAYER1["第一层: 设备身份混淆"]
-        direction LR
-        MAC["MAC 地址轮换"] 
-        HWID["硬件 UUID 伪装"]
-        DISPLAY["显示器信息噪声注入"]
-        TZ["时区标准化"]
-        USER_AGENT["User-Agent 轮换"]
-    end
+sequenceDiagram
+    participant REQ as 请求
+    participant L1 as 第一层<br/>设备身份
+    participant L2 as 第二层<br/>请求模式
+    participant L3 as 第三层<br/>网络身份
+    participant L4 as 第四层<br/>API 密钥保护
+    participant OUT as 输出
     
-    LAYER1 --> LAYER2
+    REQ->>L1: 开始处理
     
-    subgraph LAYER2["第二层: 请求模式随机化"]
-        direction LR
-        TIMING["请求时序随机化"]
-        SEQUENCE["Token 序列置换"]
-        SIZE["载荷大小填充"]
-        HEADER_SANI["Header 清理"]
-        COOKIE["Cookie 隔离"]
-    end
+    Note over L1: 设备身份混淆
+    L1->>L1: MAC 地址轮换
+    L1->>L1: 硬件 UUID 伪装
+    L1->>L1: 显示器信息噪声注入
+    L1->>L1: 时区标准化
+    L1->>L1: User-Agent 轮换
+    L1->>L2: 混淆后的请求
     
-    LAYER2 --> LAYER3
+    Note over L2: 请求模式随机化
+    L2->>L2: 请求时序随机化
+    L2->>L2: Token 序列置换
+    L2->>L2: 载荷大小填充
+    L2->>L2: Header 清理
+    L2->>L2: Cookie 隔离
+    L2->>L3: 掩码模式
     
-    subgraph LAYER3["第三层: 网络身份管理"]
-        direction LR
-        IP_POOL["住宅代理 IP 池"]
-        GEO["地理位置一致性"]
-        REPUTE["IP 信誉评分"]
-        ROTATION["自动 IP 轮换"]
-        FAILOVER["智能故障转移"]
-    end
+    Note over L3: 网络身份管理
+    L3->>L3: 从住宅代理 IP 池选择
+    L3->>L3: 强制地理位置一致性
+    L3->>L3: 检查 IP 信誉评分
+    L3->>L3: 自动 IP 轮换
+    L3->>L3: 需要时智能故障转移
+    L3->>L4: 轮换后的身份
     
-    LAYER3 --> LAYER4
-    
-    subgraph LAYER4["第四层: API 密钥保护"]
-        direction LR
-        ENCRYPTED["本地加密"]
-        MEMORY["内存级存储"]
-        ISOLATE["进程隔离"]
-        ROTATE["密钥轮换支持"]
-        NEVER_EXPOSE["从不暴露给第三方"]
-    end
-    
-    style LAYER1 fill:#fffbeb,stroke:#d97706,stroke-width:3,color:#000
-    style LAYER2 fill:#eff6ff,stroke:#2563eb,stroke-width:3,color:#000
-    style LAYER3 fill:#ecfdf5,stroke:#059669,stroke-width:3,color:#000
-    style LAYER4 fill:#fdf2f8,stroke:#db2777,stroke-width:3,color:#000
-    
-    style MAC fill:#fef3c7,stroke:#d97706,color:#000
-    style HWID fill:#fef3c7,stroke:#d97706,color:#000
-    style DISPLAY fill:#fef3c7,stroke:#d97706,color:#000
-    style TZ fill:#fef3c7,stroke:#d97706,color:#000
-    style USER_AGENT fill:#fef3c7,stroke:#d97706,color:#000
-    
-    style TIMING fill:#dbeafe,stroke:#2563eb,color:#000
-    style SEQUENCE fill:#dbeafe,stroke:#2563eb,color:#000
-    style SIZE fill:#dbeafe,stroke:#2563eb,color:#000
-    style HEADER_SANI fill:#dbeafe,stroke:#2563eb,color:#000
-    style COOKIE fill:#dbeafe,stroke:#2563eb,color:#000
-    
-    style IP_POOL fill:#d1fae5,stroke:#059669,color:#000
-    style GEO fill:#d1fae5,stroke:#059669,color:#000
-    style REPUTE fill:#d1fae5,stroke:#059669,color:#000
-    style ROTATION fill:#d1fae5,stroke:#059669,color:#000
-    style FAILOVER fill:#d1fae5,stroke:#059669,color:#000
-    
-    style ENCRYPTED fill:#fce7f3,stroke:#db2777,color:#000
-    style MEMORY fill:#fce7f3,stroke:#db2777,color:#000
-    style ISOLATE fill:#fce7f3,stroke:#db2777,color:#000
-    style ROTATE fill:#fce7f3,stroke:#db2777,color:#000
-    style NEVER_EXPOSE fill:#fce7f3,stroke:#db2777,color:#000
+    Note over L4: API 密钥保护
+    L4->>L4: 从本地加密加载
+    L4->>L4: 仅存储在内存中
+    L4->>L4: 进程隔离
+    L4->>L4: 密钥轮换支持
+    L4->>L4: 从不暴露给第三方
+    L4->>OUT: 受保护的请求
 ```
 
 ---

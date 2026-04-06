@@ -65,64 +65,48 @@ Claude has an internal monitoring system codenamed **"Tango Tengu"** that collec
 ### System Overview
 
 ```mermaid
-flowchart TB
-    subgraph USER_LAYER["User Layer"]
-        direction LR
-        CLI[CLI/TUI] --> WEB[Web UI]
-        WEB --> SDK[SDK API]
-    end
+sequenceDiagram
+    participant USER as User
+    participant CLI as CLI/TUI
+    participant ENGINE as Client Engine
+    participant TUNNEL as Security Tunnel
+    participant PROXY as Proxy Infrastructure
+    participant GATEWAY as API Gateway
+    participant API as Anthropic API
     
-    USER_LAYER --> CLIENT_ENGINE
+    Note over USER,CLI: User Layer
+    USER->>CLI: Input Query
+    CLI->>ENGINE: Parse & Queue
     
-    subgraph CLIENT_ENGINE["Client Engine"]
-        direction TB
-        PARSE["Input Parser"] --> VALIDATE["Validator"]
-        VALIDATE --> QUEUE["Request Queue"]
-        QUEUE --> CONTEXT["Context Manager"]
-    end
+    Note over ENGINE: Client Engine Layer
+    ENGINE->>ENGINE: Validate Input
+    ENGINE->>ENGINE: Build Context
+    ENGINE->>TUNNEL: Encrypted Payload
     
-    CLIENT_ENGINE --> TUNNEL
+    Note over TUNNEL: Security Tunnel Layer
+    TUNNEL->>TUNNEL: AES-256 Encrypt
+    TUNNEL->>TUNNEL: Compress Payload
+    TUNNEL->>TUNNEL: HMAC Sign
+    TUNNEL->>TUNNEL: Randomize Timing
+    TUNNEL->>PROXY: Forward Request
     
-    subgraph TUNNEL["Security Tunnel"]
-        direction TB
-        ENCRYPT["AES-256 Encryption"] --> COMPRESS["Payload Compression"]
-        COMPRESS --> SIGNATURE["HMAC Signature"]
-        SIGNATURE --> TIMING["Timing Randomizer"]
-    end
+    Note over PROXY: Proxy Infrastructure Layer
+    PROXY->>PROXY: Load Balance
+    PROXY->>PROXY: Obfuscate Request
+    PROXY->>PROXY: Randomize Fingerprint
+    PROXY->>PROXY: Select Exit Node
+    PROXY->>GATEWAY: Route Request
     
-    TUNNEL --> PROXY
+    Note over GATEWAY: API Gateway Layer
+    GATEWAY->>GATEWAY: Rate Limiting
+    GATEWAY->>API: Forward Request
     
-    subgraph PROXY["Proxy Infrastructure"]
-        direction TB
-        LB["Global Load Balancer"] --> EDGE["Edge Nodes"]
-        EDGE --> OBFS["Obfuscation Engine"]
-        OBFS --> FINGERPRINT["Fingerprint Randomizer"]
-        FINGERPRINT --> IP_POOL["IP Pool Manager"]
-        IP_POOL --> RESIDENTIAL["Residential Proxies"]
-    end
-    
-    PROXY --> API_GATEWAY
-    
-    subgraph API_GATEWAY["API Gateway"]
-        direction TB
-        RATE["Rate Limiter"] --> RETRY["Retry Engine"]
-        RETRY --> FAILOVER["Failover Controller"]
-    end
-    
-    API_GATEWAY --> ANTHROPIC
-    
-    ANTHROPIC[("Anthropic Claude API")] --> RESPONSE
-    RESPONSE["Response Handler"] --> DECODE["Response Decoder"]
-    DECODE --> CACHE["Context Cache"]
-    CACHE --> DISPLAY["User Interface"]
-    
-    style USER_LAYER fill:#0f172a,stroke:#334155,stroke-width:2,color:#fff
-    style CLIENT_ENGINE fill:#1e1b4b,stroke:#4338ca,stroke-width:2,color:#fff
-    style TUNNEL fill:#164e63,stroke:#06b6d4,stroke-width:2,color:#fff
-    style PROXY fill:#14532d,stroke:#22c55e,stroke-width:2,color:#fff
-    style API_GATEWAY fill:#7c2d12,stroke:#f97316,stroke-width:2,color:#fff
-    style ANTHROPIC fill:#7c3aed,stroke:#9333ea,stroke-width:3,color:#fff
-    style RESPONSE fill:#4a044e,stroke:#db2777,stroke-width:2,color:#fff
+    API->>GATEWAY: Response
+    GATEWAY->>PROXY: Response Data
+    PROXY->>TUNNEL: Decrypt Response
+    TUNNEL->>ENGINE: Parse Response
+    ENGINE->>CLI: Display Result
+    CLI->>USER: Output
 ```
 
 ### Request Flow
@@ -170,77 +154,47 @@ sequenceDiagram
 ### Security Mechanisms
 
 ```mermaid
-flowchart TB
-    subgraph LAYER1["LAYER 1: Device Identity Obfuscation"]
-        direction LR
-        MAC["MAC Address Rotation"] 
-        HWID["Hardware UUID Spoofing"]
-        DISPLAY["Display Info Noise Injection"]
-        TZ["Timezone Normalization"]
-        USER_AGENT["User-Agent Rotation"]
-    end
+sequenceDiagram
+    participant REQ as Request
+    participant L1 as Layer 1<br/>Device Identity
+    participant L2 as Layer 2<br/>Request Pattern
+    participant L3 as Layer 3<br/>Network Identity
+    participant L4 as Layer 4<br/>API Key Protection
+    participant OUT as Output
     
-    LAYER1 --> LAYER2
+    REQ->>L1: Start Processing
     
-    subgraph LAYER2["LAYER 2: Request Pattern Randomization"]
-        direction LR
-        TIMING["Request Timing Randomization"]
-        SEQUENCE["Token Sequence Permutation"]
-        SIZE["Payload Size Padding"]
-        HEADER_SANI["Header Sanitization"]
-        COOKIE["Cookie Isolation"]
-    end
+    Note over L1: Device Identity Obfuscation
+    L1->>L1: MAC Address Rotation
+    L1->>L1: Hardware UUID Spoofing
+    L1->>L1: Display Info Noise Injection
+    L1->>L1: Timezone Normalization
+    L1->>L1: User-Agent Rotation
+    L1->>L2: Obfuscated Request
     
-    LAYER2 --> LAYER3
+    Note over L2: Request Pattern Randomization
+    L2->>L2: Request Timing Randomization
+    L2->>L2: Token Sequence Permutation
+    L2->>L2: Payload Size Padding
+    L2->>L2: Header Sanitization
+    L2->>L2: Cookie Isolation
+    L2->>L3: Masked Pattern
     
-    subgraph LAYER3["LAYER 3: Network Identity Management"]
-        direction LR
-        IP_POOL["Residential IP Pool"]
-        GEO["Geo-Location Consistency"]
-        REPUTE["IP Reputation Scoring"]
-        ROTATION["Automatic IP Rotation"]
-        FAILOVER["Smart Failover"]
-    end
+    Note over L3: Network Identity Management
+    L3->>L3: Select from Residential IP Pool
+    L3->>L3: Enforce Geo-Location Consistency
+    L3->>L3: Check IP Reputation Score
+    L3->>L3: Automatic IP Rotation
+    L3->>L3: Smart Failover if Needed
+    L3->>L4: Rotated Identity
     
-    LAYER3 --> LAYER4
-    
-    subgraph LAYER4["LAYER 4: API Key Protection"]
-        direction LR
-        ENCRYPTED["Local Encryption"]
-        MEMORY["Memory-Only Storage"]
-        ISOLATE["Process Isolation"]
-        ROTATE["Key Rotation Support"]
-        NEVER_EXPOSE["Never Third-Party Exposure"]
-    end
-    
-    style LAYER1 fill:#fffbeb,stroke:#d97706,stroke-width:3,color:#000
-    style LAYER2 fill:#eff6ff,stroke:#2563eb,stroke-width:3,color:#000
-    style LAYER3 fill:#ecfdf5,stroke:#059669,stroke-width:3,color:#000
-    style LAYER4 fill:#fdf2f8,stroke:#db2777,stroke-width:3,color:#000
-    
-    style MAC fill:#fef3c7,stroke:#d97706,color:#000
-    style HWID fill:#fef3c7,stroke:#d97706,color:#000
-    style DISPLAY fill:#fef3c7,stroke:#d97706,color:#000
-    style TZ fill:#fef3c7,stroke:#d97706,color:#000
-    style USER_AGENT fill:#fef3c7,stroke:#d97706,color:#000
-    
-    style TIMING fill:#dbeafe,stroke:#2563eb,color:#000
-    style SEQUENCE fill:#dbeafe,stroke:#2563eb,color:#000
-    style SIZE fill:#dbeafe,stroke:#2563eb,color:#000
-    style HEADER_SANI fill:#dbeafe,stroke:#2563eb,color:#000
-    style COOKIE fill:#dbeafe,stroke:#2563eb,color:#000
-    
-    style IP_POOL fill:#d1fae5,stroke:#059669,color:#000
-    style GEO fill:#d1fae5,stroke:#059669,color:#000
-    style REPUTE fill:#d1fae5,stroke:#059669,color:#000
-    style ROTATION fill:#d1fae5,stroke:#059669,color:#000
-    style FAILOVER fill:#d1fae5,stroke:#059669,color:#000
-    
-    style ENCRYPTED fill:#fce7f3,stroke:#db2777,color:#000
-    style MEMORY fill:#fce7f3,stroke:#db2777,color:#000
-    style ISOLATE fill:#fce7f3,stroke:#db2777,color:#000
-    style ROTATE fill:#fce7f3,stroke:#db2777,color:#000
-    style NEVER_EXPOSE fill:#fce7f3,stroke:#db2777,color:#000
+    Note over L4: API Key Protection
+    L4->>L4: Load from Local Encryption
+    L4->>L4: Store in Memory-Only
+    L4->>L4: Process Isolation
+    L4->>L4: Key Rotation Support
+    L4->>L4: Never Expose to Third-Party
+    L4->>OUT: Protected Request
 ```
 
 ---
