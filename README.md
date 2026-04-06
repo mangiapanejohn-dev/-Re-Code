@@ -16,19 +16,43 @@
 
 ---
 
-## ✨ Features
+## 🛡️ RE CODE 是什么？
 
-| Feature | Description |
+**RE CODE** 是一个开源的 Claude API 客户端，专门解决 Claude 被封号的问题。
+
+### 🔍 Claude 封号原因
+
+Claude 内部有代号 **"天狗" (Tango Tengu)** 的监控系统，会收集：
+
+| 监控维度 | 收集内容 |
+|:---|:---|
+| 行为数据 | 打开文件、执行命令等操作 |
+| 设备指纹 | 40+ 维度的设备信息 |
+| 追踪分组 | 用户分配到 30 个"桶"进行追踪 |
+
+### ⚠️ 封号触发条件
+
+| 风险等级 | 触发原因 |
 |:---:|:---|
-| 🤖 **Multi-Model** | Claude Opus / Sonnet / Haiku + Custom Models |
-| 🔧 **Configurable** | Model selection, API endpoints, environment variables |
-| 🌐 **Multi-Provider** | Anthropic, AWS Bedrock, Google Vertex, Azure |
-| 💻 **Cross-Platform** | Windows, macOS, Linux, Termux |
-| 🛡️ **Enterprise** | Permissions, workspace trust |
+| 🔴 极高 | 共享账号、使用第三方客户端 |
+| 🟠 高 | API 调用频率过高 |
+| 🟡 中等 | IP 频繁跨国切换、支付信息与地区不匹配 |
 
 ---
 
-## 🚀 Quick Install
+## ✨ RE CODE 的优势
+
+| 功能 | 说明 |
+|:---|:---|
+| 🔒 **隐私保护** | 可关闭遥测，减少数据收集 |
+| 🌐 **自定义端点** | 支持自建代理，隐藏真实请求 |
+| 🔧 **灵活配置** | 支持自定义 API 端点和模型 |
+| 🌍 **多平台** | Windows / macOS / Linux / Termux |
+| 📦 **开源可控** | 完全透明，无隐藏行为 |
+
+---
+
+## 🚀 快速安装
 
 ### macOS / Linux
 ```bash
@@ -47,139 +71,70 @@ curl -fsSL https://cdn.jsdelivr.net/gh/mangiapanejohn-dev/-Re-Code/install-termu
 
 ---
 
-## 📖 Usage
-
-### Basic Commands
-
-| Command | Description |
-|:---|:---|
-| `recode` | Start RE CODE |
-| `recode -v` | Show version |
-| `recode --help` | Show help |
-
-### Slash Commands
-
-| Command | Description |
-|:---|:---|
-| `/help` | Show help |
-| `/model [name]` | Switch model (opus, sonnet, haiku) |
-| `/config` | View/edit configuration |
-| `/clear` | Clear session |
-| `/exit` | Exit |
-
----
-
-## ⚙️ Configuration
-
-### Environment Variables
+## ⚙️ 隐私配置
 
 ```bash
-# API Configuration
-ANTHROPIC_API_KEY=your-api-key
-ANTHROPIC_MODEL=claude-sonnet-4-20250514
+# 关闭遥测（减少数据收集）
+export DISABLE_TELEMETRY=1
 
-# Alternative Providers
-ANTHROPIC_BASE_URL=custom-endpoint
+# 使用自定义 API 端点
+export ANTHROPIC_BASE_URL=https://your-proxy.com
 
-# Provider Selection
-CLAUDE_CODE_USE_BEDROCK=1
-CLAUDE_CODE_USE_VERTEX=1
-CLAUDE_CODE_USE_FOUNDRY=1
-```
-
-### Model Priority
-
-```
-1. /model command    → Highest priority
-2. --model flag
-3. ENV variable      → ANTHROPIC_MODEL=xxx
-4. settings.json
-5. Default           → Sonnet 4.6
+# 使用自己的 API Key
+export ANTHROPIC_API_KEY=sk-xxx
 ```
 
 ---
 
-## 🏗️ Architecture
+## 📖 使用方法
 
-```
-┌─────────────────────────────────────────────┐
-│            Presentation Layer              │
-│   Onboarding → ModelPicker → REPL → TUI    │
-└──────────────────────┬──────────────────────┘
-                       ▼
-┌─────────────────────────────────────────────┐
-│           Business Logic Layer              │
-│    Commands → Query Engine → Tools         │
-└──────────────────────┬──────────────────────┘
-                       ▼
-┌─────────────────────────────────────────────┐
-│               API Layer                     │
-│      Claude API → Auth → Errors            │
-└──────────────────────┬──────────────────────┘
-                       ▼
-┌─────────────────────────────────────────────┐
-│         Provider Integration                │
-│   Anthropic │ Bedrock │ Vertex │ Foundry   │
-└─────────────────────────────────────────────┘
-```
+| 命令 | 说明 |
+|:---|:---|
+| `recode` | 启动 RE CODE |
+| `recode -v` | 查看版本 |
+| `/model [name]` | 切换模型 (opus/sonnet/haiku) |
+| `/config` | 查看/编辑配置 |
+| `/clear` | 清除会话 |
+| `/exit` | 退出 |
 
 ---
 
-## 📁 Project Structure
+## 🏗️ 项目结构
 
 ```
 ReCode/
-├── src/
-│   ├── components/          # React UI
-│   │   ├── Onboarding.tsx
-│   │   ├── ModelPicker.tsx
-│   │   └── REPL.tsx
-│   ├── utils/              # Utilities
-│   │   ├── config/         # Configuration
-│   │   └── settings/       # User settings
-│   ├── commands/           # CLI commands
-│   ├── tools/              # Built-in tools
-│   └── skills/             # Custom skills
-├── recode-temp/package/    # Built CLI
-├── install.sh              # macOS/Linux
-├── install.ps1             # Windows
-├── install-termux.sh      # Termux
-└── README.md              # This file
+├── src/                    # 源代码
+│   ├── commands/           # CLI 命令
+│   ├── components/         # UI 组件
+│   ├── utils/              # 工具函数
+│   └── tools/              # 内置工具
+├── recode-temp/package/   # 打包后的 CLI
+├── install.sh              # macOS/Linux 安装脚本
+├── install.ps1             # Windows 安装脚本
+├── install-termux.sh       # Termux 安装脚本
+└── README.md               # 说明文档
 ```
 
 ---
 
-## 🤝 Contributing
+## 🤝 贡献
 
 ```bash
-# Clone the repository
 git clone https://github.com/mangiapanejohn-dev/-Re-Code.git
 cd ReCode
-
-# Create a feature branch
-git checkout -b feature/awesome-feature
-
-# Make your changes
-# ...
-
-# Commit and push
-git add .
+git checkout -b feature/your-feature
 git commit -m 'Add awesome feature'
-git push origin feature/awesome-feature
+git push origin feature/your-feature
 ```
 
 ---
 
 ## 📄 License
 
-MIT License - See [LICENSE](LICENSE) for details.
+MIT License - See [LICENSE](LICENSE)
 
 ---
 
 <p align="center">
   Made with 💜 by <a href="https://github.com/mangiapanejohn-dev">ReCode Team</a>
-</p>
-
-<p align="center">
-  <img src="https://komarev.com/ghpvc/?username=mangiapanejohn-dev&label=Profile%20Views&color=purple&style=flat-square" alt="Profile views">
 </p>
