@@ -66,57 +66,63 @@ Claude 内部有代号为 **"天狗" (Tango Tengu)** 的监控系统，会收集
 
 ```mermaid
 flowchart TB
-    subgraph CLIENT["客户端层"]
-        USER["用户输入"] --> INPUT["输入处理器"]
-        INPUT --> CMD["命令解析器"]
-        CMD --> QUEUE["请求队列"]
+    subgraph USER_LAYER["用户层"]
+        direction LR
+        CLI["CLI/TUI 终端"] --> WEB["Web 界面"]
+        WEB --> SDK["SDK API"]
     end
     
-    subgraph TUNNEL["隧道层"]
-        QUEUE --> ENCRYPT["加密通道"]
-        ENCRYPT --> COMPRESS["载荷压缩"]
-        COMPRESS --> SIGN["请求签名"]
+    USER_LAYER --> CLIENT_ENGINE
+    
+    subgraph CLIENT_ENGINE["客户端引擎"]
+        direction TB
+        PARSE["输入解析器"] --> VALIDATE["验证器"]
+        VALIDATE --> QUEUE["请求队列"]
+        QUEUE --> CONTEXT["上下文管理器"]
     end
+    
+    CLIENT_ENGINE --> TUNNEL
+    
+    subgraph TUNNEL["安全隧道"]
+        direction TB
+        ENCRYPT["AES-256 加密"] --> COMPRESS["载荷压缩"]
+        COMPRESS --> SIGNATURE["HMAC 签名"]
+        SIGNATURE --> TIMING["时序随机化"]
+    end
+    
+    TUNNEL --> PROXY
     
     subgraph PROXY["代理基础设施"]
-        SIGN --> LB["负载均衡"]
-        LB --> ROUTE["动态路由"]
-        ROUTE --> POOL["出口节点池"]
-        POOL --> RESIDENT["住宅代理IP"]
-        
-        ROUTE --> OBFUSCATE["请求混淆"]
-        OBFUSCATE --> FINGERPRINT["指纹随机化"]
-        OBFUSCATE --> TIMING["时序随机化"]
-        OBFUSCATE --> HEADER["Header 清理"]
+        direction TB
+        LB["全球负载均衡"] --> EDGE["边缘节点"]
+        EDGE --> OBFS["混淆引擎"]
+        OBFS --> FINGERPRINT["指纹随机化"]
+        FINGERPRINT --> IP_POOL["IP 池管理器"]
+        IP_POOL --> RESIDENTIAL["住宅代理"]
     end
     
-    PROXY --> ANTHROPIC["Anthropic API"]
-    ANTHROPIC --> RESP["响应处理器"]
-    RESP --> DECRYPT["解密"]
-    DECRYPT --> DISPLAY["用户展示"]
+    PROXY --> API_GATEWAY
     
-    style CLIENT fill:#1e1b4b,stroke:#4338ca,stroke-width:2,color:#fff
-    style TUNNEL fill:#1e3a5f,stroke:#0ea5e9,stroke-width:2,color:#fff
+    subgraph API_GATEWAY["API 网关"]
+        direction TB
+        RATE["速率限制器"] --> RETRY["重试引擎"]
+        RETRY --> FAILOVER["故障转移控制器"]
+    end
+    
+    API_GATEWAY --> ANTHROPIC
+    
+    ANTHROPIC[("Anthropic Claude API")] --> RESPONSE
+    RESPONSE["响应处理器"] --> DECODE["响应解码器"]
+    DECODE --> CACHE["上下文缓存"]
+    CACHE --> DISPLAY["用户界面"]
+    
+    style USER_LAYER fill:#0f172a,stroke:#334155,stroke-width:2,color:#fff
+    style CLIENT_ENGINE fill:#1e1b4b,stroke:#4338ca,stroke-width:2,color:#fff
+    style TUNNEL fill:#164e63,stroke:#06b6d4,stroke-width:2,color:#fff
     style PROXY fill:#14532d,stroke:#22c55e,stroke-width:2,color:#fff
-    style USER fill:#fff,stroke:#333,stroke-width:2
-    style INPUT fill:#e0e7ff,stroke:#4338ca
-    style CMD fill:#e0e7ff,stroke:#4338ca
-    style QUEUE fill:#c7d2fe,stroke:#4338ca
-    style ENCRYPT fill:#e0f2fe,stroke:#0ea5e9
-    style COMPRESS fill:#e0f2fe,stroke:#0ea5e9
-    style SIGN fill:#e0f2fe,stroke:#0ea5e9
-    style LB fill:#dcfce7,stroke:#22c55e
-    style ROUTE fill:#dcfce7,stroke:#22c55e
-    style POOL fill:#dcfce7,stroke:#22c55e
-    style RESIDENT fill:#bbf7d0,stroke:#22c55e
-    style OBFUSCATE fill:#fef3c7,stroke:#f59e0b
-    style FINGERPRINT fill:#fed7aa,stroke:#f59e0b
-    style TIMING fill:#fed7aa,stroke:#f59e0b
-    style HEADER fill:#fed7aa,stroke:#f59e0b
+    style API_GATEWAY fill:#7c2d12,stroke:#f97316,stroke-width:2,color:#fff
     style ANTHROPIC fill:#7c3aed,stroke:#9333ea,stroke-width:3,color:#fff
-    style RESP fill:#fce7f3,stroke:#db2777
-    style DECRYPT fill:#fce7f3,stroke:#db2777
-    style DISPLAY fill:#fff,stroke:#333
+    style RESPONSE fill:#4a044e,stroke:#db2777,stroke-width:2,color:#fff
 ```
 
 ### 请求流程
@@ -164,35 +170,77 @@ sequenceDiagram
 ### 安全机制
 
 ```mermaid
-flowchart LR
-    subgraph L1["第一层: 设备指纹"]
-        MAC["MAC轮换"] --> UUID["UUID伪装"]
-        UUID --> RES["分辨率噪声"]
-        RES --> TZ["时区标准化"]
+flowchart TB
+    subgraph LAYER1["第一层: 设备身份混淆"]
+        direction LR
+        MAC["MAC 地址轮换"] 
+        HWID["硬件 UUID 伪装"]
+        DISPLAY["显示器信息噪声注入"]
+        TZ["时区标准化"]
+        USER_AGENT["User-Agent 轮换"]
     end
     
-    subgraph L2["第二层: 请求混淆"]
-        TIMING["时序随机化"] --> TOKEN["Token置换"]
-        TOKEN --> PAD["载荷填充"]
-        PAD --> HEADER["Header清理"]
+    LAYER1 --> LAYER2
+    
+    subgraph LAYER2["第二层: 请求模式随机化"]
+        direction LR
+        TIMING["请求时序随机化"]
+        SEQUENCE["Token 序列置换"]
+        SIZE["载荷大小填充"]
+        HEADER_SANI["Header 清理"]
+        COOKIE["Cookie 隔离"]
     end
     
-    subgraph L3["第三层: 网络身份"]
-        RESIP["住宅代理池"] --> GEO["地理一致性"]
-        GEO --> SCORE["IP信誉评分"]
-        SCORE --> FAILOVER["自动故障转移"]
+    LAYER2 --> LAYER3
+    
+    subgraph LAYER3["第三层: 网络身份管理"]
+        direction LR
+        IP_POOL["住宅代理 IP 池"]
+        GEO["地理位置一致性"]
+        REPUTE["IP 信誉评分"]
+        ROTATION["自动 IP 轮换"]
+        FAILOVER["智能故障转移"]
     end
     
-    subgraph L4["第四层: 密钥保护"]
-        ENCRYPT["本地加密"] --> MEMORY["内存级处理"]
-        MEMORY --> EXPOSE["从不暴露"]
-        EXPOSE --> ROTATE["自动轮换"]
+    LAYER3 --> LAYER4
+    
+    subgraph LAYER4["第四层: API 密钥保护"]
+        direction LR
+        ENCRYPTED["本地加密"]
+        MEMORY["内存级存储"]
+        ISOLATE["进程隔离"]
+        ROTATE["密钥轮换支持"]
+        NEVER_EXPOSE["从不暴露给第三方"]
     end
     
-    style L1 fill:#fef3c7,stroke:#f59e0b,stroke-width:2
-    style L2 fill:#e0f2fe,stroke:#0ea5e9,stroke-width:2
-    style L3 fill:#dcfce7,stroke:#22c55e,stroke-width:2
-    style L4 fill:#fce7f3,stroke:#db2777,stroke-width:2
+    style LAYER1 fill:#fffbeb,stroke:#d97706,stroke-width:3,color:#000
+    style LAYER2 fill:#eff6ff,stroke:#2563eb,stroke-width:3,color:#000
+    style LAYER3 fill:#ecfdf5,stroke:#059669,stroke-width:3,color:#000
+    style LAYER4 fill:#fdf2f8,stroke:#db2777,stroke-width:3,color:#000
+    
+    style MAC fill:#fef3c7,stroke:#d97706,color:#000
+    style HWID fill:#fef3c7,stroke:#d97706,color:#000
+    style DISPLAY fill:#fef3c7,stroke:#d97706,color:#000
+    style TZ fill:#fef3c7,stroke:#d97706,color:#000
+    style USER_AGENT fill:#fef3c7,stroke:#d97706,color:#000
+    
+    style TIMING fill:#dbeafe,stroke:#2563eb,color:#000
+    style SEQUENCE fill:#dbeafe,stroke:#2563eb,color:#000
+    style SIZE fill:#dbeafe,stroke:#2563eb,color:#000
+    style HEADER_SANI fill:#dbeafe,stroke:#2563eb,color:#000
+    style COOKIE fill:#dbeafe,stroke:#2563eb,color:#000
+    
+    style IP_POOL fill:#d1fae5,stroke:#059669,color:#000
+    style GEO fill:#d1fae5,stroke:#059669,color:#000
+    style REPUTE fill:#d1fae5,stroke:#059669,color:#000
+    style ROTATION fill:#d1fae5,stroke:#059669,color:#000
+    style FAILOVER fill:#d1fae5,stroke:#059669,color:#000
+    
+    style ENCRYPTED fill:#fce7f3,stroke:#db2777,color:#000
+    style MEMORY fill:#fce7f3,stroke:#db2777,color:#000
+    style ISOLATE fill:#fce7f3,stroke:#db2777,color:#000
+    style ROTATE fill:#fce7f3,stroke:#db2777,color:#000
+    style NEVER_EXPOSE fill:#fce7f3,stroke:#db2777,color:#000
 ```
 
 ---
