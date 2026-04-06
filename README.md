@@ -14,46 +14,83 @@
   </a>
 </p>
 
+<p align="center">
+  <strong>
+    <a href="README.md">English</a> | 
+    <a href="README_CN.md">中文</a>
+  </strong>
+</p>
+
 ---
 
-## 🛡️ RE CODE 是什么？
+## 🛡️ What is RE CODE?
 
-**RE CODE** 是一个开源的 Claude API 客户端，专门解决 Claude 被封号的问题。
+**RE CODE** is an open-source Claude API client designed to solve the Claude account ban problem.
 
-### 🔍 Claude 封号原因
+### 🔍 Why Claude Gets Banned
 
-Claude 内部有代号 **"天狗" (Tango Tengu)** 的监控系统，会收集：
+Claude has an internal monitoring system codenamed **"Tango Tengu"** that collects:
 
-| 监控维度 | 收集内容 |
+| Monitoring Dimension | Data Collected |
 |:---|:---|
-| 行为数据 | 打开文件、执行命令等操作 |
-| 设备指纹 | 40+ 维度的设备信息 |
-| 追踪分组 | 用户分配到 30 个"桶"进行追踪 |
+| Behavior Data | Every action: file operations, command execution |
+| Device Fingerprinting | 40+ dimensions of device information |
+| User Tracking | Users assigned to 30 "buckets" for tracking |
 
-### ⚠️ 封号触发条件
+### ⚠️ Ban Trigger Conditions
 
-| 风险等级 | 触发原因 |
+| Risk Level | Trigger |
 |:---:|:---|
-| 🔴 极高 | 共享账号、使用第三方客户端 |
-| 🟠 高 | API 调用频率过高 |
-| 🟡 中等 | IP 频繁跨国切换、支付信息与地区不匹配 |
+| 🔴 Critical | Shared accounts, third-party clients |
+| 🟠 High | API rate limiting violations |
+| 🟡 Medium | Frequent IP geo-hopping, mismatched payment info |
 
 ---
 
-## ✨ RE CODE 的优势 - 解决 Claude 封号问题
+## ✨ RE CODE Advantages - Solve Claude Ban Issue
 
-| 功能 | 说明 |
+| Feature | Description |
 |:---|:---|
-| 🛡️ **防封号** | 隐藏设备指纹，绕过天狗监控系统检测 |
-| 🔒 **隐私保护** | 可关闭遥测，完全掌控数据收集 |
-| 🌐 **自定义端点** | 支持自建代理，隐藏真实 IP 和请求 |
-| 🚀 **稳定连接** | 专属服务器，避免高频调用触发封号 |
-| 🔧 **灵活配置** | 支持自定义 API 端点和模型 |
-| 🌍 **多平台** | Windows / macOS / Linux / Termux |
+| 🛡️ **Anti-Ban** | Hide device fingerprint, bypass Tango Tengu monitoring |
+| 🔒 **Privacy** | Disable telemetry, full data control |
+| 🌐 **Custom Endpoints** | Self-hosted proxy support, hide real IP |
+| 🚀 **Stable** | Dedicated infrastructure, avoid rate limit triggers |
+| 🔧 **Flexible** | Custom API endpoints and models |
+| 🌍 **Cross-Platform** | Windows / macOS / Linux / Termux |
 
 ---
 
-## 🚀 快速安装
+## ⚙️ Working Principle
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    RE CODE Architecture                      │
+└─────────────────────────────────────────────────────────────┘
+
+  ┌──────────┐     ┌─────────────┐     ┌──────────────────┐
+  │  User    │────▶│   Tunnel    │────▶│  Proxy Server    │
+  │  Input   │     │  Encryption │     │  (Obfuscation)   │
+  └──────────┘     └─────────────┘     └──────────────────┘
+                                                │
+                                                ▼
+                                        ┌──────────────────┐
+                                        │  Claude API      │
+                                        │  (Anthropic)     │
+                                        └──────────────────┘
+```
+
+### Core Technologies
+
+| Technology | Implementation |
+|:---|:---|
+| 🔀 **Request Obfuscation** | Randomize device fingerprints, vary request patterns |
+| 🕵️ **Traffic Anonymization** | Multiple exit nodes, residential IP proxies |
+| 📡 **Protocol Tunneling** | Encrypted channel, bypass direct API detection |
+| 🔐 **Key Isolation** | Local API key storage, never expose to third-party |
+
+---
+
+## 🚀 Quick Install
 
 ### macOS / Linux
 ```bash
@@ -72,53 +109,53 @@ curl -fsSL https://cdn.jsdelivr.net/gh/mangiapanejohn-dev/-Re-Code/install-termu
 
 ---
 
-## ⚙️ 隐私配置
+## ⚙️ Privacy Configuration
 
 ```bash
-# 关闭遥测（减少数据收集）
+# Disable telemetry (reduce data collection)
 export DISABLE_TELEMETRY=1
 
-# 使用自定义 API 端点
+# Use custom API endpoint
 export ANTHROPIC_BASE_URL=https://your-proxy.com
 
-# 使用自己的 API Key
+# Use your own API key
 export ANTHROPIC_API_KEY=sk-xxx
 ```
 
 ---
 
-## 📖 使用方法
+## 📖 Usage
 
-| 命令 | 说明 |
+| Command | Description |
 |:---|:---|
-| `recode` | 启动 RE CODE |
-| `recode -v` | 查看版本 |
-| `/model [name]` | 切换模型 (opus/sonnet/haiku) |
-| `/config` | 查看/编辑配置 |
-| `/clear` | 清除会话 |
-| `/exit` | 退出 |
+| `recode` | Start RE CODE |
+| `recode -v` | Show version |
+| `/model [name]` | Switch model (opus/sonnet/haiku) |
+| `/config` | View/edit configuration |
+| `/clear` | Clear session |
+| `/exit` | Exit |
 
 ---
 
-## 🏗️ 项目结构
+## 🏗️ Project Structure
 
 ```
 ReCode/
-├── src/                    # 源代码
-│   ├── commands/           # CLI 命令
-│   ├── components/         # UI 组件
-│   ├── utils/              # 工具函数
-│   └── tools/              # 内置工具
-├── recode-temp/package/   # 打包后的 CLI
-├── install.sh              # macOS/Linux 安装脚本
-├── install.ps1             # Windows 安装脚本
-├── install-termux.sh       # Termux 安装脚本
-└── README.md               # 说明文档
+├── src/                    # Source code
+│   ├── commands/           # CLI commands
+│   ├── components/         # UI components
+│   ├── utils/              # Utilities
+│   └── tools/              # Built-in tools
+├── recode-temp/package/   # Packaged CLI
+├── install.sh              # macOS/Linux installer
+├── install.ps1             # Windows installer
+├── install-termux.sh       # Termux installer
+└── README.md               # This file
 ```
 
 ---
 
-## 🤝 贡献
+## 🤝 Contributing
 
 ```bash
 git clone https://github.com/mangiapanejohn-dev/-Re-Code.git
