@@ -70,35 +70,98 @@ sequenceDiagram
     participant CLI as CLI/TUI
     participant ENGINE as Client Engine
     participant SEC as Security Pipeline
-    participant PROXY as Proxy
+    participant PROXY as Proxy Network
+    participant GATEWAY as API Gateway
     participant API as Anthropic Claude API
     
-    USER->>CLI: Input Query
-    CLI->>ENGINE: Parse & Queue
-    ENGINE->>ENGINE: Validate & Build Context
+    USER->>CLI: User Input Query
+    CLI->>ENGINE: Parse User Input
+    ENGINE->>ENGINE: Validate Input
+    ENGINE->>ENGINE: Build Context
+    ENGINE->>ENGINE: Queue Request
     
-    ENGINE->>SEC: Protected Request
-    Note over SEC: 4-Layer Security Pipeline
-    SEC->>SEC: Layer 1: Device Identity Obfuscation
-    SEC->>SEC: Layer 2: Request Pattern Randomization
-    SEC->>SEC: Layer 3: Network Identity Management
-    SEC->>SEC: Layer 4: API Key Protection
-    SEC->>SEC: AES-256 Encryption + HMAC Sign
+    ENGINE->>SEC: Raw Request
     
-    SEC->>PROXY: Encrypted Request
-    PROXY->>PROXY: Load Balance + IP Rotation
-    PROXY->>API: Forward Request
+    Note over SEC: Security Pipeline - 4 Layers
     
-    alt Success
-        API->>PROXY: Response
+    SEC->>SEC: [Layer 1] Device Identity Obfuscation
+    SEC->>SEC:   - MAC Address Rotation
+    SEC->>SEC:   - Hardware UUID Spoofing
+    SEC->>SEC:   - Display Info Noise Injection
+    SEC->>SEC:   - Timezone Normalization
+    SEC->>SEC:   - User-Agent Rotation
+    
+    SEC->>SEC: [Layer 2] Request Pattern Randomization
+    SEC->>SEC:   - Request Timing Randomization
+    SEC->>SEC:   - Token Sequence Permutation
+    SEC->>SEC:   - Payload Size Padding
+    SEC->>SEC:   - Header Sanitization
+    SEC->>SEC:   - Cookie Isolation
+    
+    SEC->>SEC: [Layer 3] Network Identity Management
+    SEC->>SEC:   - Select from Residential IP Pool
+    SEC->>SEC:   - Enforce Geo-Location Consistency
+    SEC->>SEC:   - Check IP Reputation Score
+    SEC->>SEC:   - Automatic IP Rotation
+    SEC->>SEC:   - Smart Failover
+    
+    SEC->>SEC: [Layer 4] API Key Protection
+    SEC->>SEC:   - Load from Local Encryption
+    SEC->>SEC:   - Store in Memory-Only
+    SEC->>SEC:   - Process Isolation
+    SEC->>SEC:   - Key Rotation Support
+    SEC->>SEC:   - Never Expose to Third-Party
+    
+    SEC->>SEC: AES-256 Encryption
+    SEC->>SEC: HMAC Signature Generation
+    SEC->>SEC: Payload Compression
+    
+    SEC->>PROXY: Encrypted & Signed Request
+    
+    Note over PROXY: Proxy Network Processing
+    PROXY->>PROXY: Global Load Balancing
+    PROXY->>PROXY: Edge Node Selection
+    PROXY->>PROXY: Request Obfuscation
+    PROXY->>PROXY: Fingerprint Randomization
+    PROXY->>PROXY: Exit Node Selection (Residential IP)
+    PROXY->>PROXY: Geographic Consistency Check
+    
+    PROXY->>GATEWAY: Routed Request
+    
+    Note over GATEWAY: API Gateway Processing
+    GATEWAY->>GATEWAY: Rate Limiting Check
+    GATEWAY->>GATEWAY: Request Validation
+    GATEWAY->>GATEWAY: Retry Engine Init
+    GATEWAY->>GATEWAY: Failover Controller Ready
+    
+    GATEWAY->>API: Forward to Claude API
+    
+    alt Success Response
+        API->>GATEWAY: Claude Response (200 OK)
+        GATEWAY->>PROXY: Response Data
         PROXY->>SEC: Encrypted Response
-        SEC->>ENGINE: Decrypted Response
+        SEC->>SEC: Decrypt Response
+        SEC->>SEC: Verify HMAC
+        SEC->>SEC: Decompress Payload
+        SEC->>ENGINE: Parsed Response
+        ENGINE->>ENGINE: Update Context Cache
+        ENGINE->>ENGINE: Format Output
         ENGINE->>CLI: Display Result
-        CLI->>USER: Output
-    else Rate Limit
-        API->>PROXY: Rate Limit Error
-        PROXY->>PROXY: Switch IP & Retry
-        PROXY->>API: Retry Request
+        CLI->>USER: Output to User
+    else Rate Limit Error
+        API->>GATEWAY: 429 Too Many Requests
+        GATEWAY->>PROXY: Trigger Retry Mechanism
+        PROXY->>PROXY: Switch to Different Exit Node
+        PROXY->>PROXY: Select New Residential IP
+        PROXY->>PROXY: Update IP Reputation Score
+        PROXY->>GATEWAY: Retry with New IP
+        GATEWAY->>API: Retry Request
+    else Ban Risk Detected
+        API->>GATEWAY: 403 Forbidden
+        GATEWAY->>PROXY: Emergency IP Rotation
+        PROXY->>PROXY: Select from Backup IP Pool
+        PROXY->>GATEWAY: Emergency Retry
+        GATEWAY->>API: Retry with New Identity
     end
 ```
 
@@ -166,10 +229,10 @@ sequenceDiagram
 
 | Component | Function | Technology |
 |:---|:---|:---|
-| **Client Engine** | User interaction, command parsing | React + Node.js |
-| **Security Pipeline** | 4-layer security + encryption | Custom middleware |
-| **Proxy Network** | Load balance, IP rotation | Dynamic node management |
-| **API Gateway** | Rate limiting, retry, failover | Nginx + Lua scripts |
+| **Client Engine** | User interaction, command parsing, context management | React + Node.js |
+| **Security Pipeline** | 4-layer security (Device/Pattern/Network/Key) + AES-256 + HMAC | Custom middleware |
+| **Proxy Network** | Load balance, residential IP pool, edge nodes, failover | Dynamic node management |
+| **API Gateway** | Rate limiting, retry engine, failover, request validation | Nginx + Lua scripts |
 
 ---
 

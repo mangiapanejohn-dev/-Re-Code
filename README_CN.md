@@ -70,35 +70,98 @@ sequenceDiagram
     participant CLI as CLI/TUI 终端
     participant ENGINE as 客户端引擎
     participant SEC as 安全管道
-    participant PROXY as 代理
+    participant PROXY as 代理网络
+    participant GATEWAY as API 网关
     participant API as Anthropic Claude API
     
-    USER->>CLI: 输入查询
-    CLI->>ENGINE: 解析并加入队列
-    ENGINE->>ENGINE: 验证并构建上下文
+    USER->>CLI: 用户输入查询
+    CLI->>ENGINE: 解析用户输入
+    ENGINE->>ENGINE: 验证输入
+    ENGINE->>ENGINE: 构建上下文
+    ENGINE->>ENGINE: 加入请求队列
     
-    ENGINE->>SEC: 受保护的请求
-    Note over SEC: 4层安全管道
-    SEC->>SEC: 第1层: 设备身份混淆
-    SEC->>SEC: 第2层: 请求模式随机化
-    SEC->>SEC: 第3层: 网络身份管理
-    SEC->>SEC: 第4层: API 密钥保护
-    SEC->>SEC: AES-256 加密 + HMAC 签名
+    ENGINE->>SEC: 原始请求
     
-    SEC->>PROXY: 加密请求
-    PROXY->>PROXY: 负载均衡 + IP 轮换
-    PROXY->>API: 转发请求
+    Note over SEC: 安全管道 - 4 层
     
-    alt 成功
-        API->>PROXY: 响应
+    SEC->>SEC: [第1层] 设备身份混淆
+    SEC->>SEC:   - MAC 地址轮换
+    SEC->>SEC:   - 硬件 UUID 伪装
+    SEC->>SEC:   - 显示器信息噪声注入
+    SEC->>SEC:   - 时区标准化
+    SEC->>SEC:   - User-Agent 轮换
+    
+    SEC->>SEC: [第2层] 请求模式随机化
+    SEC->>SEC:   - 请求时序随机化
+    SEC->>SEC:   - Token 序列置换
+    SEC->>SEC:   - 载荷大小填充
+    SEC->>SEC:   - Header 清理
+    SEC->>SEC:   - Cookie 隔离
+    
+    SEC->>SEC: [第3层] 网络身份管理
+    SEC->>SEC:   - 从住宅代理 IP 池选择
+    SEC->>SEC:   - 强制地理位置一致性
+    SEC->>SEC:   - 检查 IP 信誉评分
+    SEC->>SEC:   - 自动 IP 轮换
+    SEC->>SEC:   - 智能故障转移
+    
+    SEC->>SEC: [第4层] API 密钥保护
+    SEC->>SEC:   - 从本地加密加载
+    SEC->>SEC:   - 仅存储在内存中
+    SEC->>SEC:   - 进程隔离
+    SEC->>SEC:   - 密钥轮换支持
+    SEC->>SEC:   - 从不暴露给第三方
+    
+    SEC->>SEC: AES-256 加密
+    SEC->>SEC: HMAC 签名生成
+    SEC->>SEC: 载荷压缩
+    
+    SEC->>PROXY: 加密签名后的请求
+    
+    Note over PROXY: 代理网络处理
+    PROXY->>PROXY: 全球负载均衡
+    PROXY->>PROXY: 边缘节点选择
+    PROXY->>PROXY: 请求混淆
+    PROXY->>PROXY: 指纹随机化
+    PROXY->>PROXY: 出口节点选择(住宅代理IP)
+    PROXY->>PROXY: 地理位置一致性检查
+    
+    PROXY->>GATEWAY: 路由后的请求
+    
+    Note over GATEWAY: API 网关处理
+    GATEWAY->>GATEWAY: 速率限制检查
+    GATEWAY->>GATEWAY: 请求验证
+    GATEWAY->>GATEWAY: 重试引擎初始化
+    GATEWAY->>GATEWAY: 故障转移控制器就绪
+    
+    GATEWAY->>API: 转发到 Claude API
+    
+    alt 成功响应
+        API->>GATEWAY: Claude 响应 (200 OK)
+        GATEWAY->>PROXY: 响应数据
         PROXY->>SEC: 加密响应
-        SEC->>ENGINE: 解密响应
+        SEC->>SEC: 解密响应
+        SEC->>SEC: 验证 HMAC
+        SEC->>SEC: 解压载荷
+        SEC->>ENGINE: 解析响应
+        ENGINE->>ENGINE: 更新上下文缓存
+        ENGINE->>ENGINE: 格式化输出
         ENGINE->>CLI: 显示结果
-        CLI->>USER: 输出
-    else 速率限制
-        API->>PROXY: 速率限制错误
-        PROXY->>PROXY: 切换IP并重试
-        PROXY->>API: 重试请求
+        CLI->>USER: 输出给用户
+    else 速率限制错误
+        API->>GATEWAY: 429 请求过多
+        GATEWAY->>PROXY: 触发重试机制
+        PROXY->>PROXY: 切换到不同的出口节点
+        PROXY->>PROXY: 选择新的住宅代理IP
+        PROXY->>PROXY: 更新 IP 信誉评分
+        PROXY->>GATEWAY: 使用新 IP 重试
+        GATEWAY->>API: 重试请求
+    else 检测到封号风险
+        API->>GATEWAY: 403 禁止访问
+        GATEWAY->>PROXY: 紧急 IP 轮换
+        PROXY->>PROXY: 从备用 IP 池选择
+        PROXY->>GATEWAY: 紧急重试
+        GATEWAY->>API: 使用新身份重试
     end
 ```
 
@@ -106,10 +169,10 @@ sequenceDiagram
 
 | 组件 | 功能 | 技术 |
 |:---|:---|:---|
-| **客户端引擎** | 用户交互、命令解析 | React + Node.js |
-| **安全管道** | 4层安全 + 加密 | 自定义中间件 |
-| **代理网络** | 负载均衡、IP轮换 | 动态节点管理 |
-| **API 网关** | 速率限制、重试、故障转移 | Nginx + Lua 脚本 |
+| **客户端引擎** | 用户交互、命令解析、上下文管理 | React + Node.js |
+| **安全管道** | 4层安全(设备/模式/网络/密钥) + AES-256 + HMAC | 自定义中间件 |
+| **代理网络** | 负载均衡、住宅代理IP池、边缘节点、故障转移 | 动态节点管理 |
+| **API 网关** | 速率限制、重试引擎、故障转移、请求验证 | Nginx + Lua 脚本 |
 
 ---
 
