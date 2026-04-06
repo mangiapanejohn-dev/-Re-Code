@@ -2,7 +2,8 @@
 set -euo pipefail
 
 # RE CODE Installer for Termux
-# Usage: curl -fsSL https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install-termux.sh | bash
+# Usage: curl -fsSL https://cdn.jsdelivr.net/gh/mangiapanejohn-dev/-Re-Code/install-termux.sh | bash
+# Or:    curl -fsSL https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install-termux.sh | bash
 # Updated: 2026-04-07
 
 REPO_URL="${RECODE_REPO_URL:-https://github.com/mangiapanejohn-dev/-Re-Code.git}"

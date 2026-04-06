@@ -1,5 +1,6 @@
 # RE CODE Installer - Windows PowerShell
-# Usage: iwr -useb https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install.ps1 | iex
+# Usage: iwr -useb https://cdn.jsdelivr.net/gh/mangiapanejohn-dev/-Re-Code/install.ps1 | iex
+# Or:    iwr -useb https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install.ps1 | iex
 # Updated: 2026-04-07
 
 # Use try/catch instead of ErrorActionPreference to avoid read-only variable issues
