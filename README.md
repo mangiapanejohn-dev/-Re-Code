@@ -27,7 +27,7 @@
 
 **RE CODE** is an open-source Claude API client designed to solve the Claude account ban problem.
 
-### 🔍 Why Claude Gets Banned
+### Why Claude Gets Banned
 
 Claude has an internal monitoring system codenamed **"Tango Tengu"** that collects:
 
@@ -37,60 +37,148 @@ Claude has an internal monitoring system codenamed **"Tango Tengu"** that collec
 | Device Fingerprinting | 40+ dimensions of device information |
 | User Tracking | Users assigned to 30 "buckets" for tracking |
 
-### ⚠️ Ban Trigger Conditions
+### Ban Trigger Conditions
 
 | Risk Level | Trigger |
 |:---:|:---|
-| 🔴 Critical | Shared accounts, third-party clients |
-| 🟠 High | API rate limiting violations |
-| 🟡 Medium | Frequent IP geo-hopping, mismatched payment info |
+| Critical | Shared accounts, third-party clients |
+| High | API rate limiting violations |
+| Medium | Frequent IP geo-hopping, mismatched payment info |
 
 ---
 
-## ✨ RE CODE Advantages - Solve Claude Ban Issue
+## RE CODE Advantages - Solve Claude Ban Issue
 
 | Feature | Description |
 |:---|:---|
-| 🛡️ **Anti-Ban** | Hide device fingerprint, bypass Tango Tengu monitoring |
-| 🔒 **Privacy** | Disable telemetry, full data control |
-| 🌐 **Custom Endpoints** | Self-hosted proxy support, hide real IP |
-| 🚀 **Stable** | Dedicated infrastructure, avoid rate limit triggers |
-| 🔧 **Flexible** | Custom API endpoints and models |
-| 🌍 **Cross-Platform** | Windows / macOS / Linux / Termux |
+| **Anti-Ban** | Hide device fingerprint, bypass Tango Tengu monitoring |
+| **Privacy** | Disable telemetry, full data control |
+| **Custom Endpoints** | Self-hosted proxy support, hide real IP |
+| **Stable** | Dedicated infrastructure, avoid rate limit triggers |
+| **Flexible** | Custom API endpoints and models |
+| **Cross-Platform** | Windows / macOS / Linux / Termux |
 
 ---
 
-## ⚙️ Working Principle
+## Architecture & Flow
+
+### System Overview
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    RE CODE Architecture                      │
-└─────────────────────────────────────────────────────────────┘
-
-  ┌──────────┐     ┌─────────────┐     ┌──────────────────┐
-  │  User    │────▶│   Tunnel    │────▶│  Proxy Server    │
-  │  Input   │     │  Encryption │     │  (Obfuscation)   │
-  └──────────┘     └─────────────┘     └──────────────────┘
-                                                │
-                                                ▼
-                                        ┌──────────────────┐
-                                        │  Claude API      │
-                                        │  (Anthropic)     │
-                                        └──────────────────┘
++-----------------------------------------------------------------------+
+|                           RE CODE SYSTEM                              |
++-----------------------------------------------------------------------+
+|                                                                       |
+|  ┌─────────────┐    ┌─────────────┐    ┌─────────────────────────┐  |
+|  │   CLIENT    │    │   TUNNEL    │    │    PROXY INFRASTRUCTURE │  |
+|  │   LAYER     │───▶│   LAYER     │───▶│       LAYER             │  |
+|  └─────────────┘    └─────────────┘    └─────────────────────────┘  |
+|         │                  │                      │                  |
+│         ▼                  ▼                      ▼                  |
+|  ┌─────────────┐    ┌─────────────┐    ┌─────────────────────────┐  |
+|  │  User Input │    │  Encryption │    │  Request Obfuscation    │  |
+|  │  Handler    │    │  Pipeline   │    │  Engine                │  |
+|  └─────────────┘    └─────────────┘    └─────────────────────────┘  |
+|                                            │                         |
+|                                            ▼                         |
+|                                   ┌─────────────────────────┐          |
+|                                   │   Exit Node Pool       │          |
+|                                   │   (Residential IPs)    │          │
+|                                   └─────────────────────────┘          |
+|                                            │                         |
++--------------------------------------------│-------------------------+
+                                             ▼
+                              ┌────────────────────────────┐
+                              │     ANTHROPIC API          │
+                              │     (Claude Backend)       │
+                              └────────────────────────────┘
 ```
 
-### Core Technologies
+### Request Flow
 
-| Technology | Implementation |
-|:---|:---|
-| 🔀 **Request Obfuscation** | Randomize device fingerprints, vary request patterns |
-| 🕵️ **Traffic Anonymization** | Multiple exit nodes, residential IP proxies |
-| 📡 **Protocol Tunneling** | Encrypted channel, bypass direct API detection |
-| 🔐 **Key Isolation** | Local API key storage, never expose to third-party |
+```
+    ┌──────────┐         ┌──────────────┐         ┌─────────────────┐
+    │  User   │         │   RE CODE    │         │    Proxy        │
+    │  Query  │────────▶│   Client     │────────▶│    Network      │
+    └──────────┘         └──────────────┘         └─────────────────┘
+                                                            │
+                                                            │ Obfuscated
+                                                            │ Request
+                                                            ▼
+                                                      ┌─────────────────┐
+                                                      │  Exit Node      │
+                                                      │  Rotation       │
+                                                      └─────────────────┘
+                                                            │
+                                                            ▼
+                                                      ┌─────────────────┐
+                                                      │  Claude API     │
+                                                      │  (Anthropic)    │
+                                                      └─────────────────┘
+                                                            │
+                                                            │ Response
+                                                            ▼
+                                                      ┌─────────────────┐
+                                                      │  Response       │
+                                                      │  Decryption     │
+                                                      └─────────────────┘
+                                                            │
+                                                            ▼
+                                                      ┌─────────────────┐
+                                                      │  User           │
+                                                      │  Display        │
+                                                      └─────────────────┘
+```
+
+### Core Components
+
+| Component | Function | Technology |
+|:---|:---|:---|
+| **Client Engine** | User interaction, command parsing | React + Node.js |
+| **Obfuscation Layer** | Device fingerprint randomization | Custom middleware |
+| **Tunnel Protocol** | Encrypted request routing | TLS 1.3 + WireGuard |
+| **Exit Node Pool** | IP rotation, residential proxies | Dynamic node management |
+| **API Proxy** | Request/response transformation | Nginx + Lua scripts |
+
+### Security Mechanisms
+
+```
++----------------------------------------------------------------------+
+|                     SECURITY LAYERS                                  |
++----------------------------------------------------------------------+
+
+  Layer 1: Device Fingerprint Randomization
+  ─────────────────────────────────────────
+  - MAC address rotation
+  - Hardware UUID spoofing
+  - Screen resolution noise injection
+  - Timezone normalization
+
+  Layer 2: Request Pattern Obfuscation  
+  ─────────────────────────────────────────
+  - Request timing randomization
+  - Token sequence permutation
+  - Payload size padding
+  - Header sanitization
+
+  Layer 3: Network Identity Management
+  ─────────────────────────────────────────
+  - Residential IP proxy pool
+  - Geographic consistency enforcement
+  - IP reputation scoring
+  - Automatic failover
+
+  Layer 4: API Key Protection
+  ─────────────────────────────────────────
+  - Local encrypted storage
+  - Never exposed to third-party
+  - Memory-only key handling
+  - Automatic key rotation support
+```
 
 ---
 
-## 🚀 Quick Install
+## Quick Install
 
 ### macOS / Linux
 ```bash
