@@ -3,7 +3,7 @@ set -euo pipefail
 
 # RE CODE Installer for macOS/Linux
 # Usage: curl -fsSL https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install.sh | bash
-# Updated: 2026-04-04
+# Updated: 2026-04-07
 
 REPO_URL="${RECODE_REPO_URL:-https://github.com/mangiapanejohn-dev/-Re-Code.git}"
 INSTALL_ROOT="${RECODE_INSTALL_ROOT:-$HOME/.recode}"
@@ -12,57 +12,128 @@ BIN_DIR="${RECODE_BIN_DIR:-$HOME/.local/bin}"
 PNPM_VERSION="${RECODE_PNPM_VERSION:-10.23.0}"
 SKIP_PATH_SETUP="${RECODE_INSTALL_SKIP_PATH:-0}"
 
+# Enhanced TUI Colors with gradient support
 BOLD='\033[1m'
+DIM='\033[2m'
+
+# Gradient colors (RGB)
+gradient_start='\033[38;2;147;51;255m'    # Purple
+gradient_mid='\033[38;2;88;166;255m'     # Blue
+gradient_end='\033[38;2;46;204;113m'     # Green
+
 ACCENT='\033[38;2;147;51;255m'
 INFO='\033[38;2;210;130;255m'
-SUCCESS='\033[38;2;47;201;113m'
+SUCCESS='\033[38;2;46;204;113m'
 WARN='\033[38;2;255;176;32m'
-ERROR='\033[38;2;226;61;100m'
-MUTED='\033[38;2;139;127;119m'
+ERROR='\033[38;2;255;71;87m'
+MUTED='\033[38;2;99;110;121m'
+CYAN='\033[38;2;52;199;255m'
+YELLOW='\033[38;2;255;204;0m'
+PINK='\033[38;2;255;45;85m'
+GEAR="⚙️"
 NC='\033[0m'
+
+# Unicode symbols
+SYMBOL_OK="✓"
+SYMBOL_ERR="✗"
+SYMBOL_ARROW="→"
+SYMBOL_SPARKLE="✨"
+SYMBOL_ROCKET="🚀"
+SYMBOL_PACKAGE="📦"
+SYMBOL_GEAR="⚙️"
+SYMBOL_BRAIN="🧠"
+SYMBOL_CUBE="🧊"
 
 PM_KIND=""
 PM_CMD=()
+SPINNER_FRAME=0
 
+# Spinner animation
+spinner() {
+    local frames=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
+    printf "\r${CYAN}%s${NC}" "${frames[$((SPINNER_FRAME++ % 10))]}"
+}
+
+clear_spinner() {
+    printf "\r%*s\r" "$(tput cols 2>/dev/null || echo 80)" ""
+}
+
+# Progress bar
+print_progress() {
+    local current=$1
+    local total=$2
+    local width=30
+    local percent=$((current * 100 / total))
+    local filled=$((width * current / total))
+    local empty=$((width - filled))
+
+    printf "\r${CYAN}["
+    printf "%${filled}s" | tr ' ' '█'
+    printf "%${empty}s" | tr ' ' '░'
+    printf "] ${percent}%%${NC}"
+}
+
+# Animated banner
 print_banner() {
     echo ""
-    echo -e "${ACCENT}╔════════════════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${ACCENT}║                                                                            ║${NC}"
-    echo -e "${ACCENT}║  ██████╗     ███████╗      ██████╗      ██████╗     ██████╗     ███████╗   ║${NC}"
-    echo -e "${ACCENT}║  ██╔══██╗    ██╔════╝     ██╔════╝     ██╔═══██╗    ██╔══██╗    ██╔════╝   ║${NC}"
-    echo -e "${ACCENT}║  ██████╔╝    █████╗       ██║          ██║   ██║    ██║  ██║    █████╗     ║${NC}"
-    echo -e "${ACCENT}║  ██╔══██╗    ██╔══╝       ██║          ██║   ██║    ██║  ██║    ██╔══╝     ║${NC}"
-    echo -e "${ACCENT}║  ██║  ██║    ███████╗     ╚██████╗     ╚██████╔╝    ██████╔╝    ███████╗   ║${NC}"
-    echo -e "${ACCENT}║  ╚═╝  ╚═╝    ╚══════╝      ╚═════╝      ╚═════╝     ╚═════╝     ╚══════╝   ║${NC}"
-    echo -e "${ACCENT}║                                                                            ║${NC}"
-    echo -e "${ACCENT}║      [ R ]      [ E ]      [ C ]      [ O ]      [ D ]      [ E ]          ║${NC}"
-    echo -e "${ACCENT}║                                                                            ║${NC}"
-    echo -e "${ACCENT}║      Heyy ~ Bro ！👾   WANT VIBE CODING KNOW ???                               ║${NC}"
-    echo -e "${ACCENT}║                                                                            ║${NC}"
-    echo -e "${ACCENT}║  >_ RE_CODE PROTOCOL ENGAGED // NEURAL GRID ONLINE // v3.0.1                ║${NC}"
-    echo -e "${ACCENT}╚════════════════════════════════════════════════════════════════════════════╝${NC}"
+    echo -e "${gradient_start}╔════════════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${gradient_start}║${gradient_mid}                                                                            ${gradient_start}║${NC}"
+    echo -e "${gradient_start}║${gradient_mid}  ██████╗     ███████╗      ██████╗      ██████╗     ██████╗     ███████╗   ${gradient_start}║${NC}"
+    echo -e "${gradient_start}║${gradient_mid}  ██╔══██╗    ██╔════╝     ██╔════╝     ██╔═══██╗    ██╔══██╗    ██╔════╝   ${gradient_start}║${NC}"
+    echo -e "${gradient_mid}  ██████╔╝    █████╗       ██║          ██║   ██║    ██║  ██║    █████╗     ${gradient_start}║${NC}"
+    echo -e "${gradient_mid}  ██╔══██╗    ██╔══╝       ██║          ██║   ██║    ██║  ██║    ██╔══╝     ${gradient_start}║${NC}"
+    echo -e "${gradient_end}  ██║  ██║    ███████╗     ╚██████╗     ╚██████╔╝    ██████╔╝    ███████╗   ${gradient_start}║${NC}"
+    echo -e "${gradient_end}  ╚═╝  ╚═╝    ╚══════╝      ╚═════╝      ╚═════╝     ╚═════╝     ╚══════╝   ${gradient_start}║${NC}"
+    echo -e "${gradient_start}║${gradient_mid}                                                                            ${gradient_start}║${NC}"
+    echo -e "${gradient_start}║${gradient_mid}      ${PINK}[ R ]${CYAN}      ${PINK}[ E ]${CYAN}      ${PINK}[ C ]${CYAN}      ${PINK}[ O ]${CYAN}      ${PINK}[ D ]${CYAN}      ${PINK}[ E ]${gradient_mid}          ${gradient_start}║${NC}"
+    echo -e "${gradient_start}║${gradient_mid}                                                                            ${gradient_start}║${NC}"
+    echo -e "${gradient_start}║${YELLOW}      Heyy ~ Bro ${SYMBOL_SPARKLE} WANT VIBE CODING KNOW ???                               ${gradient_start}║${NC}"
+    echo -e "${gradient_start}║${gradient_mid}                                                                            ${gradient_start}║${NC}"
+    echo -e "${gradient_start}║${CYAN}  >_ RE_CODE PROTOCOL ENGAGED ${SYMBOL_ROCKET} NEURAL GRID ONLINE ${YELLOW}// v3.0.2          ${gradient_start}║${NC}"
+    echo -e "${gradient_start}╚════════════════════════════════════════════════════════════════════════════╝${NC}"
     echo ""
-    echo -e "${MUTED}Source: ${SOURCE_DIR}${NC}"
-    echo -e "${MUTED}Binary: ${BIN_DIR}/recode${NC}"
-    echo -e "${MUTED}State directory: ~/.recode${NC}"
+    echo -e "${DIM}Source:${MUTED} ${SOURCE_DIR}${NC}"
+    echo -e "${DIM}Binary:${MUTED} ${BIN_DIR}/recode${NC}"
+    echo -e "${DIM}State:${MUTED} ~/.recode${NC}"
     echo ""
 }
 
 ui_error() {
-    echo -e "${ERROR}[ERROR] $1${NC}" >&2
+    echo ""
+    echo -e "${ERROR}╭───────────────────────────────────────╮${NC}"
+    echo -e "${ERROR}│ ${SYMBOL_ERR} ERROR: $1${NC}"
+    echo -e "${ERROR}╰───────────────────────────────────────╯${NC}"
     exit 1
 }
 
 ui_info() {
-    echo -e "${INFO}[INFO] $1${NC}"
+    echo -e "${CYAN}${SYMBOL_ARROW} ${INFO}$1${NC}"
 }
 
 ui_warn() {
-    echo -e "${WARN}[WARN] $1${NC}"
+    echo -e "${WARN}⚠ ${1}${NC}"
 }
 
 ui_success() {
-    echo -e "${SUCCESS}[OK] $1${NC}"
+    echo -e "${SUCCESS}${SYMBOL_OK} $1${NC}"
+}
+
+ui_step() {
+    echo ""
+    echo -e "${PINK}━━━ ${BOLD}$1${NC} ━━━"
+}
+
+# Step-by-step installation display
+print_steps() {
+    echo -e "${DIM}Installation steps:${NC}"
+    echo -e "  ${CYAN}1${NC}) Check requirements"
+    echo -e "  ${CYAN}2${NC}) Setup package manager"
+    echo -e "  ${CYAN}3${NC}) Clone/Update source"
+    echo -e "  ${CYAN}4${NC}) Install dependencies"
+    echo -e "  ${CYAN}5${NC}) Build CLI"
+    echo -e "  ${CYAN}6${NC}) Install launcher"
+    echo -e "  ${CYAN}7${NC}) Configure PATH"
+    echo ""
 }
 
 detect_os() {
@@ -76,6 +147,7 @@ detect_os() {
 check_requirements() {
     detect_os >/dev/null
 
+    echo -e "  ${GEAR} ${MUTED}Checking Node.js...${NC}"
     if ! command -v node >/dev/null 2>&1; then
         ui_error "Node.js not found. Install Node.js 22+ first: https://nodejs.org"
     fi
@@ -85,16 +157,21 @@ check_requirements() {
     if [[ "$node_major" -lt 22 ]]; then
         ui_error "Node.js 22+ is required. Current: $(node -v)"
     fi
+    echo -e "    ${SUCCESS}${SYMBOL_OK} Node.js $(node -v)${NC}"
 
+    echo -e "  ${GEAR} ${MUTED}Checking Git...${NC}"
     if ! command -v git >/dev/null 2>&1; then
         ui_error "Git is required. Install from https://git-scm.com"
     fi
+    echo -e "    ${SUCCESS}${SYMBOL_OK} Git $(git --version | cut -d' ' -f3)${NC}"
 
+    echo -e "  ${GEAR} ${MUTED}Checking npm...${NC}"
     if ! command -v npm >/dev/null 2>&1; then
         ui_error "npm is required. Reinstall Node.js with npm included."
     fi
+    echo -e "    ${SUCCESS}${SYMBOL_OK} npm $(npm -v)${NC}"
 
-    ui_success "Requirements checked (Node $(node -v))"
+    ui_success "All requirements met!"
 }
 
 setup_package_manager() {
@@ -280,33 +357,48 @@ ensure_path() {
 
 print_success() {
     echo ""
-    echo -e "${ACCENT}╔════════════════════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${ACCENT}║                                                                            ║${NC}"
-    echo -e "${ACCENT}║                    RE CODE INSTALLED SUCCESSFULLY！👾                         ║${NC}"
-    echo -e "${ACCENT}║                                                                            ║${NC}"
-    echo -e "${ACCENT}║                      NEURAL GRID ONLINE // READY                              ║${NC}"
-    echo -e "${ACCENT}╚════════════════════════════════════════════════════════════════════════════╝${NC}"
+    echo -e "${gradient_start}╔════════════════════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${gradient_start}║${gradient_mid}                                                                            ${gradient_start}║${NC}"
+    echo -e "${gradient_start}║${SUCCESS}                    ${SYMBOL_OK} RE CODE INSTALLED SUCCESSFULLY ${SYMBOL_SPARKLE}                      ${gradient_start}║${NC}"
+    echo -e "${gradient_start}║${gradient_mid}                                                                            ${gradient_start}║${NC}"
+    echo -e "${gradient_start}║${CYAN}                      ${SYMBOL_ROCKET} NEURAL GRID ONLINE // READY ${gradient_start}║${NC}"
+    echo -e "${gradient_start}║${gradient_mid}                                                                            ${gradient_start}║${NC}"
+    echo -e "${gradient_start}╚════════════════════════════════════════════════════════════════════════════╝${NC}"
     echo ""
-    echo -e "${BOLD}Next steps${NC}"
-    echo "  1) Verify: recode -v"
-    echo "  2) First launch: recode"
-    echo "  3) Get help: recode --help"
+    echo -e "${BOLD}${PINK}Next steps:${NC}"
+    echo -e "  ${CYAN}${SYMBOL_ARROW} ${MUTED}Verify:${NC}    recode -v"
+    echo -e "  ${CYAN}${SYMBOL_ARROW} ${MUTED}Launch:${NC}   recode"
+    echo -e "  ${CYAN}${SYMBOL_ARROW} ${MUTED}Help:${NC}      recode --help"
     echo ""
-    echo -e "${MUTED}If 'recode' is not found yet, open a new terminal session.${NC}"
+    echo -e "${DIM}If 'recode' is not found, open a new terminal.${NC}"
 }
 
 main() {
     print_banner
+    print_steps
+
+    ui_step "1. Checking Requirements"
     check_requirements
+
+    ui_step "2. Setting Up Package Manager"
     setup_package_manager
+
+    ui_step "3. Cloning/Updating Source"
     install_or_update_source
+
+    ui_step "4. Installing Dependencies"
     run_install
+
+    ui_step "5. Building CLI"
     run_build
+
+    ui_step "6. Installing Launcher"
     install_launcher
 
     if [[ "$SKIP_PATH_SETUP" == "1" ]]; then
         ui_warn "Skipping PATH/profile updates (RECODE_INSTALL_SKIP_PATH=1)"
     else
+        ui_step "7. Configuring PATH"
         ensure_path
     fi
 
