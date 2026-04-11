@@ -200,7 +200,7 @@ try {
 
     Write-Info "Creating launcher script..."
     $batContent = "@echo off`nnode `"$cliPath`" %*"
-    $batPath = Join-Path $binDir "recode.bat"
+    $batPath = Join-Path $binDir "re-code.bat"
     Set-Content $batPath $batContent -Encoding ASCII
 
     Write-Info "Updating PATH..."
@@ -208,13 +208,13 @@ try {
         $userPath = [Environment]::GetEnvironmentVariable("Path", "User")
         if ($userPath -notlike "*$binDir*") {
             [Environment]::SetEnvironmentVariable("Path", "$userPath;$binDir", "User")
-            Write-Warn "PATH updated - restart terminal to use recode"
+            Write-Warn "PATH updated - restart terminal to use re-code"
         }
     } catch {
         Write-Warn "Could not auto-update PATH"
     }
 
-    Write-Success "Launcher installed at $binDir\recode.bat"
+    Write-Success "Launcher installed at $binDir\re-code.bat"
 } catch {
     Write-Err $_.Exception.Message
 }
@@ -229,9 +229,9 @@ Write-Host "║       NEURAL GRID ONLINE // READY                               
 Write-Host "╚════════════════════════════════════════════════════════════════════════════╝" -ForegroundColor $accent
 Write-Host ""
 Write-Host "Next steps:" -ForegroundColor White
-Write-Host "  -> Verify:   recode -v" -ForegroundColor $muted
-Write-Host "  -> Launch:   recode" -ForegroundColor $muted
-Write-Host "  -> Help:     recode --help" -ForegroundColor $muted
+Write-Host "  -> Verify:   re-code -v" -ForegroundColor $muted
+Write-Host "  -> Launch:   re-code" -ForegroundColor $muted
+Write-Host "  -> Help:     re-code --help" -ForegroundColor $muted
 Write-Host ""
-Write-Host "If 'recode' not found, restart your terminal." -ForegroundColor $muted
+Write-Host "If 're-code' not found, restart your terminal." -ForegroundColor $muted
 Write-Host ""

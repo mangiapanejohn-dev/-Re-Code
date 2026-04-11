@@ -5,7 +5,7 @@
   "type": "module",
   "main": "recode-temp/package/cli.js",
   "bin": {
-    "recode": "./recode-temp/package/cli.js"
+    "re-code": "./recode-temp/package/cli.js"
   },
   "scripts": {
     "prepare-src": "node scripts/prepare-src.mjs",

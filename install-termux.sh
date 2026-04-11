@@ -176,13 +176,13 @@ run_build() {
 install_launcher() {
     mkdir -p "$BIN_DIR"
 
-    cat >"$BIN_DIR/recode" <<WRAPPER
+    cat >"$BIN_DIR/re-code" <<WRAPPER
 #!/usr/bin/env bash
 cd $HOME/recode
 exec node \$HOME/recode/recode-temp/package/cli.js "\$@"
 WRAPPER
 
-    chmod +x "$BIN_DIR/recode"
+    chmod +x "$BIN_DIR/re-code"
 
     # Add to PATH
     if [[ -f "$HOME/.bashrc" ]]; then
@@ -191,7 +191,7 @@ WRAPPER
         fi
     fi
 
-    ui_success "Launcher installed at ${BIN_DIR}/recode"
+    ui_success "Launcher installed at ${BIN_DIR}/re-code"
 }
 
 print_success() {
@@ -205,11 +205,11 @@ print_success() {
     echo -e "${gradient_start}╚════════════════════════════════════════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${BOLD}${PINK}Next steps:${NC}"
-    echo -e "  ${CYAN}${SYMBOL_ARROW} ${MUTED}Verify:${NC}    recode -v"
-    echo -e "  ${CYAN}${SYMBOL_ARROW} ${MUTED}Launch:${NC}   recode"
-    echo -e "  ${CYAN}${SYMBOL_ARROW} ${MUTED}Help:${NC}      recode --help"
+    echo -e "  ${CYAN}${SYMBOL_ARROW} ${MUTED}Verify:${NC}    re-code -v"
+    echo -e "  ${CYAN}${SYMBOL_ARROW} ${MUTED}Launch:${NC}   re-code"
+    echo -e "  ${CYAN}${SYMBOL_ARROW} ${MUTED}Help:${NC}      re-code --help"
     echo ""
-    echo -e "${DIM}If 'recode' not found, restart Termux or run: source ~/.bashrc${NC}"
+    echo -e "${DIM}If 're-code' not found, restart Termux or run: source ~/.bashrc${NC}"
 }
 
 main() {

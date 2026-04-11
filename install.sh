@@ -94,7 +94,7 @@ print_banner() {
     echo -e "${gradient_start}╚════════════════════════════════════════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${DIM}Source:${MUTED} ${SOURCE_DIR}${NC}"
-    echo -e "${DIM}Binary:${MUTED} ${BIN_DIR}/recode${NC}"
+    echo -e "${DIM}Binary:${MUTED} ${BIN_DIR}/re-code${NC}"
     echo -e "${DIM}State:${MUTED} ~/.recode${NC}"
     echo ""
 }
@@ -303,23 +303,23 @@ run_build() {
 install_launcher() {
     mkdir -p "$BIN_DIR"
 
-    cat >"$BIN_DIR/recode" <<WRAPPER
+    cat >"$BIN_DIR/re-code" <<WRAPPER
 #!/usr/bin/env bash
 set -euo pipefail
 SOURCE_DIR="\${RECODE_SOURCE_DIR:-$SOURCE_DIR}"
 ENTRY="\$SOURCE_DIR/recode-temp/package/cli.js"
 
 if [[ ! -f "\$ENTRY" ]]; then
-  echo "[recode] CLI entry not found at \$ENTRY" >&2
-  echo "[recode] Re-run installer: curl -fsSL https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install.sh | bash" >&2
+  echo "[re-code] CLI entry not found at \$ENTRY" >&2
+  echo "[re-code] Re-run installer: curl -fsSL https://raw.githubusercontent.com/mangiapanejohn-dev/-Re-Code/main/install.sh | bash" >&2
   exit 1
 fi
 
 exec node "\$ENTRY" "\$@"
 WRAPPER
 
-    chmod +x "$BIN_DIR/recode"
-    ui_success "Launcher installed at ${BIN_DIR}/recode"
+    chmod +x "$BIN_DIR/re-code"
+    ui_success "Launcher installed at ${BIN_DIR}/re-code"
 }
 
 ensure_path() {
@@ -367,11 +367,11 @@ print_success() {
     echo -e "${gradient_start}╚════════════════════════════════════════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${BOLD}${PINK}Next steps:${NC}"
-    echo -e "  ${CYAN}${SYMBOL_ARROW} ${MUTED}Verify:${NC}    recode -v"
-    echo -e "  ${CYAN}${SYMBOL_ARROW} ${MUTED}Launch:${NC}   recode"
-    echo -e "  ${CYAN}${SYMBOL_ARROW} ${MUTED}Help:${NC}      recode --help"
+    echo -e "  ${CYAN}${SYMBOL_ARROW} ${MUTED}Verify:${NC}    re-code -v"
+    echo -e "  ${CYAN}${SYMBOL_ARROW} ${MUTED}Launch:${NC}   re-code"
+    echo -e "  ${CYAN}${SYMBOL_ARROW} ${MUTED}Help:${NC}      re-code --help"
     echo ""
-    echo -e "${DIM}If 'recode' is not found, open a new terminal.${NC}"
+    echo -e "${DIM}If 're-code' is not found, open a new terminal.${NC}"
 }
 
 main() {
