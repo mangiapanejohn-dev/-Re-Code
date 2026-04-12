@@ -145,8 +145,8 @@ export ANTHROPIC_API_KEY=sk-xxx
 
 | Command | Description |
 |:---|:---|
-| `re-code` | Start RE CODE |
-| `re-code -v` | Show version |
+| `recode` | Start RE CODE |
+| `recode -v` | Show version |
 | `/model [name]` | Switch model |
 | `/config` | View/edit config |
 | `/clear` | Clear session |
