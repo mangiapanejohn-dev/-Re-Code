@@ -925,7 +925,7 @@ function getInstallationEnv(): NodeJS.ProcessEnv | undefined {
 }
 
 function getClaudeCodeVersion() {
-  return '3.0.1'
+  return '3.1.2'
 }
 
 async function getInstalledVSCodeExtensionVersion(

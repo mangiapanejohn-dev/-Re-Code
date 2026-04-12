@@ -6,5 +6,5 @@
  */
 
 export function getClaudeCodeUserAgent(): string {
-  return `claude-code/${'3.0.1'}`
+  return `claude-code/${'3.1.2'}`
 }

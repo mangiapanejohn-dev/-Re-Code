@@ -281,12 +281,12 @@ export function getAllReleaseNotes(
  * Also triggers a fetch of the latest changelog if the version has changed.
  *
  * @param lastSeenVersion The last version of release notes the user has seen
- * @param currentVersion The current application version, defaults to '3.0.1'
+ * @param currentVersion The current application version, defaults to '3.1.2'
  * @returns An object with hasReleaseNotes and the releaseNotes content
  */
 export async function checkForReleaseNotes(
   lastSeenVersion: string | null | undefined,
-  currentVersion: string = '3.0.1',
+  currentVersion: string = '3.1.2',
 ): Promise<{ hasReleaseNotes: boolean; releaseNotes: string[] }> {
   // For Ant builds, use VERSION_CHANGELOG bundled at build time
   if (process.env.USER_TYPE === 'ant') {
@@ -334,7 +334,7 @@ export async function checkForReleaseNotes(
  */
 export function checkForReleaseNotesSync(
   lastSeenVersion: string | null | undefined,
-  currentVersion: string = '3.0.1',
+  currentVersion: string = '3.1.2',
 ): { hasReleaseNotes: boolean; releaseNotes: string[] } {
   // For Ant builds, use VERSION_CHANGELOG bundled at build time
   if (process.env.USER_TYPE === 'ant') {

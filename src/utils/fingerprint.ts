@@ -44,7 +44,7 @@ export function extractFirstMessageText(
  * 1P and 3P (Bedrock, Vertex, Azure) APIs.
  *
  * @param messageText - First user message text content
- * @param version - Version string (from '3.0.1')
+ * @param version - Version string (from '3.1.2')
  * @returns 3-character hex fingerprint
  */
 export function computeFingerprint(
@@ -72,5 +72,5 @@ export function computeFingerprintFromMessages(
   messages: (UserMessage | AssistantMessage)[],
 ): string {
   const firstMessageText = extractFirstMessageText(messages)
-  return computeFingerprint(firstMessageText, '3.0.1')
+  return computeFingerprint(firstMessageText, '3.1.2')
 }

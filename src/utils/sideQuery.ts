@@ -140,7 +140,7 @@ export async function sideQuery(opts: SideQueryOptions): Promise<BetaMessage> {
   const messageText = extractFirstUserMessageText(messages)
 
   // Compute fingerprint for OAuth attribution
-  const fingerprint = computeFingerprint(messageText, '3.0.1')
+  const fingerprint = computeFingerprint(messageText, '3.1.2')
   const attributionHeader = getAttributionHeader(fingerprint)
 
   // Build system as array to keep attribution header in its own block

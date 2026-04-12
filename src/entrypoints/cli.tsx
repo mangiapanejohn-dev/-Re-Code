@@ -37,7 +37,7 @@ async function main(): Promise<void> {
   if (args.length === 1 && (args[0] === '--version' || args[0] === '-v' || args[0] === '-V')) {
     // MACRO.VERSION is inlined at build time
     // biome-ignore lint/suspicious/noConsole:: intentional console output
-    console.log(`${'3.0.1'} (Re Code 👾)`);
+    console.log(`${'3.1.2'} (Re Code 👾)`);
     return;
   }
 

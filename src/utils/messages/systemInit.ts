@@ -71,7 +71,7 @@ export function buildSystemInitMessage(inputs: SystemInitInputs): SDKMessage {
       .map(c => c.name),
     apiKeySource: getAnthropicApiKeyWithSource().source as ApiKeySource,
     betas: getSdkBetas(),
-    claude_code_version: '3.0.1',
+    claude_code_version: '3.1.2',
     output_style: outputStyle,
     agents: inputs.agents.map(agent => agent.agentType),
     skills: inputs.skills

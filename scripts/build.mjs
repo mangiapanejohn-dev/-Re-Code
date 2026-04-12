@@ -25,7 +25,7 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
-const VERSION = '3.0.1'
+const VERSION = '3.1.2'
 const BUILD = join(ROOT, 'build-src')
 const ENTRY = join(BUILD, 'entry.ts')
 

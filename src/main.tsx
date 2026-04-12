@@ -2487,7 +2487,7 @@ async function run(): Promise<CommanderCommand> {
       }
     }
     logForDiagnosticsNoPII('info', 'started', {
-      version: '3.0.1',
+      version: '3.1.2',
       is_native_binary: isInBundledMode()
     });
     registerCleanup(async () => {
@@ -3220,7 +3220,7 @@ async function run(): Promise<CommanderCommand> {
           sshSession = await createSSHSession({
             host: _pendingSSH.host,
             cwd: _pendingSSH.cwd,
-            localVersion: '3.0.1',
+            localVersion: '3.1.2',
             permissionMode: _pendingSSH.permissionMode,
             dangerouslySkipPermissions: _pendingSSH.dangerouslySkipPermissions,
             extraCliArgs: _pendingSSH.extraCliArgs
@@ -3805,7 +3805,7 @@ async function run(): Promise<CommanderCommand> {
         pendingHookMessages
       }, renderAndRun);
     }
-  }).version(`${'3.0.1'} (RE CODE)`, '-v, --version', 'Output the version number');
+  }).version(`${'3.1.2'} (RE CODE)`, '-v, --version', 'Output the version number');
 
   // Worktree flags
   program.option('-w, --worktree [name]', 'Create a new git worktree for this session (optionally specify a name)');

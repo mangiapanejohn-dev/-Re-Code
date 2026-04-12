@@ -75,7 +75,7 @@ export function getAttributionHeader(fingerprint: string): string {
     return ''
   }
 
-  const version = `${'3.0.1'}.${fingerprint}`
+  const version = `${'3.1.2'}.${fingerprint}`
   const entrypoint = process.env.CLAUDE_CODE_ENTRYPOINT ?? 'unknown'
 
   // cch=00000 placeholder is overwritten by Bun's HTTP stack with attestation token

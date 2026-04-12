@@ -79,11 +79,11 @@ export async function assertMinVersion(): Promise<void> {
 
     if (
       versionConfig.minVersion &&
-      lt('3.0.1', versionConfig.minVersion)
+      lt('3.1.2', versionConfig.minVersion)
     ) {
       // biome-ignore lint/suspicious/noConsole:: intentional console output
       console.error(`
-It looks like your version of RE CODE (${'3.0.1'}) needs an update.
+It looks like your version of RE CODE (${'3.1.2'}) needs an update.
 A newer version (${versionConfig.minVersion} or higher) is required to continue.
 
 To update, please run:

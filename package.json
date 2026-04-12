@@ -1,6 +1,6 @@
 {
   "name": "@recode/cli",
-  "version": "3.0.1",
+  "version": "3.1.2",
   "description": "ReCode - 开源的多模型 AI 对话界面",
   "type": "module",
   "main": "recode-temp/package/cli.js",

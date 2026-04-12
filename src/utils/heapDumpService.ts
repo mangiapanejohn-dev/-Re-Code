@@ -207,7 +207,7 @@ export async function captureMemoryDiagnostics(
     smapsRollup,
     platform: process.platform,
     nodeVersion: process.version,
-    ccVersion: '3.0.1',
+    ccVersion: '3.1.2',
   }
 }
 
