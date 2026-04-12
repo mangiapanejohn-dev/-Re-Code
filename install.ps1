@@ -21,7 +21,7 @@ function Get-Banner {
 ║                                                                            ║
 ║      Heyy ~ Bro  WANT VIBE CODING KNOW ???                                ║
 ║                                                                            ║
-║  >_ RE_CODE PROTOCOL ENGAGED  NEURAL GRID ONLINE // v3.0.2                ║
+║  >_ RE_CODE PROTOCOL ENGAGED  NEURAL GRID ONLINE // v3.1.2                ║
 ╚════════════════════════════════════════════════════════════════════════════╝
 
 "@

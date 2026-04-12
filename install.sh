@@ -90,7 +90,7 @@ print_banner() {
     echo -e "${gradient_start}║${gradient_mid}                                                                            ${gradient_start}║${NC}"
     echo -e "${gradient_start}║${YELLOW}      Heyy ~ Bro ${SYMBOL_SPARKLE} WANT VIBE CODING KNOW ???                               ${gradient_start}║${NC}"
     echo -e "${gradient_start}║${gradient_mid}                                                                            ${gradient_start}║${NC}"
-    echo -e "${gradient_start}║${CYAN}  >_ RE_CODE PROTOCOL ENGAGED ${SYMBOL_ROCKET} NEURAL GRID ONLINE ${YELLOW}// v3.0.2          ${gradient_start}║${NC}"
+    echo -e "${gradient_start}║${CYAN}  >_ RE_CODE PROTOCOL ENGAGED ${SYMBOL_ROCKET} NEURAL GRID ONLINE ${YELLOW}// v3.1.2          ${gradient_start}║${NC}"
     echo -e "${gradient_start}╚════════════════════════════════════════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "${DIM}Source:${MUTED} ${SOURCE_DIR}${NC}"
