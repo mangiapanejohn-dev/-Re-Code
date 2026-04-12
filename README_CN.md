@@ -1,4 +1,4 @@
-# RE CODE 👾
+# RE CODE
 
 <p align="center">
   <a href="https://github.com/mangiapanejohn-dev/-Re-Code/stargazers">
@@ -7,7 +7,7 @@
   <a href="https://github.com/mangiapanejohn-dev/-Re-Code/forks">
     <img src="https://img.shields.io/github/forks/mangiapanejohn-dev/-Re-Code?style=flat-square&logo=github" alt="Fork">
   </a>
-  <img src="https://img.shields.io/badge/version-3.0.2-purple?style=flat-square" alt="版本">
+  <img src="https://img.shields.io/badge/version-3.1.2-purple?style=flat-square" alt="版本">
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux%20%7C%20Termux-pink?style=flat-square" alt="平台">
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="许可证">
